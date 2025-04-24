@@ -1,0 +1,66 @@
+---
+title: "Advanced webscraping with Selenium"
+author: Etienne Bacher
+format: 
+  pdf:
+    number-sections: false
+---
+
+# Description
+
+Webscraping consists in using programming tools to extract content directly from
+webpages. This is more and more used to build original datasets based on information
+that is mainly accessible online. Most of the time, the website that one wants to 
+scrape is static, meaning that for a given URL, all information is loaded on the 
+webpage. Clicking on a button to show new information would then modify the URL.
+
+However, a lot of websites are dynamic, meaning that the actions that one makes on the 
+webpage (clicking on a button, selecting an input, etc.) do not change anything to
+the URL address. Therefore, having the URL is not enough to extract the data from
+the website. We also need to perform some actions to have access to the data. This 
+makes webscraping harder, because we need to know how to mimic human actions
+on a webpage in order to extract the content that we need.
+
+This is where tools like `Selenium` come into action. `Selenium` is a program that
+allows one to replicate their browser actions from the command line. It is 
+therefore possible to create a program that will automatically open a browser, 
+click on a button, download files, etc.
+
+The goal of this training is to familiarize researchers (as well as PhD students,
+research assistants, etc.) with `Selenium`. 
+
+
+
+# Pre-requisites
+
+We can use `Selenium` through different languages, such as `R` and Python. This
+training will be made in `R`, using the package `RSelenium`, but the methods
+and functions used should be easily convertible in Python.
+
+This training will focus on the learning of `Selenium`. Therefore, some of the 
+following skills and software are needed.
+
+## `R`
+
+Need to know how to:
+
+* install and load packages;
+* manipulate lists and vectors;
+* write `for` loops.
+  
+Preferred but not required:
+
+* familiarity with the core `tidyverse` packages (`dplyr`, `tidyr`);
+* familiarity with the package `rvest`;
+* familiarity with webscraping;
+* know how to write custom functions.
+  
+  
+## Software
+
+Make sure that you installed the package `RSelenium` before the training. This 
+may require the installation of [Java](https://www.java.com/en/download/), which
+itself can require asking IT. To check whether Java is installed on your computer,
+open the command prompt by typing "cmd" in Windows search bar, and enter 
+`java -version`. If this command returns an error, it means that Java is not
+installed.

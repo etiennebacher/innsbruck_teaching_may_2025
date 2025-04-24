@@ -1,0 +1,78 @@
+---
+title: "Webscraping -- Part 1"
+subtitle: "Static webscraping <br><br> University of Innsbruck"
+author: "Etienne Bacher"
+date: "13 May 2025"
+date-format: long
+institute: "LISER"
+
+format:
+ revealjs:
+   incremental: false
+   theme: [moon, custom.scss]
+   pdf-separate-fragments: true
+   strip-comments: true
+   highlight-style: atom-one
+   auto-animate-duration: 0.8
+   code-copy: true
+   slide-number: true
+
+execute:
+  eval: false
+  echo: true
+---
+
+<!-- Print to PDF -->
+<!-- Follow this: https://quarto.org/docs/presentations/revealjs/presenting.html#print-to-pdf -->
+<!-- Use chrome and not firefox -->
+
+
+## Before we start
+
+This course:
+
+- 3 parts: webscraping (parts 1 and 2), and handling large data with R and Python
+- No assignments, only check for attendance
+- All slides online at [https://www.etiennebacher.com/software](https://www.etiennebacher.com/software)
+
+About me:
+
+- Defended my PhD last November
+- Worked on migration economics (and some economic history), will be around during the week
+- Contact: etienne.bacher@liser.lu
+
+## Introduction
+
+**What is webscraping?**
+
+. . .
+
+<br>
+
+It is the action of collecting data from webpages.
+
+*Anything that is visible on a webpage can be webscraped.*
+
+
+## Introduction
+
+**Why is it useful?**
+
+. . .
+
+<br>
+
+To get original data.
+
+
+## Appendix
+
+
+## Session information
+
+<br>
+
+```{r echo = FALSE, eval = TRUE}
+sessioninfo::session_info()
+```
+

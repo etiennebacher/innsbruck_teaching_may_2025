@@ -1,0 +1,2269 @@
+---
+title: "Webscraping with RSelenium"
+subtitle: "Automate your browser actions"
+author: "Etienne Bacher"
+date: "`r Sys.Date()`"
+date-format: long
+institute: "LISER"
+
+format:
+ revealjs:
+   incremental: false
+   theme: [moon, custom.scss]
+   pdf-separate-fragments: true
+   strip-comments: true
+   highlight-style: atom-one
+   auto-animate-duration: 0.8
+   code-copy: true
+   slide-number: true
+
+execute:
+  eval: false
+  echo: true
+---
+
+<!-- Print to PDF -->
+<!-- Follow this: https://quarto.org/docs/presentations/revealjs/presenting.html#print-to-pdf -->
+<!-- Use chrome and not firefox -->
+
+
+## Introduction
+
+<br>
+
+::: {.callout-important icon="false" appearance="simple"}
+Do you really need scraping?
+:::
+
+Before scraping: is there an API?
+
+::: increment
+-   if yes, is there a package?
+
+    -   if yes, use the package (e.g. [`guardian`](https://guardian.news-r.org/), [`WDI`](https://vincentarelbundock.github.io/WDI/))
+
+    -   if no, build the API queries yourself with [`httr`](https://httr.r-lib.org/)
+
+-   if no, scrape (politely)
+:::
+
+<!-- https://talks.andrewheiss.com/2022-seacen/presentation/#/general-principles -->
+
+## Introduction
+
+<br>
+
+Scraping can be divided in two steps:
+
+::: incremental
+1.  getting the HTML that contains the information
+2.  cleaning the HTML to extract the information we want
+:::
+
+. . .
+
+<br>
+
+These 2 steps don't necessarily require the same tools, and *shouldn't
+be carried out at the same time*.
+
+## Introduction
+
+<br>
+
+Why?
+
+<br>
+
+Webscraping takes time, and a lot of things can happen:
+
+* your Internet connection goes down;
+* the website goes down;
+* any other random reason
+
+<br>
+
+. . .
+
+If this happens and you didn't save your progress, you lose **everything**.
+
+We don't have plenty of time, but we have plenty of disk storage. Use it!
+
+
+## Introduction
+
+<br> <br> <br>
+
+Here, we will focus mostly on **how to obtain the HTML code you
+need on dynamic pages?**
+
+<br>
+
+(And a bit on how to clean this HTML)
+
+
+
+# Static and dynamic pages
+
+## Static and dynamic pages
+
+<br><br>
+
+The web works with 3 languages:
+
+::: incremental
+-   HTML: content and structure of the page
+-   CSS: style of the page
+-   JavaScript: interactions with the page
+:::
+
+
+## Static and dynamic pages
+
+<br><br>
+
+The web works with 3 languages:
+
+-   HTML: content and structure of the page
+
+-   CSS: style of the page
+
+-   [**JavaScript**: interactions with the page]{style="color: beige;"}
+
+
+## Static vs dynamic
+
+<br>
+
+**Static webpage**:
+
+-   all the information is loaded with the page;
+-   changing a parameter modifies the URL
+
+Examples: [Wikipedia](https://en.wikipedia.org/wiki/Web_scraping){.external target="_blank"}, [IMDB](https://www.imdb.com/name/nm0001392/?ref_=nv_sr_srsg_0){.external target="_blank"}.
+
+<br>
+
+. . .
+
+**Dynamic webpage**: the website uses JavaScript to fetch data from
+their server and *dynamically* update the page.
+
+Example: [Premier League stats](https://www.premierleague.com/stats/top/players/goal_assist){.external target="_blank"}.
+
+# Why is it harder to do webscraping with dynamic pages?
+
+---
+
+<br>
+
+Webscraping a static website can be quite simple:
+
+-   you get a list of URLs;
+-   download the HTML for each of them;
+-   read and clean the HTML
+
+and that's it.
+
+<br>
+
+. . .
+
+This is "easy" because you can identify two pages with different content just by
+looking at their URL.
+
+---
+
+Example: elections results in Spain from the website of [El Pais](https://resultados.elpais.com/elecciones/2019/municipales/){.external target="_blank"}
+
+![](img/elpais1.png){width="60%"}
+
+![](img/elpais2.png){width="60%"}
+
+---
+
+<br> <br> <br> <br>
+
+Of course, static webscraping can be challenging because we have to write good
+loops, good error handling, the HTML itself can be hard to clean, etc.
+
+. . .
+
+<br>
+
+But in dynamic pages, there's no obvious way to see that the inputs are
+different.
+
+---
+
+Example: [Premier League stats](https://www.premierleague.com/stats/top/players/goal_assist){.external target="_blank"}
+
+![](img/premier-league-1.png){width="60%"}
+
+![](img/premier-league-2.png){width="60%"}
+
+---
+
+<br> <br>
+
+So it seems that the only way to get the data is to go manually through
+all pages to get the HTML.
+
+<br>
+
+. . .
+
+<div style="text-align: center">
+<img src="img/one-eternity-later.jpg" style="width: 70%">
+</div>
+
+
+# (R)Selenium
+
+## Idea
+
+Idea: control the browser from the command line.
+
+<br>
+
+. . .
+
+*"I wish I could click on this button to open a modal"*
+
+```{r}
+remote_driver$findElement(using = "css", value = ".my-button")$clickElement()
+```
+
+<br>
+
+. . .
+
+*"I wish I could fill these inputs to automatically connect"*
+
+```{r}
+remote_driver$findElement(
+  using = "id",
+  value = "password"
+)$sendKeysToElement(list("my_super_secret_password"))
+```
+
+---
+
+<br>
+
+Almost everything you can do "by hand" in a browser, you can reproduce
+with Selenium:
+
+. . .
+
+| Action                                       | Code                       |
+|-------------------|----------|
+| Open a browser                                    | `open()` / `navigate()`    |
+| Click on something                                | `clickElement()`           |
+| Enter values                                      | `sendKeysToElement()`      |
+| Go to previous/next page                          | `goBack()` / `goForward()` |
+| Refresh the page                                  | `refresh()`                |
+| Get all the HTML that is currently <br> displayed | `getPageSource()`          |
+
+
+
+# Get started
+
+## Get started
+
+<br>
+
+In the beginning was ~~the Word~~ `rsDriver()`:
+
+```{r}
+# if not already installed
+# install.packages("RSelenium")
+library(RSelenium)
+
+driver <- rsDriver(browser = "firefox", chromever = NULL) # can also be "chrome"
+remote_driver <- driver[["client"]]
+```
+
+ <!-- chromever = NULL necessary to avoid recent error:
+ see: https://stackoverflow.com/a/74735571 -->
+
+. . .
+
+<br>
+
+If everything works fine, this will print a bunch of messages and open a "marionette browser".
+
+![](img/marionette2.png)
+
+
+## Installation issues
+
+<br>
+
+1. Java not installed
+
+<br>
+
+If you have a message saying that "Java is not found" (or similar), you need to
+install Java:
+
+* Windows search bar -> "Software Center"
+* Install Java
+
+
+## Installation issues
+
+<br>
+
+2. Firefox not installed/found
+
+
+If you have a message saying "Could not open firefox browser", two possible explanations:
+
+* if Firefox is not installed, install it the same way as Java on the previous slide.
+
+* if Firefox is installed but not found, it probably means that it wasn't installed
+with admin rights, so you need to manually specify the location of the file:
+
+```{r}
+driver <- rsDriver(
+  browser = "firefox",
+  extraCapabilities = list(
+    `moz:firefoxOptions` = list(
+      binary = "C:\\Users\\<USERNAME>\\AppData\\Local\\Mozilla Firefox\\firefox.exe"
+    )
+  )
+)
+```
+
+
+## Installation issues
+
+<br>
+
+3. "Error in if (file.access(phantompath, 1) < 0) { : argument is of length zero"
+
+<br>
+
+If you have this error, this is bad news because I don't really know how to fix
+it since I never had it.
+
+<br>
+
+You can try to follow [this StackOverflow answer](https://stackoverflow.com/questions/46202062/i-got-error-like-error-in-if-file-accessphantompath-1-0-argument-is-o){.external target="_blank"}.
+
+
+
+## Get started
+
+From now on, the main thing is to call `<function>()` starting with
+`remote_driver$`[^1].
+
+[^1]: Or whatever you called it in the previous step.
+
+<img src="img/rsdriver_funcs.png" alt="drawing" style="width:75%; text-align: center"/>
+
+
+
+
+## Closing Selenium
+
+<br>
+
+The clean way to close `Selenium` is to run `driver$server$stop()` (replace
+`driver` by the name you gave at the previous step).
+
+<br>
+
+If you close the browser by hand and try to re-run the script, you may have the
+following error:
+
+```{.r}
+"Error in wdman::selenium(port = port, verbose = verbose, version = version,  :
+  Selenium server signals port = 4567 is already in use."
+```
+
+<br>
+
+To get rid of this error, you also need to run `driver$server$stop()`.
+
+
+
+
+
+
+# Exercise 1
+
+
+## Exercise 1
+
+<br>
+
+**Objective:** get the list of core contributors to R located
+[here](https://www.r-project.org/contributors.html){.external target="_blank"}.
+
+. . .
+
+<br>
+
+How would you do it by hand?
+
+-   open the browser;
+-   go to [https://r-project.org](https://r-project.org);
+-   in the left sidebar, click on the link "Contributors";
+
+and voilà!
+
+. . .
+
+<br>
+
+How can we do these steps programmatically?
+
+
+## Open the browser and navigate
+
+```{r}
+remote_driver$navigate("https://r-project.org")
+```
+
+<img src="img/rproject.png" alt="drawing" style="width:75% !important; text-align: center !important"/>
+
+
+
+## Click on "Contributors"
+
+<br>
+
+This requires two things:
+
+1.  find the element
+2.  click on it
+
+<br>
+
+**How to find an element?**
+
+-   Humans -> eyes
+
+-   Computers -> HTML/CSS
+
+---
+
+To find the element, we need to open the console to see the structure of
+the page:
+
+-   right-click -> "Inspect"
+-   or `Ctrl` + `Shift` + `C`
+
+. . .
+
+![](img/console.png){width="75%"}
+
+---
+
+<br>
+
+Then, hover the element we're interested in: the link "Contributors".
+
+<br>
+
+![](img/console_2.png)
+
+---
+
+<br><br>
+
+How can we find this link with `RSelenium`?
+
+```{r}
+?RSelenium::remoteDriver()
+```
+
+
+<br>
+
+-> `findElement`
+
+. . .
+
+::: columns
+::: {.column width="45%"}
+-   class name ❌
+-   id ❌
+-   name ❌
+-   tag name ❌
+:::
+
+::: {.column width="10%"}
+:::
+
+::: {.column width="45%"}
+-   css selector ✔️
+-   link text ✔️
+-   partial link text ✔️
+-   xpath ✔️
+:::
+:::
+
+---
+
+<br>
+
+We must make a distinction between two classes of objects: `remoteDriver` and
+`webElement`.
+
+. . .
+
+<br>
+
+Think of `remoteDriver` as the browser in general: you can navigate between pages,
+search elements, find if an element is present on the page, etc.
+
+{{< fa arrow-right >}} &nbsp; see the list of available methods with `?remoteDriver`
+
+. . .
+
+<br>
+
+Think of `webElement` as a particular element on the page: you can highlight it,
+click it, get its text, etc.
+
+{{< fa arrow-right >}} &nbsp; see the list of available methods with `?webElement`
+
+
+
+---
+
+::: {.callout-tip icon="false" appearance="simple"}
+**Tip:** You can check that you found the right element by highlighting it with
+`highlightElement()`.
+:::
+
+
+All of these work:
+
+```{r}
+remote_driver$findElement("link text", "Contributors")$clickElement()
+
+remote_driver$findElement("partial link text", "Contributors")$clickElement()
+
+remote_driver$findElement(
+  "xpath",
+  "/html/body/div/div[1]/div[1]/div/div[1]/ul/li[3]/a"
+)$clickElement()
+
+remote_driver$findElement(
+  "css selector",
+  "div.col-xs-6:nth-child(1) > ul:nth-child(6) > li:nth-child(3) > a:nth-child(1)"
+)$clickElement()
+```
+
+
+---
+
+We are now on the right page!
+
+![](img/contributors.png)
+
+---
+
+<br><br>
+
+Last step: obtain the HTML of the page.
+
+```{r}
+remote_driver$getPageSource()
+```
+
+<br>
+
+. . .
+
+To read it with the package `rvest`:
+
+```{r}
+x <- remote_driver$getPageSource()[[1]]
+rvest::read_html(x)
+```
+
+##
+
+<br>
+
+Do we read the HTML and extract the information in the same script?
+
+
+##  {#contributors-last-step}
+
+<br>
+
+Do we read the HTML code and extract the information in the same script?
+
+<br>
+
+
+**No!**
+
+Instead, we save the HTML in an external file, and we will be able to
+access it in another script (and offline) to manipulate it as we want.
+
+
+
+```{r}
+write(x, file = "contributors.html")
+# Later and in another script
+rvest::read_html("contributors.html")
+```
+
+<br>
+
+Click [here](#contributors-results) to see the results.
+
+:::aside
+Although, in this case, it would be ok to treat it directly in the same script
+because it's a single page.
+:::
+
+# Exercise 2: a harder & real-life example
+
+---
+
+<br><br>
+
+
+The previous example was not a *dynamic* page: we could have used the
+link to the page and apply webscraping methods for static webpages.
+
+<br>
+
+```{r}
+rvest::read_html("https://www.r-project.org/contributors.html")
+```
+
+. . .
+
+<br>
+
+Let's now dive into a more complex example, where RSelenium is the only
+way to obtain the data.
+
+
+## Before using RSelenium
+
+<br>
+
+Using Selenium is **slower** than using "classic" scraping methods, so
+it's important to check all possibilities before using it.
+
+<br>
+
+. . .
+
+Use Selenium if:
+
+-   the HTML you want is not directly accessible, i.e needs some
+    interactions (clicking on a button, connect to a website...),
+
+-   the URL doesn't change with the inputs,
+
+-   you can't access the data directly in the "network" tab of the
+    console and you can't reproduce the `POST` request.
+
+
+## Example: Sao Paulo immigration museum
+
+<br>
+
+[Open website](http://www.inci.org.br/acervodigital/livros.php){.external target="_blank"}
+
+<br>
+
+Steps:
+
+1. list all interactions we need to do
+1. check that we need Selenium
+1. make an example
+1. generalize and polish the code
+
+
+
+## List all interactions
+
+<br><br>
+
+1. Open the website
+1. Enter "PORTUGUESA" in the input box
+1. Wait a bit for the page to load
+1. Open every modal "Ver Mais"
+
+
+
+## Check that we need Selenium
+
+<br>
+
+1. Is there an API?
+
+::: {.fragment .fade-in fragment-index=1}
+::: {.fragment .highlight-current-blue fragment-index=1}
+Not that I know of (and let's assume that there isn't one).
+:::
+:::
+
+2. Does the URL change when we enter inputs or click somewhere?
+
+::: {.fragment .fade-in fragment-index=2}
+::: {.fragment .highlight-current-blue fragment-index=2}
+No.
+:::
+:::
+
+3. Can we get the data through the "Network" tab?
+
+::: {.fragment .fade-in fragment-index=3}
+::: {.fragment .highlight-current-blue fragment-index=3}
+Yes but we still need RSelenium to change pages (and this is just training
+anyway).
+:::
+:::
+
+
+
+## Make an example {auto-animate=true}
+
+Initiate the remote driver and go to the website:
+
+```{r}
+library(RSelenium)
+
+link <- "http://www.inci.org.br/acervodigital/livros.php"
+
+# Automatically go the website
+driver <- rsDriver(browser = c("firefox"))
+remote_driver <- driver[["client"]]
+remote_driver$navigate(link)
+```
+
+
+## Make an example {auto-animate=true}
+
+Fill the field "NACIONALIDADE":
+
+```{.r code-line-numbers="10-13"}
+library(RSelenium)
+
+link <- "http://www.inci.org.br/acervodigital/livros.php"
+
+# Automatically go the website
+driver <- rsDriver(browser = c("firefox"))
+remote_driver <- driver[["client"]]
+remote_driver$navigate(link)
+
+# Fill the nationality field and click on "Validate"
+remote_driver$
+  findElement(using = "id", value = "nacionalidade")$
+  sendKeysToElement(list("PORTUGUESA"))
+```
+
+## Make an example {auto-animate=true}
+
+Find the button "Pesquisar" and click it:
+
+```{.r code-line-numbers="15-18"}
+library(RSelenium)
+
+link <- "http://www.inci.org.br/acervodigital/livros.php"
+
+# Automatically go the website
+driver <- rsDriver(browser = c("firefox"))
+remote_driver <- driver[["client"]]
+remote_driver$navigate(link)
+
+# Fill the nationality field and click on "Validate"
+remote_driver$
+  findElement(using = "id", value = "nacionalidade")$
+  sendKeysToElement(list("PORTUGUESA"))
+
+# Find the button "Pesquisar" and click it
+remote_driver$
+  findElement(using = 'name', value = "Reset2")$
+  clickElement()
+```
+
+
+## Make an example {auto-animate=true}
+
+Find the button "Ver Mais" and click it:
+
+```{.r code-line-numbers="20-23"}
+library(RSelenium)
+
+link <- "http://www.inci.org.br/acervodigital/livros.php"
+
+# Automatically go the website
+driver <- rsDriver(browser = c("firefox"))
+remote_driver <- driver[["client"]]
+remote_driver$navigate(link)
+
+# Fill the nationality field and click on "Validate"
+remote_driver$
+  findElement(using = "id", value = "nacionalidade")$
+  sendKeysToElement(list("PORTUGUESA"))
+
+# Find the button "Pesquisar" and click it
+remote_driver$
+  findElement(using = 'name', value = "Reset2")$
+  clickElement()
+
+# Find the button "Ver Mais" and click it
+remote_driver$
+  findElement(using = 'id', value = "link_ver_detalhe")$
+  clickElement()
+```
+
+
+## Make an example {auto-animate=true}
+
+Get the HTML that is displayed:
+
+```{.r code-line-numbers="25-26"}
+library(RSelenium)
+
+link <- "http://www.inci.org.br/acervodigital/livros.php"
+
+# Automatically go the website
+driver <- rsDriver(browser = c("firefox"))
+remote_driver <- driver[["client"]]
+remote_driver$navigate(link)
+
+# Fill the nationality field and click on "Validate"
+remote_driver$
+  findElement(using = "id", value = "nacionalidade")$
+  sendKeysToElement(list("PORTUGUESA"))
+
+# Find the button "Pesquisar" and click it
+remote_driver$
+  findElement(using = 'name', value = "Reset2")$
+  clickElement()
+
+# Find the button "Ver Mais" and click it
+remote_driver$
+  findElement(using = 'id', value = "link_ver_detalhe")$
+  clickElement()
+
+# Get the HTML that is displayed in the modal
+x <- remote_driver$getPageSource()
+```
+
+
+## Make an example {auto-animate=true}
+
+Exit the modal by pressing "Escape":
+
+```{.r code-line-numbers="28-31"}
+library(RSelenium)
+
+link <- "http://www.inci.org.br/acervodigital/livros.php"
+
+# Automatically go the website
+driver <- rsDriver(browser = c("firefox"))
+remote_driver <- driver[["client"]]
+remote_driver$navigate(link)
+
+# Fill the nationality field and click on "Validate"
+remote_driver$
+  findElement(using = "id", value = "nacionalidade")$
+  sendKeysToElement(list("PORTUGUESA"))
+
+# Find the button "Pesquisar" and click it
+remote_driver$
+  findElement(using = 'name', value = "Reset2")$
+  clickElement()
+
+# Find the button "Ver Mais" and click it
+remote_driver$
+  findElement(using = 'id', value = "link_ver_detalhe")$
+  clickElement()
+
+# Get the HTML that is displayed in the modal
+x <- remote_driver$getPageSource()
+
+# Exit the modal by pressing "Escape"
+remote_driver$
+  findElement(using = "xpath", value = "/html/body")$
+  sendKeysToElement(list(key = "escape"))
+```
+
+
+## Problem
+
+<br><br>
+
+We got the content of the first modal, that's great!
+
+<br>
+
+Now we just need to replicate this for the other modals of the page.
+
+<br>
+
+. . .
+
+**How can we distinguish one button "Ver Mais" from another?**
+
+
+## Problem
+
+<br>
+
+To find the button "Ver Mais", we used the following code:
+
+```{r}
+remote_driver$findElement(
+  using = 'id',
+  value = "link_ver_detalhe"
+)$clickElement()
+```
+
+<br>
+
+But all buttons share the same `id`, so this code only selects the first button,
+not the others.
+
+
+## Solution
+
+<br>
+
+Use `findElements()` (and not `findElement()`).
+
+<br>
+
+This returns a list of elements, and we can then apply some function on each of
+them in a loop:
+
+```{r}
+# Make the list of elements
+buttons <- remote_driver$findElements(using = 'id', value = "link_ver_detalhe")
+
+# Highlight each button one by one
+for (i in seq_along(buttons)) {
+  buttons[[i]]$highlightElement()
+  Sys.sleep(1)
+}
+```
+
+
+## Loop through modals
+
+<br>
+
+Now that we have a way to open each modal, we can make a loop to get the HTML
+for each one:
+
+```{r}
+for (i in seq_along(buttons)) {
+  # open the modal
+  buttons[[i]]$clickElement()
+  Sys.sleep(0.5)
+
+  # get the HTML and save it
+  tmp <- remote_driver$getPageSource()[[1]]
+  write(tmp, file = paste0("data/modals/modal-", i, ".html"))
+
+  # quit the modal (by pressing "Escape")
+  remote_driver$findElement(
+    using = "xpath",
+    value = "/html/body"
+  )$sendKeysToElement(list(key = "escape"))
+}
+
+```
+
+## Generalize for each page
+
+<br>
+
+Find the button to go to the next page:
+
+<br>
+
+```{r}
+remote_driver$findElement(
+  "css",
+  "#paginacao > div.btn:nth-child(4)"
+)$highlightElement()
+```
+
+
+## Nested loops
+
+<br>
+
+We know how to:
+
+* open the website
+* search for the right inputs
+* open each modal and get its content
+* go to the next page
+
+. . .
+
+<br>
+
+Next step: compile all of this and make nested loops!
+
+
+
+## {auto-animate=true}
+
+How many pages? **2348** (but just put 2-3 to avoid too many requests)
+
+<br>
+
+Pseudo-code:
+
+```{r}
+for (page_index in 1:3) {
+  # Find all buttons "Ver Mais" on the page
+
+  for (modal_index in seq_along(buttons)) {
+    # open modal
+    # get HTML and save it in an external file
+    # leave modal
+  }
+
+  # Once all modals of a page have been scraped, go to the next page
+  # (except if we're on the last page)
+}
+```
+
+
+## {auto-animate=true}
+
+How many pages? **2348** (but just put 2-3 to avoid too many requests)
+
+<br>
+
+Pseudo-code:
+
+```{.r code-line-numbers="3-5"}
+for (page_index in 1:3) {
+
+  # Find all buttons "Ver Mais" on the page
+  buttons <- remote_driver$
+    findElements(using = 'id', value = "link_ver_detalhe")
+
+  for (modal_index in seq_along(buttons)) {
+    # open modal
+    # get HTML and save it in an external file
+    # leave modal
+  }
+
+  # Once all modals of a page have been scraped, go to the next page
+  # (except if we're on the last page)
+
+}
+```
+
+
+## {auto-animate=true}
+
+How many pages? **2348** (but just put 2-3 to avoid too many requests)
+
+<br>
+
+Make the "modal loop":
+
+```{.r code-line-numbers="7-22"}
+for (page_index in 1:3) {
+
+  # Find all buttons "Ver Mais" on the page
+  buttons <- remote_driver$
+    findElements(using = 'id', value = "link_ver_detalhe")
+
+  for (modal_index in seq_along(buttons)) {
+    # open modal
+    buttons[[modal_index]]$clickElement()
+
+    # Get the HTML and save it
+    tmp <- remote_driver$getPageSource()[[1]]
+    write(tmp, file = paste0("data/modals/modal-", modal_index, ".html"))
+
+    # Leave the modal
+    remote_driver$
+      findElement(using = "xpath", value = "/html/body")$
+      sendKeysToElement(list(key = "escape"))
+
+  }
+
+  # Once all modals of a page have been scraped, go to the next page
+  # (except if we're on the last page)
+
+}
+```
+
+
+## {auto-animate=true}
+
+How many pages? **2348** (but just put 2-3 to avoid too many requests)
+
+<br>
+
+Make the "page loop":
+
+```{.r code-line-numbers="25-33"}
+for (page_index in 1:3) {
+
+  # Find all buttons "Ver Mais" on the page
+  buttons <- remote_driver$
+    findElements(using = 'id', value = "link_ver_detalhe")
+
+  for (modal_index in seq_along(buttons)) {
+    # open modal
+    buttons[[modal_index]]$clickElement()
+
+    # Get the HTML and save it
+    tmp <- remote_driver$getPageSource()[[1]]
+    write(tmp, file = paste0("data/modals/page-", page_index,
+                             "-modal-", modal_index, ".html"))
+
+    # Leave the modal
+    remote_driver$
+      findElement(using = "xpath", value = "/html/body")$
+      sendKeysToElement(list(key = "escape"))
+
+  }
+
+  # When we got all modals of one page, go to the next page (except if
+  # we're on the last one)
+  if (page_index != 2348) {
+    remote_driver$
+      findElement("css", "#paginacao > div.btn:nth-child(4)")$
+      clickElement()
+  }
+
+}
+```
+
+
+---
+
+<br><br>
+<br><br>
+
+Great, let's run everything!
+
+<br>
+
+. . .
+
+{{< fa arrow-right >}} &nbsp; Not so fast
+
+
+
+# Error handling
+
+# 1. Catching errors
+
+## Catching errors
+
+<br>
+
+The default behavior of errors is to stop the script, which leads to this kind
+of situation:
+
+. . .
+
+* 7pm - "great, I can just run the code during the night and go home"
+
+. . .
+
+* 7:02pm - *error in the code*
+
+. . .
+
+* 8am - "Fu@?!"
+
+. . .
+
+<br>
+
+{{< fa arrow-right >}} &nbsp; need to handle errors with `tryCatch()`
+
+
+
+## Catching errors
+
+<br> <br> <br> <br>
+
+:::{style="text-align: center; font-size: 2.3rem"}
+<p> <span style="color: #ffaa00">try</span><span style="color: #d24dff">Catch</span> </p>
+:::
+
+<i id="myicon1" class="fas fa-turn-down" aria-hidden="true"></i>
+
+<i id="myicon2" class="fas fa-turn-down fa-flip-horizontal" aria-hidden="true"></i>
+
+
+:::: {.columns}
+
+::: {.column width="20%"}
+:::
+
+::: {.column width="28%"}
+<p style="text-align: center"><span style="color: #ffaa00">try</span> to run an expression </p>
+:::
+
+::: {.column width="4%"}
+:::
+
+::: {.column width="34%"}
+<p style="text-align: center"> <span style="color: #d24dff">catch</span> the potential warnings/errors </p>
+:::
+
+::: {.column width="20%"}
+:::
+
+::::
+
+
+
+
+## Catching errors
+
+<br>
+
+Example: try to compute `log("a")`.
+
+```{r, eval=TRUE, error=TRUE}
+log("a")
+```
+
+<br>
+
+. . .
+
+What if I want to return `NA` instead of an error?
+
+
+## Catching errors
+
+```{.r}
+tryCatch(
+  # try to evaluate the expression
+  {
+    <EXPRESSION>,
+  },
+
+  # what happens if there's a warning?
+  warning = function(w) {
+    <BEHAVIOR WHEN THERE IS A WARNING>
+  },
+  # what happens if there's an error?
+  error = function(e) {
+    <BEHAVIOR WHEN THERE IS AN ERROR>
+  }
+)
+```
+
+## Catching errors
+
+```{r}
+tryCatch(
+  # try to evaluate the expression
+  {
+    log("a")
+  },
+
+  # what happens if there's a warning?
+  warning = function(w) {
+    print("There was a warning. Here's the message:")
+    print(w)
+  },
+
+  # what happens if there's an error?
+  error = function(e) {
+    print("There was an error. Returning `NA`.")
+    return(NA)
+  }
+)
+```
+
+## Catching errors
+
+```{r, eval=TRUE, error=TRUE}
+tryCatch(
+  # try to evaluate the expression
+  {
+    log("a")
+  },
+
+  # what happens if there's a warning?
+  warning = function(w) {
+    print("There was a warning. Here's the message:")
+    print(w)
+  },
+
+  # what happens if there's an error?
+  error = function(e) {
+    print("There was an error. Returning `NA`.")
+    return(NA)
+  }
+)
+```
+
+
+## Example with a loop
+
+Create a fake loop that goes from `i = 1:10` and creates a list containing `i*2`.
+Let's say that there's an error when `i = 3`:
+
+```{r, eval=FALSE, error=TRUE}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    stop("This is an error.")  # intentional error
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+}
+```
+
+## Example with a loop
+
+Create a fake loop that goes from `i = 1:10` and creates a list containing `i*2`.
+Let's say that there's an error when `i = 3`:
+
+```{r, eval=TRUE, error=TRUE}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    stop("This is an error.")  # intentional error
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+}
+```
+
+
+
+## Example with a loop
+
+<br>
+
+```{r, eval=TRUE, error=TRUE}
+print(x)
+```
+
+<br>
+
+{{< fa arrow-right >}} &nbsp; We don't have values for `i >= 3` because there was
+an error that stopped the loop.
+
+
+## Catching the error
+
+<br>
+
+Now, let's catch the error to avoid breaking the loop:
+
+
+```{.r code-line-numbers="5-13"}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    tryCatch(
+      {
+        stop("This is an error.") # intentional error
+      },
+      error = function(e) {
+        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
+        x[[i]] <- NULL
+      }
+    )
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+
+}
+```
+
+
+
+## Catching the error
+
+```{r, eval=TRUE, echo=FALSE, error=TRUE}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    tryCatch(
+      {
+        stop("This is an error.")
+      },
+      error = function(e) {
+        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
+        x[[i]] <- NULL
+      }
+    )
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+
+}
+
+print(x)
+```
+
+## Using `tryCatch` in our loop
+
+We can now catch errors when we try to get the content of each modal:
+
+```{r}
+tryCatch(
+  {
+    # open modal
+    buttons[[modal_index]]$clickElement()
+
+    Sys.sleep(1.5)
+
+    # Get the HTML and save it
+    tmp <- remote_driver$getPageSource()[[1]]
+    write(tmp, file = paste0("data/modals/page-", page_index, "-modal-", modal_index, ".html"))
+
+    # Leave the modal
+    body <- remote_driver$findElement(using = "xpath", value = "/html/body")
+    body$sendKeysToElement(list(key = "escape"))
+
+    message(paste("  Scraped modal", modal_index))
+  },
+  error = function(e) {
+    message(paste("  Failed to scrape modal", modal_index))
+    message(paste("  The error was ", e))
+    next
+  }
+)
+```
+
+
+
+# 2. Loading times
+
+## Loading times
+
+<br>
+
+There are a few places where we need to wait a bit:
+
+* after clicking on "Pesquisar"
+* after clicking on "Ver Mais"
+* when we go to the next page
+
+. . .
+
+<br>
+
+
+We must put some pauses between `RSelenium` actions. Otherwise it will error,
+e.g. if we try to click on a button that isn't loaded on the page yet.
+
+. . .
+
+<br>
+
+{{< fa arrow-right >}} &nbsp; one solution is to use `Sys.sleep()`
+
+
+
+## Loading times
+
+```{.r code-line-numbers="11,23,33"}
+for (page_index in 1:2348) {
+
+  # Find all buttons "Ver Mais" on the page
+  buttons <- remote_driver$
+    findElements(using = 'id', value = "link_ver_detalhe")
+
+  for (modal_index in seq_along(buttons)) {
+    # open modal
+    buttons[[modal_index]]$clickElement()
+
+    Sys.sleep(0.5)
+
+    # Get the HTML and save it
+    tmp <- remote_driver$getPageSource()[[1]]
+    write(tmp, file = paste0("data/modals/page-", page_index,
+                             "-modal-", modal_index, ".html"))
+
+    # Leave the modal
+    remote_driver$
+      findElement(using = "xpath", value = "/html/body")$
+      sendKeysToElement(list(key = "escape"))
+
+    Sys.sleep(0.5)
+  }
+
+  # When we got all modals of one page, go to the next page (except if
+  # we're on the last one)
+  if (page_index != 2348) {
+    remote_driver$
+      findElement("css", "#paginacao > div.btn:nth-child(4)")$
+      clickElement()
+
+    Sys.sleep(3)
+  }
+
+}
+```
+
+
+## Loading times
+
+<br>
+
+However, using `Sys.sleep()` is not perfect because we put arbitrary timing, e.g.
+5 seconds.
+
+<br>
+
+Problem: what if the Internet connection is so bad that the loading takes 10 seconds?
+
+<br>
+
+{{< fa arrow-right >}} &nbsp; we need a more robust solution using `tryCatch()`
+
+
+
+## Loading times
+
+<br>
+
+What we want is to check whether the loading is over, i.e whether the buttons
+we want to click can be found on the page.
+
+
+<br>
+
+We can use a `while()` loop to check this.
+
+
+## Loading times
+
+Quick reminder:
+
+* `if` condition: perform the inside only **if** the condition is true
+
+```{.r}
+if (x > 2) {
+  # do something
+}
+```
+
+. . .
+
+* `for` loop: perform the inside **for** all values
+
+```{.r}
+for (i in 1:10) {
+  # do something with `i`
+}
+```
+
+. . .
+
+* `while` loop: perform the inside **while** the condition is true
+
+```{.r}
+while (x > 2) {
+  # do something
+  # need to update `x` here otherwise infinite loop!
+}
+```
+
+
+
+## Loading times
+
+<br> <br>
+
+In our case, we want to check whether we can find the buttons "Ver Mais".
+
+<br>
+
+Are the buttons loaded?
+
+* if no, wait 0.5 seconds (or whatever duration you want), and try again;
+* if yes, go to the next step
+
+<br>
+
+{{< fa arrow-right >}} &nbsp; Do this 20 times max
+
+
+## Loading times
+
+```{.r code-line-numbers="1,2,3,4,20|6-14|15-18"}
+# Try to find the buttons "Ver Mais"
+all_buttons_loaded <- FALSE
+iterations <- 0
+while(!all_buttons_loaded & iterations < 20) {
+  tryCatch(
+    {
+      test <- remote_driver$
+        findElements(using = 'id', value = "link_ver_detalhe")
+
+      # If the buttons are found, update our condition to quit the loop
+      if (inherits(test, "list") && length(test) > 0)  {
+        all_buttons_loaded <<- TRUE
+      }
+    },
+    error = function(e) {
+      iterations <<- iterations + 1
+      Sys.sleep(0.5)
+    }
+  )
+}
+```
+
+This loop will run until the buttons can be found or until we reach 20 iterations.
+
+## Loading times
+
+```{r}
+for (page_index in 1:2348) {
+
+  # Try to find the buttons "Ver Mais"
+  all_buttons_loaded <- FALSE
+  iterations <- 0
+  while(!all_buttons_loaded & iterations < 20) {
+    tryCatch(
+      {
+        test <- remote_driver$
+          findElements(using = 'id', value = "link_ver_detalhe")
+
+        if (inherits(test, "list") && length(test) > 0)  {
+          all_buttons_loaded <<- TRUE
+        }
+      },
+      error = function(e) {
+        iterations <<- iterations + 1
+        Sys.sleep(0.5)
+      }
+    )
+  }
+
+  if (!all_buttons_loaded & iterations == 20) {
+    next
+  }
+
+  buttons <- remote_driver$
+    findElements(using = 'id', value = "link_ver_detalhe")
+
+  for (modal_index in seq_along(buttons)) {
+
+    # open modal
+    buttons[[modal_index]]$clickElement()
+
+    Sys.sleep(1.5)
+
+    # Get the HTML and save it
+    tmp <- remote_driver$getPageSource()[[1]]
+    write(tmp, file = paste0("data/modals/page-", page_index, "-modal-", modal_index, ".html"))
+
+    # Leave the modal
+    remote_driver$
+      findElement(using = "xpath", value = "/html/body")$
+      sendKeysToElement(list(key = "escape"))
+
+    Sys.sleep(1.5)
+
+  }
+
+  # When we got all modals of one page, go to the next page (except if
+  # we're on the last one)
+  if (page_index != 2348) {
+    remote_driver$
+      findElement("css", "#paginacao > div.btn:nth-child(4)")$
+      clickElement()
+  }
+
+}
+```
+
+
+
+
+
+
+
+
+# 3. Display and save information
+
+
+## Display and save information
+
+<br>
+
+**Webscraping takes time.**
+
+<br>
+
+It is important to show and save information on how the webscraping is going so
+that we know where it went wrong for debugging.
+
+<br>
+
+. . .
+
+In our case:
+
+* show which page is being scraped;
+* show which modal of this page is being scraped;
+* show the status of this scraping (success/failure).
+
+
+## Display information
+
+Use `message()` at several places in the loop to display information:
+
+```{.r code-line-numbers="3,10,16"}
+for (page_index in 1:2348) {
+
+  message(paste("Start scraping of page", page_index))
+
+  for (modal_index in buttons) {
+    # open modal
+    # get HTML and save it in an external file
+    # leave modal
+
+    message(paste("  Scraped modal", modal_index))
+  }
+
+  # Once all modals of a page have been scraped, go to the next page (except
+  # if we're on the last page)
+
+  message(paste("Finished scraping of page", page_index))
+}
+```
+
+
+
+
+## Save information
+
+<br><br>
+
+Problem: what if the R session crashes?
+
+<br>
+
+We lose all messages!
+
+<br>
+
+. . .
+
+Solution: show these messages **and** save them in an external file at the same
+time.
+
+
+## Save information
+
+Example using the package `logger` (there are also `logging`, `futile.logger`,
+etc.):
+
+```{.r code-line-numbers="1,2,3,7,14,20"}
+# save calls to message() in an external file
+log_appender(appender_file("data/modals/00_logfile"))
+log_messages()
+
+for (page_index in 1:2348) {
+
+  message(paste("Start scraping of page", page_index))
+
+  for (modal_index in buttons) {
+    # open modal
+    # get HTML and save it in an external file
+    # leave modal
+
+    message(paste("  Scraped modal", modal_index))
+  }
+
+  # Once all modals of a page have been scraped, go to the next page (except
+  # if we're on the last page)
+
+  message(paste("Finished scraping of page", page_index))
+}
+```
+
+## Save information
+
+What does the output look like?
+
+![](img/logfile_demo.png){width="600" height="600"}
+
+
+## Final loop
+
+```{r}
+for (page_index in 1:3) {
+
+  message(paste("Start scraping of page", page_index))
+
+  # Try to find the buttons "Ver Mais"
+  all_buttons_loaded <- FALSE
+  iterations <- 0
+  while(!all_buttons_loaded & iterations < 20) {
+    tryCatch(
+      {
+        test <- remote_driver$
+          findElements(using = 'id', value = "link_ver_detalhe")
+
+        if (inherits(test, "list") && length(test) > 0)  {
+          all_buttons_loaded <<- TRUE
+        }
+      },
+      error = function(e) {
+        iterations <<- iterations + 1
+        Sys.sleep(0.5)
+      }
+    )
+  }
+
+  if (!all_buttons_loaded & iterations == 20) {
+    message(paste0("Couldn't find buttons on page ", page_index, ". Skipping."))
+    next
+  }
+
+  buttons <- remote_driver$
+    findElements(using = 'id', value = "link_ver_detalhe")
+
+  for (modal_index in seq_along(buttons)) {
+
+    tryCatch(
+      {
+        # open modal
+        buttons[[modal_index]]$clickElement()
+
+        Sys.sleep(1.5)
+
+        # Get the HTML and save it
+        tmp <- remote_driver$getPageSource()[[1]]
+        write(tmp, file = paste0("data/modals/page-", page_index, "-modal-", modal_index, ".html"))
+
+        # Leave the modal
+        body <- remote_driver$findElement(using = "xpath", value = "/html/body")
+        body$sendKeysToElement(list(key = "escape"))
+
+        message(paste("  Scraped modal", modal_index))
+      },
+      error = function(e) {
+        message(paste("  Failed to scrape modal", modal_index))
+        message(paste("  The error was ", e))
+        next
+      }
+    )
+
+    Sys.sleep(1.5)
+
+  }
+
+  # When we got all modals of one page, go to the next page (except if
+  # we're on the last one)
+  if (page_index != 2348) {
+    remote_driver$
+      findElement("css", "#paginacao > div.btn:nth-child(4)")$
+      clickElement()
+  }
+
+  message(paste("Finished scraping of page", page_index))
+
+  # Wait a bit for page loading
+  Sys.sleep(3)
+}
+```
+
+
+
+
+
+# Now what?
+
+---
+
+<br> <br>
+
+If everything went well, we now have a bunch of `.html` files in `data/modals`.
+
+<br>
+
+To clean them, we don't need `RSelenium` or an internet connection. These are just
+text files, they are not "tied" to the website anymore.
+
+<br>
+
+It is also useful to keep them for reproducibility (same as when you keep the
+raw datasets in your project).
+
+
+---
+
+Make a function to clean the HTML. It returns a list containing a dataframe with
+the personal info, and a dataframe with the "network" of the individual.
+
+```{r}
+extract_information <- function(raw_html) {
+
+  # Extract the table "Registros relacionados"
+
+  content <- raw_html %>%
+    html_nodes("#detalhe_conteudo") %>%
+    html_table() %>%
+    purrr::pluck(1)
+
+  relacionados <- content[16:nrow(content),] %>%
+    mutate(
+      across(
+        .cols = everything(),
+        .fns = ~ {ifelse(.x == "", NA, .x)}
+      )
+    )
+
+  colnames(relacionados) <- c("Livro", "Pagina", "Familia", "Chegada",
+                              "Sobrenome", "Nome", "Idade", "Sexo",
+                              "Parentesco", "Nacionalidade",
+                              "Vapor", "Est.Civil", "Religiao")
+
+
+  # Extract text information from "registro de matricula" and create a
+  # dataframe from it
+  name_items <- raw_html %>%
+    html_elements(xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/strong') %>%
+    html_text2() %>%
+    gsub("\\n", "", .) %>%
+    strsplit(split = "\\t") %>%
+    unlist()
+
+  value_items <- raw_html %>%
+    html_elements(xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/div') %>%
+    html_text2()
+
+  registro <- data.frame() %>%
+    rbind(value_items) %>%
+    as_tibble()
+
+  colnames(registro) <- name_items
+
+  return(
+    list(
+      main = registro,
+      related = relacionados
+    )
+  )
+
+}
+```
+
+---
+
+Apply this function to all files:
+
+<br>
+
+```{r}
+library(tidyverse)
+library(rvest)
+
+# Get all paths to the html files
+list_html_files <- list.files("data/modals", pattern = "page",
+                              full.names = TRUE)
+
+# Apply the previous function to each of those file
+list_out <- lapply(list_html_files, function(x) {
+  read_html(x) |>
+    extract_information()
+})
+
+# Aggregate the results in two (single) datasets
+main <- data.table::rbindlist(purrr::map(list_out, 1)) |>
+  as_tibble()
+
+relations <- data.table::rbindlist(purrr::map(list_out, 2)) |>
+  as_tibble()
+
+```
+
+
+
+# Summary
+
+---
+
+<br>
+
+1. `Selenium` in general is a very useful tool but should be used as a last resort:
+
+  * APIs, packages
+  * static webscraping
+  * custom `POST` requests
+
+. . .
+
+2. In my (limited) experience:
+
+  * 1/4 of the time is spent on making a small example work;
+  * 1/4 of the time is spent on generalising this example (loops, etc.)
+  * **1/2** of the time is spent on debugging.
+
+<br>
+
+. . .
+
+***Catching errors and recording the scraping process IS important.***
+
+
+## Parallelization
+
+<br>
+
+Use parallelization to open several browsers at the same time and scrape the data
+faster.
+
+<br>
+
+{{< fa triangle-exclamation >}} &nbsp; I never tested this, and there could be some
+issues (browser crashes, etc.)
+
+
+<br>
+
+If you want to explore it:
+
+* [article by Appsilon](https://appsilon.com/webscraping-dynamic-websites-with-r/){.external target="_blank"} (at the end)
+
+* [article by Ivan Millanes](https://ivanmillanes.netlify.app/post/2020-06-30-webscraping-with-rselenium-and-rvest/#parallel-framework){.external target="_blank"}
+
+
+
+## Ethics
+
+
+Pay attention to a website's Terms of Use/Service.
+
+<br>
+
+Some websites explicitely say that you are not allowed to programmatically access
+their resources.
+
+<br>
+
+![](img/terms-of-use.png)
+
+
+## Ethics
+
+<br> <br>
+
+**Be respectful**: make the scraping slow enough not to overload the server.
+
+<br>
+
+Not every website can handle tens of thousands of requests very quickly.
+
+<br>
+
+::: {.callout-tip}
+For static webscraping, check out the package [`polite`](https://dmi3kno.github.io/polite/){.external target="_blank"}.
+:::
+
+
+
+# Thanks!
+
+<br>
+
+Source code for slides and exercises:
+
+[https://github.com/etiennebacher/webscraping-teaching](https://github.com/etiennebacher/webscraping-teaching){.external target="_blank"}
+
+<br>
+
+Comments, typos, etc.:
+
+[https://github.com/etiennebacher/webscraping-teaching/issues](https://github.com/etiennebacher/webscraping-teaching/issues){.external target="_blank"}
+
+
+# Good resources
+
+<br>
+
+Article from Appsilon:
+
+[https://appsilon.com/webscraping-dynamic-websites-with-r/](https://appsilon.com/webscraping-dynamic-websites-with-r/){.external target="_blank"}
+
+<br>
+
+Article from Ivan Millanes:
+
+[https://ivanmillanes.netlify.app/post/2020-06-30-webscraping-with-rselenium-and-rvest/](https://ivanmillanes.netlify.app/post/2020-06-30-webscraping-with-rselenium-and-rvest/){.external target="_blank"}
+
+
+
+# Appendix
+
+## Appendix {#contributors-results}
+
+For reference, here's the code to extract the list of contributors:
+
+```{r appendix, echo=TRUE}
+library(rvest)
+
+html <- read_html("contributors.html")
+
+bullet_points <- html %>%
+  html_elements(css = "div.col-xs-12 > ul > li") %>%
+  html_text()
+
+blockquote <- html %>%
+  html_elements(css = "div.col-xs-12.col-sm-7 > blockquote") %>%
+  html_text() %>%
+  strsplit(., split = ", ")
+
+blockquote <- blockquote[[1]] %>%
+  gsub("\\r|\\n|\\.|and", "", .)
+
+others <- html %>%
+  html_elements(xpath = "/html/body/div/div[1]/div[2]/p[5]") %>%
+  html_text() %>%
+  strsplit(., split = ", ")
+
+others <- others[[1]] %>%
+  gsub("\\r|\\n|\\.|and", "", .)
+
+all_contributors <- c(bullet_points, blockquote, others)
+```
+
+
+## Appendix
+
+```{r appendix, eval=TRUE, echo = FALSE}
+```
+
+```{r eval=TRUE, echo = FALSE}
+all_contributors[1:136]
+```
+
+[Back](#contributors-last-step)
+
+
+
+## Appendix
+
+<br>
+
+Bonus: get the data from each modal on the museum website by performing the `POST`
+request yourself.
+
+<br>
+
+Go to the tab "Network" in the developer console, and then click on one of the
+"Ver Mais" button to display the modal.
+
+
+## Appendix
+
+Clicking on this button triggers two `POST` requests:
+
+* one for the individual information;
+* one for the "network" of the individual.
+
+![](img/console_network.png)
+
+
+## Appendix
+
+<br>
+
+Clicking on one of the `POST` requests displays important information:
+
+* the **request**, what we send to the server;
+* the **response**, what the server sends back to us.
+
+. . .
+
+The request contains specific parameters needed to tell the server which data
+we need.
+
+
+## Appendix {auto-animate=true}
+
+Let's rebuild this `POST` request from R using the package `httr`.
+
+```{r}
+library(httr)
+
+x <- POST(
+  "http://www.arquivoestado.sp.gov.br/site/acervo/memoria_do_imigrante/getHospedariaDetalhe",
+  body = list(
+    id = "92276"
+  ),
+  encode = "multipart"
+)
+```
+
+
+## Appendix {auto-animate=true}
+
+Extract the data from the server response:
+
+```{r}
+library(httr)
+library(xml2)
+library(jsonlite)
+
+# make the POST request with the parameters needed
+x <- POST(
+  "http://www.arquivoestado.sp.gov.br/site/acervo/memoria_do_imigrante/getHospedariaDetalhe",
+  body = list(
+    id = "92276"
+  ),
+  encode = "multipart"
+)
+
+# convert output to a list
+out <- as_list(content(x))
+
+# convert output to a dataframe
+fromJSON(unlist(out))$dados
+```
+
+
+## Your turn
+
+<br>
+
+Do the same thing with the second `POST` request, which has 3 parameters
+instead of one.
+
+
+## Session information
+
+<br>
+
+```{r echo = FALSE, eval = TRUE}
+sessioninfo::session_info()
+```
+
