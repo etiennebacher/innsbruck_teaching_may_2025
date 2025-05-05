@@ -161,12 +161,155 @@ Etienne Bacher
 </section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
-<p><strong>Webscraping</strong>: what is it?</p>
+<p><strong>What is webscraping?</strong></p>
 <div class="fragment">
 <p><br></p>
 <p>It is the action of collecting data from webpages.</p>
-<p><strong>Anything that is visible on a webpage can be webscraped.</strong></p>
+<p><em>Anything that is visible on a webpage can be webscraped.</em></p>
 </div>
+</section>
+<section id="introduction-1" class="slide level2">
+<h2>Introduction</h2>
+<p><strong>Why is it useful?</strong></p>
+<div class="fragment">
+<p><br></p>
+<p>To get original data that isn’t available anywhere else.</p>
+</div>
+</section>
+<section id="introduction-2" class="slide level2">
+<h2>Introduction</h2>
+<p><strong>But</strong> webscraping can be time-consuming and isn’t always possible.</p>
+<p><br></p>
+<p>Order of preference:</p>
+<ul>
+<li>online service has an API (we’ll see next slide)</li>
+<li>ask the online service</li>
+<li>scrape
+<ul>
+<li>static pages (today)</li>
+<li>dynamic pages (tomorrow)</li>
+</ul></li>
+</ul>
+</section>
+<section id="objectives" class="slide level2">
+<h2>Objectives</h2>
+<p>For this morning, the objectives are to:</p>
+<ul>
+<li>understand the content of a webpage</li>
+<li>scrape a webpage</li>
+<li>process the scraped content</li>
+<li>be able to apply this to thousands of pages</li>
+</ul>
+</section>
+<section>
+<section id="what-does-a-webpage-contain" class="title-slide slide level1 center">
+<h1>What does a webpage contain?</h1>
+
+</section>
+<section id="what-does-a-webpage-contain-1" class="slide level2">
+<h2>What does a webpage contain?</h2>
+<p>The web works with 3 languages:</p>
+<div>
+<ol type="1">
+<li class="fragment">HTML: content and structure of the page</li>
+<li class="fragment">CSS: style of the page</li>
+<li class="fragment">JavaScript: interactions with the page</li>
+</ol>
+</div>
+</section>
+<section id="html" class="slide level2">
+<h2>HTML</h2>
+<p>HTML tells us the content of the page and how it is structured using <strong>tags</strong>.</p>
+<div class="fragment">
+<p><br> Example: <code>&lt;p&gt;Hello my name is &lt;b&gt;Etienne&lt;/b&gt;&lt;/p&gt;</code></p>
+</div>
+<div class="fragment">
+<p><br></p>
+<p><span style="color: beige;">&lt;p&gt;</span> is a <em>paragraph</em> tag and <span style="color: beige;">&lt;b&gt;</span> is a <em>bold</em> tag.</p>
+</div>
+</section>
+<section id="html-1" class="slide level2">
+<h2>HTML</h2>
+<p>Popular tags:</p>
+<ul>
+<li><code>h1</code>-<code>h4</code>: headers</li>
+<li><code>p</code>: paragraph</li>
+<li><code>b</code>: bold</li>
+<li><code>a</code>: link</li>
+<li><code>div</code>: generic container</li>
+</ul>
+</section>
+<section id="html-2" class="slide level2">
+<h2>HTML</h2>
+<p>A tag can have <em>attributes</em>, e.g.&nbsp;<code>class</code> or <code>style</code>:</p>
+<p><br></p>
+<pre><code>&lt;p class = "my_class"&gt;Hello my name is &lt;b&gt;Etienne&lt;/b&gt;&lt;/p&gt;</code></pre>
+<p><br> This is used either for custom styling with CSS or for interactions with JavaScript.</p>
+</section>
+<section id="html-3" class="slide level2">
+<h2>HTML</h2>
+<p>How can we see the HTML of a page?</p>
+<p><br></p>
+<p>Either:</p>
+<ul>
+<li>right-click on a page and “Inspect”</li>
+<li>Ctrl (or Cmd) + Shift + C</li>
+</ul>
+</section>
+<section id="html-4" class="slide level2">
+<h2>HTML</h2>
+<div style="text-align: center">
+<p><img src="img/console.png" style="width: 70%"></p>
+</div>
+</section>
+<section id="css" class="slide level2">
+<h2>CSS</h2>
+<p>CSS is a language only about the <strong>style</strong> of the page.</p>
+<p><br></p>
+<p>There is no content at all, e.g.&nbsp;it’s only here to say “bold text should be in red and underlined”.</p>
+<p><br></p>
+<p>Example:</p>
+<pre><code>p {
+  color: red
+}</code></pre>
+</section>
+<section id="css-1" class="slide level2">
+<h2>CSS</h2>
+<p>It is still useful to know <em>CSS paths</em> because we’ll use them to select specific elements in the page.</p>
+<div class="fragment">
+<pre><code>p             : all "p" tags
+p span        : all "span" contained in "p" tags
+p, a          : all "p" and "a" tags
+#id1          : all elements with id equal to id1
+.class1       : all elements of class "class1"
+p.class1      : all "p" elements of class "class1"
+p.class1 span : all "span" in "p" tags of class "class1"
+p &gt; span      : all "span" that are direct children of p
+h1 + p        : all "p" that follow *directly* an "h1" (direct sibling)
+h1 ~ p        : all "p" that follow an "h1" (siblings placed after)
+[id]          : all elements with an existing "id" attribute
+[class^=my]   : all elements whose class starts with "my"
+p[class*=low] : all "p" elements whose class contains the string low</code></pre>
+</div>
+</section>
+<section id="javascript" class="slide level2">
+<h2>JavaScript</h2>
+<p>JavaScript (JS) is a language that takes care of all the interactions with the page:</p>
+<ul>
+<li>add a popup when we scroll on the page</li>
+<li>show a notification when a button is pressed</li>
+<li>etc.</li>
+</ul>
+<p><br></p>
+<p>It makes it more difficult to scrape, we’ll see why in part 2 tomorrow.</p>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p>Today, we only look at HTML and CSS.</p>
+</section>
+<section id="acknowledgements" class="slide level2">
+<h2>Acknowledgements</h2>
+<p>Some of those slides were adapted from <a href="https://shimmering-maamoul-4f92fd.netlify.app/docs/2022-2023_m2-data-2_webscraping-1_intro">Laurent Bergé’s slides</a>.</p>
 </section>
 <section id="appendix" class="slide level2">
 <h2>Appendix</h2>
@@ -186,7 +329,7 @@ Etienne Bacher
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       Europe/Paris
- date     2025-04-24
+ date     2025-04-25
  pandoc   3.1.3 @ /usr/bin/ (via rmarkdown)
  quarto   1.6.40 @ /home/etienne/.local/lib/python3.12/site-packages/quarto_cli/bin/quarto
 
@@ -212,7 +355,7 @@ Etienne Bacher
 </div>
 </div>
 
-</section>
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

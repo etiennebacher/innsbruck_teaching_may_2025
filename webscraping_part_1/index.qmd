@@ -62,7 +62,158 @@ It is the action of collecting data from webpages.
 
 <br>
 
-To get original data.
+To get original data that isn't available anywhere else.
+
+## Introduction
+
+**But** webscraping can be time-consuming and isn't always possible.
+
+<br>
+
+Order of preference:
+
+* online service has an API (we'll see next slide)
+* ask the online service
+* scrape
+  - static pages (today)
+  - dynamic pages (tomorrow)
+
+## Objectives
+
+For this morning, the objectives are to:
+
+* understand the content of a webpage
+* scrape a webpage
+* process the scraped content
+* be able to apply this to thousands of pages
+
+# What does a webpage contain?
+
+## What does a webpage contain?
+
+The web works with 3 languages:
+
+::: incremental
+1.   HTML: content and structure of the page
+1.   CSS: style of the page
+1.   JavaScript: interactions with the page
+:::
+
+## HTML
+
+HTML tells us the content of the page and how it is structured using **tags**.
+
+. . .
+
+<br>
+Example: `<p>Hello my name is <b>Etienne</b></p>`
+
+. . .
+
+<br>
+
+[\<p\>]{style="color: beige;"} is a *paragraph* tag and [\<b\>]{style="color: beige;"} is a *bold* tag.
+
+## HTML
+
+Popular tags:
+
+- `h1`-`h4`: headers
+- `p`: paragraph
+- `b`: bold
+- `a`: link
+- `div`: generic container
+
+## HTML
+
+A tag can have *attributes*, e.g. `class` or `style`:
+
+<br>
+
+```
+<p class = "my_class">Hello my name is <b>Etienne</b></p>
+```
+
+<br>
+This is used either for custom styling with CSS or for interactions with JavaScript.
+
+## HTML
+
+How can we see the HTML of a page?
+
+<br>
+
+Either:
+
+- right-click on a page and "Inspect"
+- Ctrl (or Cmd) + Shift + C
+
+## HTML
+
+<div style="text-align: center">
+<img src="img/console.png" style="width: 70%">
+</div>
+
+## CSS
+
+CSS is a language only about the **style** of the page.
+
+<br>
+
+There is no content at all, e.g. it's only here to say "bold text should be in red and underlined".
+
+<br>
+
+Example:
+
+```
+p {
+  color: red
+}
+```
+## CSS
+
+It is still useful to know *CSS paths* because we'll use them to select specific elements in the page.
+
+. . .
+
+```
+p             : all "p" tags
+p span        : all "span" contained in "p" tags
+p, a          : all "p" and "a" tags
+#id1          : all elements with id equal to id1
+.class1       : all elements of class "class1"
+p.class1      : all "p" elements of class "class1"
+p.class1 span : all "span" in "p" tags of class "class1"
+p > span      : all "span" that are direct children of p
+h1 + p        : all "p" that follow *directly* an "h1" (direct sibling)
+h1 ~ p        : all "p" that follow an "h1" (siblings placed after)
+[id]          : all elements with an existing "id" attribute
+[class^=my]   : all elements whose class starts with "my"
+p[class*=low] : all "p" elements whose class contains the string low
+```
+
+## JavaScript
+
+JavaScript (JS) is a language that takes care of all the interactions with the page:
+
+* add a popup when we scroll on the page
+* show a notification when a button is pressed
+* etc.
+
+<br>
+
+It makes it more difficult to scrape, we'll see why in part 2 tomorrow.
+
+##
+
+Today, we only look at HTML and CSS.
+
+
+## Acknowledgements
+
+Some of those slides were adapted from [Laurent Bergé's slides](https://shimmering-maamoul-4f92fd.netlify.app/docs/2022-2023_m2-data-2_webscraping-1_intro).
+
 
 
 ## Appendix
