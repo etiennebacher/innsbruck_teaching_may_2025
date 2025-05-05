@@ -37,6 +37,18 @@ execute:
   - Using streaming, plugins, and future extensions
   - Q&A number 3
 
+## What this session will *not* cover
+
+Statistical modelling with big data.
+
+<br>
+
+The objective is more to see how we can start from very fine-grained data (full-count census, mobile phone data at the minute level) to some smaller, aggregated datasets that we can use for regressions.
+
+<br>
+
+Note that some statistical packages can still perform very well on millions of observations, like `fixest`in R.
+
 
 ## Motivation
 
@@ -458,47 +470,10 @@ polars.exceptions.ComputeError: cannot compare string with numeric data
 ```
 
 
-# 3. Use streaming mode
 
 ## 3. Use streaming mode
 
-<br><br>
-
-It is possible that the collected dataset is still too big for our RAM.
-
-<br>
-
-In this case, this will crash the Python or R session.
-
-<br>
-
-. . .
-
-**Streaming** is a way to run the code on data by batches to avoid using all memory
-at the same time.
-
-<br>
-
-Polars takes care of splitting the data and runs the code piece by piece.
-
-
-
-## 3. Use streaming mode
-
-<br><br>
-
-Using this is extremely simple: instead of calling `collect()`, we
-call `collect(streaming = TRUE)`.
-
-<br>
-
-:::{.callout-warning}
-This is still an early, incomplete feature of `polars` for now.
-
-<br>
-
-Not all operations can be run in streaming mode.
-:::
+See in the last part.
 
 
 # Q&A number 1
@@ -555,7 +530,62 @@ Cons:
 
 # Going further
 
-## Streaming engine
+## Larger-than-memory data
+
+Sometimes, data is just too big for our computer, even after all optimizations.
+
+<br>
+
+In this case, `collect()`ing the data will crash the Python or R session.
+
+<br>
+
+. . .
+
+What are possible strategies for this?
+
+
+## Larger-than-memory data
+
+1. Use **streaming mode**
+
+. . .
+
+**Streaming** is a way to run the code on data by batches to avoid using all memory
+at the same time.
+
+. . .
+
+<br>
+
+Polars takes care of splitting the data and runs the code piece by piece.
+
+## Larger-than-memory data
+
+Using this is extremely simple: instead of calling `collect()`, we
+call `collect(engine = "streaming")`.
+
+<br>
+
+:::{.callout-warning}
+Some operations might be unavailable in streaming mode but this number should be quite low and become lower.
+:::
+
+## Larger-than-memory data
+
+2. Think more about **whether you actually need** the data in the session
+
+<br>
+
+Maybe you just want to write the data to another file.
+
+. . .
+
+Instead of doing `collect()` + `write_*()`, use `sink_*` functions (e.g. `sink_parquet()`).
+
+<br>
+
+This will run the query and write the results progressively to the output path, without collecting in the session.
 
 ## Plugins
 

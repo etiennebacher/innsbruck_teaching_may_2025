@@ -229,6 +229,14 @@
 </ul>
 </div>
 </section>
+<section id="what-this-session-will-not-cover" class="slide level2">
+<h2>What this session will <em>not</em> cover</h2>
+<p>Statistical modelling with big data.</p>
+<p><br></p>
+<p>The objective is more to see how we can start from very fine-grained data (full-count census, mobile phone data at the minute level) to some smaller, aggregated datasets that we can use for regressions.</p>
+<p><br></p>
+<p>Note that some statistical packages can still perform very well on millions of observations, like <code>fixest</code>in R.</p>
+</section>
 <section id="motivation" class="slide level2">
 <h2>Motivation</h2>
 <p><br><br></p>
@@ -521,7 +529,6 @@
 </section>
 <section id="optimize-the-query-plan-4" class="slide level2">
 <h2>1. Optimize the query plan</h2>
-<p><br></p>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -534,8 +541,6 @@
 <p>You can see the “query plan” (i.e.&nbsp;all the steps in the code) as it was originally written with <code>my_data.explain(optimized=False)</code>.</p>
 <p><br></p>
 <p>The query plan that is <strong>actually run by Polars</strong> can be seen with <code>my_data.explain()</code>.</p>
-<p><br></p>
-<p>Click <a href="#/opt-query">here</a> to see the detailed optimized and non-optimized queries (note that the query plan is read from bottom to top).</p>
 </div>
 </div>
 </div>
@@ -556,52 +561,22 @@
 <p><br></p>
 <p>In this case, that would return:</p>
 <pre><code>polars.exceptions.ComputeError: cannot compare string with numeric data</code></pre>
+</section>
+<section id="use-streaming-mode" class="slide level2">
+<h2>3. Use streaming mode</h2>
+<p>See in the last part.</p>
 </section></section>
-<section>
-<section id="use-streaming-mode" class="title-slide slide level1 center">
-<h1>3. Use streaming mode</h1>
+<section id="qa-number-1" class="title-slide slide level1 center">
+<h1>Q&amp;A number 1</h1>
 
 </section>
-<section id="use-streaming-mode-1" class="slide level2">
-<h2>3. Use streaming mode</h2>
-<p><br><br></p>
-<p>It is possible that the collected dataset is still too big for our RAM.</p>
-<p><br></p>
-<p>In this case, this will crash the Python or R session.</p>
-<p><br></p>
-<div class="fragment">
-<p><strong>Streaming</strong> is a way to run the code on data by batches to avoid using all memory at the same time.</p>
-<p><br></p>
-<p>Polars takes care of splitting the data and runs the code piece by piece.</p>
-</div>
-</section>
-<section id="use-streaming-mode-2" class="slide level2">
-<h2>3. Use streaming mode</h2>
-<p><br><br></p>
-<p>Using this is extremely simple: instead of calling <code>collect()</code>, we call <code>collect(streaming = TRUE)</code>.</p>
-<p><br></p>
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Warning</strong></p>
-</div>
-<div class="callout-content">
-<p>This is still an early, incomplete feature of <code>polars</code> for now.</p>
-<p><br></p>
-<p>Not all operations can be run in streaming mode.</p>
-</div>
-</div>
-</div>
-</section></section>
+
 <section>
-<section id="a-note-on-file-formats" class="title-slide slide level1 center">
-<h1>A note on file formats</h1>
+<section id="hands-on-practice-uk-census-data" class="title-slide slide level1 center">
+<h1>Hands-on practice: UK Census data</h1>
 
 </section>
-<section id="a-note-on-file-formats-1" class="slide level2">
+<section id="a-note-on-file-formats" class="slide level2">
 <h2>A note on file formats</h2>
 <p><br></p>
 <p>We’re used to a few file formats: CSV, Excel, <code>.dta</code>. Polars can read most of them (<code>.dta</code> is not possible for now).</p>
@@ -637,8 +612,76 @@
 <li><p>UK Census data</p></li>
 <li><p>About 40M observations, 110+ variables</p></li>
 </ul>
+</section></section>
+<section>
+<section id="going-further" class="title-slide slide level1 center">
+<h1>Going further</h1>
+
 </section>
-<section id="going-further" class="slide level2">
+<section id="larger-than-memory-data" class="slide level2">
+<h2>Larger-than-memory data</h2>
+<p>Sometimes, data is just too big for our computer, even after all optimizations.</p>
+<p><br></p>
+<p>In this case, <code>collect()</code>ing the data will crash the Python or R session.</p>
+<p><br></p>
+<div class="fragment">
+<p>What are possible strategies for this?</p>
+</div>
+</section>
+<section id="larger-than-memory-data-1" class="slide level2">
+<h2>Larger-than-memory data</h2>
+<ol type="1">
+<li>Use <strong>streaming mode</strong></li>
+</ol>
+<div class="fragment">
+<p><strong>Streaming</strong> is a way to run the code on data by batches to avoid using all memory at the same time.</p>
+</div>
+<div class="fragment">
+<p><br></p>
+<p>Polars takes care of splitting the data and runs the code piece by piece.</p>
+</div>
+</section>
+<section id="larger-than-memory-data-2" class="slide level2">
+<h2>Larger-than-memory data</h2>
+<p>Using this is extremely simple: instead of calling <code>collect()</code>, we call <code>collect(engine = "streaming")</code>.</p>
+<p><br></p>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Some operations might be unavailable in streaming mode but this number should be quite low and become lower.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="larger-than-memory-data-3" class="slide level2">
+<h2>Larger-than-memory data</h2>
+<ol start="2" type="1">
+<li>Think more about <strong>whether you actually need</strong> the data in the session</li>
+</ol>
+<p><br></p>
+<p>Maybe you just want to write the data to another file.</p>
+<div class="fragment">
+<p>Instead of doing <code>collect()</code> + <code>write_*()</code>, use <code>sink_*</code> functions (e.g.&nbsp;<code>sink_parquet()</code>).</p>
+<p><br></p>
+<p>This will run the query and write the results progressively to the output path, without collecting in the session.</p>
+</div>
+</section>
+<section id="plugins" class="slide level2">
+<h2>Plugins</h2>
+</section>
+<section id="gis-and-polars" class="slide level2">
+<h2>GIS and Polars</h2>
+<p>While there is some demand for a <code>geopolars</code> that would enable GIS operations in Polars DataFrame or LazyFrame, this doesn’t exist for now.</p>
+<p><br></p>
+<p>Groundwork for this should start in the coming months so you might expect some movement in <code>geopolars</code>in 2026.</p>
+</section>
+<section id="going-further-1" class="slide level2">
 <h2>Going further</h2>
 <p><br><br></p>
 <p>If you’re interested:</p>
@@ -664,40 +707,12 @@
 <p><br></p>
 <p>Do you use any of them? How do you deal with large datasets?</p>
 </section>
-<section id="section-1" class="slide level2">
+<section id="section-1" class="slide level2 nobreak">
 <h2></h2>
 <p><br><br> <br><br></p>
 <p>Slides: <a href="https://github.com/etiennebacher/handling-large-data">https://github.com/etiennebacher/handling-large-data</a></p>
 <p><br><br></p>
 <p>Typos, comments: <a href="https://github.com/etiennebacher/handling-large-data/issues">https://github.com/etiennebacher/handling-large-data/issues</a></p>
-</section></section>
-<section>
-<section id="appendix" class="title-slide slide level1 center">
-<h1>Appendix</h1>
-
-</section>
-<section id="opt-query" class="slide level2">
-<h2>Appendix</h2>
-<p><br></p>
-<p>Using the previous example, the non-optimized query looks like this:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>lazy_query<span class="sc">$</span><span class="fu">explain</span>(<span class="at">optimized =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">cat</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>FILTER col("country").is_in([Series]) FROM
-  SORT BY [col("country")]
-    DF ["country", "year", "var1", "var2"]; PROJECT */10 COLUMNS; SELECTION: None</code></pre>
-</div>
-</div>
-<p><br></p>
-<p>And the optimized query looks like:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>lazy_query<span class="sc">$</span><span class="fu">explain</span>(<span class="at">optimized =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">cat</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>SORT BY [col("country")]
-  DF ["country", "year", "var1", "var2"]; PROJECT */10 COLUMNS; SELECTION: col("country").is_in([Series])</code></pre>
-</div>
-</div>
-<p><a href="#/optimize-plan">Back to slide</a></p>
 
 </section></section>
 
