@@ -1,44 +1,44 @@
-library(neopolars)
+library(polars)
 library(tidyverse)
 library(tidypolars)
 
-# l <- list.files("/media/etienne/LaCie/Dossiers/LISER/Divers/LISER/these/these-UK-US-linking/data/temp", full.names = TRUE)[1:10]
+# Files obtained from https://www2.census.gov/programs-surveys/popest/datasets/2020/modified-race-data/
 
-# dims <- c()
-# for (i in seq_along(l)) {
-#   print(i)
-#   x <- pl$read_csv(l[i], ignore_errors = TRUE)
-#   dims <- c(dims, nrow(x))
-#   remove(x)
+# for (i in 1:56) {
+#   i <- sprintf("%02d", i)
+#   tryCatch({
+#     download.file(sprintf("https://www2.census.gov/programs-surveys/popest/datasets/2020/modified-race-data/MARC2020-County-%s.csv", i), destfile = sprintf("large_data_r_and_python/data/MARC2020-County-%s.csv", i))
+#   },
+#   error = function(e) {
+#     message("Couldn't download file ", i)
+#   })
 # }
 
-system.time({
-  pl$scan_csv(
-    "/media/etienne/LaCie/Dossiers/LISER/Divers/LISER/these/these-UK-US-linking/data/temp/Texas_TX.csv",
-    ignore_errors = TRUE
-  )$group_by("SUMLEV")$agg(pl$col("P0030015")$sum())$collect()
-})
+# download.file("https://www2.census.gov/programs-surveys/popest/datasets/2020/modified-race-data/MARC2020-County-US.csv", destfile = "large_data_r_and_python/data/MARC2020-County-%s.csv")
 
-system.time({
-  pl$scan_csv(
-    "/media/etienne/LaCie/Dossiers/LISER/Divers/LISER/these/these-UK-US-linking/data/temp/Texas_TX.csv",
-    ignore_errors = TRUE
-  )$group_by("SUMLEV")$agg(pl$col("P0030015")$sum())$collect(streaming = TRUE)
-})
+foo <- readr::read_fwf("large_data_r_and_python/data3/ipumsi_00014.dat")
 
-system.time({
-  scan_csv_polars(
-    "/media/etienne/LaCie/Dossiers/LISER/Divers/LISER/these/these-UK-US-linking/data/temp/Texas_TX.csv"
+
+subset <- pl$scan_csv("large_data_r_and_python/data/MARC2020-County-US.parquet")$
+  head(100)$
+  collect()$
+  to_data_frame()
+
+subset <- pl$scan_parquet("large_data_r_and_python/data3/ipums.parquet")$
+  head(100)$
+  collect()$
+  to_data_frame()
+
+pl$read_parquet("large_data_r_and_python/data3/ipums.parquet") |> 
+  dim()
+
+scan_parquet_polars("large_data_r_and_python/data3/ipums.parquet") |> 
+  summarize(
+    ocscorus_mean = mean(ocscorus, na.rm = TRUE),
+    .by = c(year, countyus, sex, race)
   ) |>
-    group_by(SUMLEV) |>
-    summarize(P0030015 = sum(P0030015, na.rm = TRUE)) |>
-    compute()
-})
+  compute()
 
-system.time({
-  read_csv(
-    "/media/etienne/LaCie/Dossiers/LISER/Divers/LISER/these/these-UK-US-linking/data/temp/Texas_TX.csv"
-  ) |>
-    group_by(SUMLEV) |>
-    summarize(P0030015 = sum(P0030015))
-})
+
+foo <- data.table::fread("large_data_r_and_python/data3/ipums.csv")
+nanoparquet::write_parquet(foo, "large_data_r_and_python/data3/ipums.parquet")
