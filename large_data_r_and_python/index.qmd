@@ -26,7 +26,7 @@ execute:
 
 . . .
 
-* Hands-on practice: UK census data
+* Hands-on practice: IPUMS census data (samples)
   - Goal: install and load polars, load data, perform easy operations and write it back to another file
   - Using expressions
   - Q&A number 2
@@ -47,7 +47,7 @@ The objective is more to see how we can start from very fine-grained data (full-
 
 <br>
 
-Note that some statistical packages can still perform very well on millions of observations, like `fixest`in R.
+Note that some statistical packages can still perform very well on millions of observations, like `fixest` in R.
 
 
 ## Motivation
@@ -121,7 +121,7 @@ and directly applied on the data. This is the way we're used to.
 
 . . .
 
-```{python, eval=FALSE}
+```{r, eval=FALSE}
 ### Eager
 
 # Get the data...
@@ -131,7 +131,7 @@ my_data = eager_data
   # ... and then keep only Japan...
   .filter(pl.col("country") == "Japan")
   # ... and then compute GDP per cap.
-  .with_columns(gdp_per_cap = pl.col("gdp") / pl.col("gdp"))
+  .with_columns(gdp_per_cap = pl.col("gdp") / pl.col("pop"))
 
 # => get the output
 ```
@@ -143,7 +143,7 @@ function at the end of the chain, usually called `collect()`.
 
 . . .
 
-```{python, eval=FALSE}
+```{r, eval=FALSE}
 ### Lazy
 
 # Get the data...
@@ -153,7 +153,7 @@ my_data = lazy_data
   # ... and then keep only Japan...
   .filter(pl.col("country") == "Japan")
   # ... and then compute GDP per cap.
-  .with_columns(gdp_per_cap = pl.col("gdp") / pl.col("gdp"))
+  .with_columns(gdp_per_cap = pl.col("gdp") / pl.col("pop"))
 
 # => you don't get results yet!
 
@@ -286,6 +286,24 @@ optimize them**.
 {{< fa arrow-right >}} &nbsp; Let `polars` do this automatically by using lazy data.
 
 
+## 1. Optimize the query plan
+
+<br>
+
+When we call `collect()`, `polars` doesn't directly execute the code. Before that, it does a lot of optimizations to be sure that we don't do inefficient operations.
+
+. . .
+
+<br>
+
+Examples of optimizations:
+
+* do not load rows that are filtered out in the query;
+* do not load variables (columns) that are never used;
+* cache and reuse computations
+* and many more things
+
+
 ## 1. Optimize the query plan {.nobreak}
 
 <br>
@@ -416,21 +434,6 @@ my_data |> compute()
 ```
 :::
 
-## 1. Optimize the query plan
-
-<br>
-
-`polars` doesn't directly execute the code. Before that, it does a lot of optimizations to be sure that we don't do inefficient operations.
-
-<br>
-
-Examples of optimizations:
-
-* do not load rows that are filtered out in the query;
-* do not load variables (columns) that are never used;
-* cache and reuse computations
-* and many more things
-
 
 ## 1. Optimize the query plan
 
@@ -446,8 +449,6 @@ The query plan that is **actually run by Polars** can be seen with `my_data.expl
 # 2. Catch errors before computations
 
 ## 2. Catch errors before computations
-
-<br><br>
 
 Calling `collect()` doesn't start computations right away.
 
@@ -479,11 +480,9 @@ See in the last part.
 # Q&A number 1
 
 
-# Hands-on practice: UK Census data
+# Hands-on practice: IPUMS census data (samples)
 
 ## A note on file formats
-
-<br>
 
 We're used to a few file formats: CSV, Excel, `.dta`. Polars can read
 most of them (`.dta` is not possible for now).
@@ -499,11 +498,11 @@ When possible, use the **Parquet format** (`.parquet`).
 Pros:
 
 * large file compression
-* allows much faster filtering of rows
+* stores statistics on the columns (e.g. useful for filters)
 
 Cons:
 
-* cannot be viewed in Excel (but wouldn't be possible with millions of observations anyway)
+* might be harder to share with others (e.g. Stata doesn't have an easy way to read/write Parquet)
 
 
 ##
@@ -519,14 +518,11 @@ Cons:
 ```
 
 
-### (Quick) Demo time!
+## Data to use
 
-<br>
-<br>
+* IPUMS 1% (or 5% in some cases) sample for 1850-1960
 
-* UK Census data
-
-* About 40M observations, 110+ variables
+* About 23M observations, 116 variables
 
 # Going further
 

@@ -6,10 +6,10 @@
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-dark-f8dc6eab18fde03278982b0b35885446.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-dark-4e7a6ecc11b04d2331dcee725084a9de.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="index_files/libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="index_files/libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.40">
+  <meta name="generator" content="quarto-1.7.29">
 
   <title>Handling large data with polars and tidypolars</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,8 +30,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -42,7 +43,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -95,7 +96,7 @@
     code span.vs { color: #9ecbff; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-71ad94ba2d6c6e4203c2421619186d8c.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-d1279250bf28a95b8cc18432aa08b99a.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -235,7 +236,7 @@
 <p><br></p>
 <p>The objective is more to see how we can start from very fine-grained data (full-count census, mobile phone data at the minute level) to some smaller, aggregated datasets that we can use for regressions.</p>
 <p><br></p>
-<p>Note that some statistical packages can still perform very well on millions of observations, like <code>fixest</code>in R.</p>
+<p>Note that some statistical packages can still perform very well on millions of observations, like <code>fixest</code> in R.</p>
 </section>
 <section id="motivation" class="slide level2">
 <h2>Motivation</h2>
@@ -298,16 +299,16 @@
 <p><strong>Eager evaluation:</strong> all operations are run line by line, in order, and directly applied on the data. This is the way we’re used to.</p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="co">### Eager</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="do">### Eager</span></span>
 <span id="cb1-2"><a href=""></a></span>
 <span id="cb1-3"><a href=""></a><span class="co"># Get the data...</span></span>
-<span id="cb1-4"><a href=""></a>my_data <span class="op">=</span> eager_data</span>
+<span id="cb1-4"><a href=""></a>my_data <span class="ot">=</span> eager_data</span>
 <span id="cb1-5"><a href=""></a>  <span class="co"># ... and then sort by iso...</span></span>
-<span id="cb1-6"><a href=""></a>  .sort(pl.col(<span class="st">"iso"</span>))</span>
+<span id="cb1-6"><a href=""></a>  <span class="fu">.sort</span>(<span class="fu">pl.col</span>(<span class="st">"iso"</span>))</span>
 <span id="cb1-7"><a href=""></a>  <span class="co"># ... and then keep only Japan...</span></span>
-<span id="cb1-8"><a href=""></a>  .<span class="bu">filter</span>(pl.col(<span class="st">"country"</span>) <span class="op">==</span> <span class="st">"Japan"</span>)</span>
+<span id="cb1-8"><a href=""></a>  <span class="fu">.filter</span>(<span class="fu">pl.col</span>(<span class="st">"country"</span>) <span class="sc">==</span> <span class="st">"Japan"</span>)</span>
 <span id="cb1-9"><a href=""></a>  <span class="co"># ... and then compute GDP per cap.</span></span>
-<span id="cb1-10"><a href=""></a>  .with_columns(gdp_per_cap <span class="op">=</span> pl.col(<span class="st">"gdp"</span>) <span class="op">/</span> pl.col(<span class="st">"gdp"</span>))</span>
+<span id="cb1-10"><a href=""></a>  <span class="fu">.with_columns</span>(<span class="at">gdp_per_cap =</span> <span class="fu">pl.col</span>(<span class="st">"gdp"</span>) <span class="sc">/</span> <span class="fu">pl.col</span>(<span class="st">"pop"</span>))</span>
 <span id="cb1-11"><a href=""></a></span>
 <span id="cb1-12"><a href=""></a><span class="co"># =&gt; get the output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -318,20 +319,20 @@
 <p><strong>Lazy evaluation:</strong> operations are only run when we call a specific function at the end of the chain, usually called <code>collect()</code>.</p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="co">### Lazy</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="do">### Lazy</span></span>
 <span id="cb2-2"><a href=""></a></span>
 <span id="cb2-3"><a href=""></a><span class="co"># Get the data...</span></span>
-<span id="cb2-4"><a href=""></a>my_data <span class="op">=</span> lazy_data</span>
+<span id="cb2-4"><a href=""></a>my_data <span class="ot">=</span> lazy_data</span>
 <span id="cb2-5"><a href=""></a>  <span class="co"># ... and then sort by iso...</span></span>
-<span id="cb2-6"><a href=""></a>  .sort(pl.col(<span class="st">"iso"</span>))</span>
+<span id="cb2-6"><a href=""></a>  <span class="fu">.sort</span>(<span class="fu">pl.col</span>(<span class="st">"iso"</span>))</span>
 <span id="cb2-7"><a href=""></a>  <span class="co"># ... and then keep only Japan...</span></span>
-<span id="cb2-8"><a href=""></a>  .<span class="bu">filter</span>(pl.col(<span class="st">"country"</span>) <span class="op">==</span> <span class="st">"Japan"</span>)</span>
+<span id="cb2-8"><a href=""></a>  <span class="fu">.filter</span>(<span class="fu">pl.col</span>(<span class="st">"country"</span>) <span class="sc">==</span> <span class="st">"Japan"</span>)</span>
 <span id="cb2-9"><a href=""></a>  <span class="co"># ... and then compute GDP per cap.</span></span>
-<span id="cb2-10"><a href=""></a>  .with_columns(gdp_per_cap <span class="op">=</span> pl.col(<span class="st">"gdp"</span>) <span class="op">/</span> pl.col(<span class="st">"gdp"</span>))</span>
+<span id="cb2-10"><a href=""></a>  <span class="fu">.with_columns</span>(<span class="at">gdp_per_cap =</span> <span class="fu">pl.col</span>(<span class="st">"gdp"</span>) <span class="sc">/</span> <span class="fu">pl.col</span>(<span class="st">"pop"</span>))</span>
 <span id="cb2-11"><a href=""></a></span>
 <span id="cb2-12"><a href=""></a><span class="co"># =&gt; you don't get results yet!</span></span>
 <span id="cb2-13"><a href=""></a></span>
-<span id="cb2-14"><a href=""></a>my_data.collect() <span class="co"># this is how to get results</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-14"><a href=""></a><span class="fu">my_data.collect</span>() <span class="co"># this is how to get results</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
@@ -407,7 +408,22 @@
 <p><i class="fa-solid fa-arrow-right" aria-label="arrow-right"></i> &nbsp; Let <code>polars</code> do this automatically by using lazy data.</p>
 </div>
 </section>
-<section id="optimize-the-query-plan-1" class="slide level2 nobreak">
+<section id="optimize-the-query-plan-1" class="slide level2">
+<h2>1. Optimize the query plan</h2>
+<p><br></p>
+<p>When we call <code>collect()</code>, <code>polars</code> doesn’t directly execute the code. Before that, it does a lot of optimizations to be sure that we don’t do inefficient operations.</p>
+<div class="fragment">
+<p><br></p>
+<p>Examples of optimizations:</p>
+<ul>
+<li>do not load rows that are filtered out in the query;</li>
+<li>do not load variables (columns) that are never used;</li>
+<li>cache and reuse computations</li>
+<li>and many more things</li>
+</ul>
+</div>
+</section>
+<section id="optimize-the-query-plan-2" class="slide level2 nobreak">
 <h2>1. Optimize the query plan</h2>
 <p><br></p>
 <p>Workflow:</p>
@@ -451,7 +467,7 @@
 </div>
 <p>This only returns the schema of the data: the column names and their types (character, integers, dates, …).</p>
 </section>
-<section id="optimize-the-query-plan-2" class="slide level2 nobreak">
+<section id="optimize-the-query-plan-3" class="slide level2 nobreak">
 <h2>1. Optimize the query plan</h2>
 <p><br></p>
 <p>Workflow:</p>
@@ -514,19 +530,6 @@
 </div>
 </div>
 </section>
-<section id="optimize-the-query-plan-3" class="slide level2">
-<h2>1. Optimize the query plan</h2>
-<p><br></p>
-<p><code>polars</code> doesn’t directly execute the code. Before that, it does a lot of optimizations to be sure that we don’t do inefficient operations.</p>
-<p><br></p>
-<p>Examples of optimizations:</p>
-<ul>
-<li>do not load rows that are filtered out in the query;</li>
-<li>do not load variables (columns) that are never used;</li>
-<li>cache and reuse computations</li>
-<li>and many more things</li>
-</ul>
-</section>
 <section id="optimize-the-query-plan-4" class="slide level2">
 <h2>1. Optimize the query plan</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -552,7 +555,6 @@
 </section>
 <section id="catch-errors-before-computations-1" class="slide level2">
 <h2>2. Catch errors before computations</h2>
-<p><br><br></p>
 <p>Calling <code>collect()</code> doesn’t start computations right away.</p>
 <p><br></p>
 <p>First, <code>polars</code> scans the code to ensure there are no schema errors, i.e.&nbsp;check that we don’t do “forbidden” operations.</p>
@@ -932,228 +934,248 @@
       });
     </script>
     
+
     <script>
+
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
       // slide changes (different for each slide format).
+
       (function () {
+
         // dispatch for htmlwidgets
+
         function fireSlideEnter() {
+
           const event = window.document.createEvent("Event");
+
           event.initEvent("slideenter", true, true);
+
           window.document.dispatchEvent(event);
+
         }
+
+    
 
         function fireSlideChanged(previousSlide, currentSlide) {
+
           fireSlideEnter();
 
+    
+
           // dispatch for shiny
+
           if (window.jQuery) {
+
             if (previousSlide) {
+
               window.jQuery(previousSlide).trigger("hidden");
+
             }
+
             if (currentSlide) {
+
               window.jQuery(currentSlide).trigger("shown");
+
             }
+
           }
+
         }
+
+    
 
         // hookup for slidy
+
         if (window.w3c_slidy) {
+
           window.w3c_slidy.add_observer(function (slide_num) {
+
             // slide_num starts at position 1
+
             fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
           });
+
         }
+
+    
 
       })();
+
     </script>
 
+    
+
     <script id="quarto-html-after-body" type="application/javascript">
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-      const toggleBodyColorMode = (bsSheetEl) => {
-        const mode = bsSheetEl.getAttribute("data-mode");
-        const bodyEl = window.document.querySelector("body");
-        if (mode === "dark") {
-          bodyEl.classList.add("quarto-dark");
-          bodyEl.classList.remove("quarto-light");
-        } else {
-          bodyEl.classList.add("quarto-light");
-          bodyEl.classList.remove("quarto-dark");
-        }
-      }
-      const toggleBodyColorPrimary = () => {
-        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-        if (bsSheetEl) {
-          toggleBodyColorMode(bsSheetEl);
-        }
-      }
-      toggleBodyColorPrimary();  
-      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
-      tabsets.forEach(function(tabset) {
-        const tabby = new Tabby('#' + tabset.id);
-      });
-      const isCodeAnnotation = (el) => {
-        for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {                     
-            return true;
-          }
-        }
-        return false;
-      }
-      const onCopySuccess = function(e) {
-        // button target
-        const button = e.trigger;
-        // don't keep focus
-        button.blur();
-        // flash "checked"
-        button.classList.add('code-copy-button-checked');
-        var currentTitle = button.getAttribute("title");
-        button.setAttribute("title", "Copied!");
-        let tooltip;
-        if (window.bootstrap) {
-          button.setAttribute("data-bs-toggle", "tooltip");
-          button.setAttribute("data-bs-placement", "left");
-          button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button, 
-            { trigger: "manual", 
-              customClass: "code-copy-button-tooltip",
-              offset: [0, -8]});
-          tooltip.show();    
-        }
-        setTimeout(function() {
-          if (tooltip) {
-            tooltip.hide();
-            button.removeAttribute("data-bs-title");
-            button.removeAttribute("data-bs-toggle");
-            button.removeAttribute("data-bs-placement");
-          }
-          button.setAttribute("title", currentTitle);
-          button.classList.remove('code-copy-button-checked');
-        }, 1000);
-        // clear code selection
-        e.clearSelection();
-      }
-      const getTextToCopy = function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
             }
           }
-          return codeEl.innerText;
-      }
-      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-        text: getTextToCopy
-      });
-      clipboard.on('success', onCopySuccess);
-      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-          text: getTextToCopy,
-          container: window.document.getElementById('quarto-embedded-source-code-modal')
-        });
-        clipboardModal.on('success', onCopySuccess);
-      }
-        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-        var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp('/' + window.location.host + '/');
-        var isInternal = (href) => {
-            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          return false;
         }
-        // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-        for (var i=0; i<links.length; i++) {
-          const link = links[i];
-          if (!isInternal(link.href)) {
-            // undo the damage that might have been done by quarto-nav.js in the case of
-            // links that we want to consider external
-            if (link.dataset.originalHref !== undefined) {
-              link.href = link.dataset.originalHref;
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
             }
-          }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
         }
-      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-        const config = {
-          allowHTML: true,
-          maxWidth: 500,
-          delay: 100,
-          arrow: false,
-          appendTo: function(el) {
-              return el.closest('section.slide') || el.parentElement;
-          },
-          interactive: true,
-          interactiveBorder: 10,
-          theme: 'light-border',
-          placement: 'bottom-start',
-        };
-        if (contentFn) {
-          config.content = contentFn;
-        }
-        if (onTriggerFn) {
-          config.onTrigger = onTriggerFn;
-        }
-        if (onUntriggerFn) {
-          config.onUntrigger = onUntriggerFn;
-        }
-          config['offset'] = [0,0];
-          config['maxWidth'] = 700;
-        window.tippy(el, config); 
-      }
-      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-      for (var i=0; i<noterefs.length; i++) {
-        const ref = noterefs[i];
-        tippyHover(ref, function() {
-          // use id or data attribute instead here
-          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-          try { href = new URL(href).hash; } catch {}
-          const id = href.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note) {
-            return note.innerHTML;
-          } else {
-            return "";
-          }
-        });
-      }
-      const findCites = (el) => {
-        const parentEl = el.parentElement;
-        if (parentEl) {
-          const cites = parentEl.dataset.cites;
-          if (cites) {
-            return {
-              el,
-              cites: cites.split(' ')
-            };
-          } else {
-            return findCites(el.parentElement)
-          }
-        } else {
-          return undefined;
-        }
-      };
-      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-      for (var i=0; i<bibliorefs.length; i++) {
-        const ref = bibliorefs[i];
-        const citeInfo = findCites(ref);
-        if (citeInfo) {
-          tippyHover(citeInfo.el, function() {
-            var popup = window.document.createElement('div');
-            citeInfo.cites.forEach(function(cite) {
-              var citeDiv = window.document.createElement('div');
-              citeDiv.classList.add('hanging-indent');
-              citeDiv.classList.add('csl-entry');
-              var biblioDiv = window.document.getElementById('ref-' + cite);
-              if (biblioDiv) {
-                citeDiv.innerHTML = biblioDiv.innerHTML;
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
               }
-              popup.appendChild(citeDiv);
-            });
-            return popup.innerHTML;
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
           });
         }
-      }
-    });
-    </script>
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
     
 
 </body></html>
