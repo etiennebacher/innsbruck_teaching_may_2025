@@ -505,24 +505,37 @@ Cons:
 * might be harder to share with others (e.g. Stata doesn't have an easy way to read/write Parquet)
 
 
-##
+## Setting up Python
 
-<br><br><br>
-<br><br><br>
+Keeping a clean Python setup is notoriously hard:
 
-```{css, echo=FALSE}
-#quick-demo-time {
-	position: absolute;
-	left: 35%;
-}
-```
-
+![](img/xkcd_1987.png)
 
 ## Data to use
 
 * IPUMS 1% (or 5% in some cases) sample for 1850-1960
 
+<br>
+
 * About 23M observations, 116 variables
+
+<br>
+
+* See the WeTransfer link I sent you
+
+## Objectives
+
+* Python
+  - set up the python project and environment
+  - install and load polars
+  - scan the data and read a subset
+  - perform a simple filter
+  - perform an aggregation
+  - chaining expressions
+  - exporting data
+
+* Same with R (both `polars` and `tidypolars`)
+
 
 # Going further
 
@@ -585,13 +598,27 @@ This will run the query and write the results progressively to the output path, 
 
 ## Plugins
 
+*Python only* (for now)
+
+<br>
+
+Polars accepts extensions taking the form of new expressions namespaces.
+
+<br>
+
+Just like we have `.str.split()` for instance, we could have `.dist.jarowinkler()`.
+
+<br>
+
+List of Polars plugins: [https://github.com/ddotta/awesome-polars#polars-plugins](https://github.com/ddotta/awesome-polars#polars-plugins)
+
 ## GIS and Polars
 
 While there is some demand for a `geopolars` that would enable GIS operations in Polars DataFrame or LazyFrame, this doesn't exist for now.
 
 <br>
 
-Groundwork for this should start in the coming months so you might expect some movement in `geopolars`in 2026.
+Groundwork for this should start in the coming months so you might expect some movement in `geopolars` in 2026.
 
 ## Going further
 

@@ -212,7 +212,7 @@
 </ul>
 <div class="fragment">
 <ul>
-<li>Hands-on practice: UK census data
+<li>Hands-on practice: IPUMS census data (samples)
 <ul>
 <li>Goal: install and load polars, load data, perform easy operations and write it back to another file</li>
 <li>Using expressions</li>
@@ -574,13 +574,12 @@
 </section>
 
 <section>
-<section id="hands-on-practice-uk-census-data" class="title-slide slide level1 center">
-<h1>Hands-on practice: UK Census data</h1>
+<section id="hands-on-practice-ipums-census-data-samples" class="title-slide slide level1 center">
+<h1>Hands-on practice: IPUMS census data (samples)</h1>
 
 </section>
 <section id="a-note-on-file-formats" class="slide level2">
 <h2>A note on file formats</h2>
-<p><br></p>
 <p>We’re used to a few file formats: CSV, Excel, <code>.dta</code>. Polars can read most of them (<code>.dta</code> is not possible for now).</p>
 <div class="fragment">
 <p><br></p>
@@ -589,30 +588,47 @@
 <p>Pros:</p>
 <ul>
 <li>large file compression</li>
-<li>allows much faster filtering of rows</li>
+<li>stores statistics on the columns (e.g.&nbsp;useful for filters)</li>
 </ul>
 <p>Cons:</p>
 <ul>
-<li>cannot be viewed in Excel (but wouldn’t be possible with millions of observations anyway)</li>
+<li>might be harder to share with others (e.g.&nbsp;Stata doesn’t have an easy way to read/write Parquet)</li>
 </ul>
 </div>
 </section>
-<section id="section" class="slide level2">
-<h2></h2>
-<p><br><br><br> <br><br><br></p>
-<div class="cell">
-<style type="text/css">
-#quick-demo-time {
-    position: absolute;
-    left: 35%;
-}
-</style>
-</div>
-<h3 id="quick-demo-time">(Quick) Demo time!</h3>
-<p><br> <br></p>
+<section id="setting-up-python" class="slide level2">
+<h2>Setting up Python</h2>
+<p>Keeping a clean Python setup is notoriously hard:</p>
+
+<img data-src="img/xkcd_1987.png" class="r-stretch"></section>
+<section id="data-to-use" class="slide level2">
+<h2>Data to use</h2>
 <ul>
-<li><p>UK Census data</p></li>
-<li><p>About 40M observations, 110+ variables</p></li>
+<li>IPUMS 1% (or 5% in some cases) sample for 1850-1960</li>
+</ul>
+<p><br></p>
+<ul>
+<li>About 23M observations, 116 variables</li>
+</ul>
+<p><br></p>
+<ul>
+<li>See the WeTransfer link I sent you</li>
+</ul>
+</section>
+<section id="objectives" class="slide level2">
+<h2>Objectives</h2>
+<ul>
+<li>Python
+<ul>
+<li>set up the python project and environment</li>
+<li>install and load polars</li>
+<li>scan the data and read a subset</li>
+<li>perform a simple filter</li>
+<li>perform an aggregation</li>
+<li>chaining expressions</li>
+<li>exporting data</li>
+</ul></li>
+<li>Same with R (both <code>polars</code> and <code>tidypolars</code>)</li>
 </ul>
 </section></section>
 <section>
@@ -676,6 +692,13 @@
 </section>
 <section id="plugins" class="slide level2">
 <h2>Plugins</h2>
+<p><em>Python only</em> (for now)</p>
+<p><br></p>
+<p>Polars accepts extensions taking the form of new expressions namespaces.</p>
+<p><br></p>
+<p>Just like we have <code>.str.split()</code> for instance, we could have <code>.dist.jarowinkler()</code>.</p>
+<p><br></p>
+<p>List of Polars plugins: https://github.com/ddotta/awesome-polars#polars-plugins</p>
 </section>
 <section id="gis-and-polars" class="slide level2">
 <h2>GIS and Polars</h2>
@@ -709,7 +732,7 @@
 <p><br></p>
 <p>Do you use any of them? How do you deal with large datasets?</p>
 </section>
-<section id="section-1" class="slide level2 nobreak">
+<section id="section" class="slide level2 nobreak">
 <h2></h2>
 <p><br><br> <br><br></p>
 <p>Slides: <a href="https://github.com/etiennebacher/handling-large-data">https://github.com/etiennebacher/handling-large-data</a></p>
