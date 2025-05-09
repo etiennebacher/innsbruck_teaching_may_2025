@@ -27,8 +27,9 @@ execute:
 . . .
 
 * Hands-on practice: IPUMS census data (samples)
-  - Goal: install and load polars, load data, perform easy operations and write it back to another file
+  - Install and load polars, load data, perform easy operations, export data
   - Using expressions
+  - Writing custom functions
   - Q&A number 2
 
 . . .
@@ -43,57 +44,15 @@ Statistical modelling with big data.
 
 <br>
 
-The objective is more to see how we can start from very fine-grained data (full-count census, mobile phone data at the minute level) to some smaller, aggregated datasets that we can use for regressions.
+I want to show how to go from fine-grained data (full-count census, mobile phone data at the minute level) to some smaller, aggregated datasets for regressions.
 
 <br>
 
 Note that some statistical packages can still perform very well on millions of observations, like `fixest` in R.
 
-
-## Motivation
-
-<br><br>
-
-The use of big data in all disciplines is growing:
-
-* full censuses
-* genomics data
-* mobile phone data
-* and more...
-
-
-## Motivation
-
-<br><br>
-
-Usually, we load datasets directly in R (or Stata, or Python, or any other tool).
-
-<br>
-
-This means that **we are limited by the amount of RAM**^[Random Access Memory, where the data can be accessed by the programs.] on our computer.
-
-<br>
-
-You want to handle more data? Get more RAM.
-
-
-## Motivation
-
-<br><br>
-
-But we can't necessarily have all the RAM we need.
-
-. . .
-
-<br><br>
-
-And we don't necessarily *need* all this RAM in the first place.
-
 # Introduction to Polars
 
 ## Introduction
-
-<br>
 
 `polars` is a recent DataFrame library that is available for several languages:
 
@@ -398,7 +357,7 @@ my_data = raw_data |>
       gdp > 123,
       country %in% c("United Kingdom", "Japan", "Vietnam")
    ) |>
-   mutate(gdp_per_cap =  gdp / population)
+   mutate(gdp_per_cap = gdp / population)
 ```
 :::
 
@@ -459,6 +418,8 @@ that we don't do "forbidden" operations.
 
 <br>
 
+. . .
+
 For instance, doing `pl.col("gdp") > "France"` would be an error: we can't compare
 a number to a character.
 
@@ -482,7 +443,7 @@ See in the last part.
 
 # Hands-on practice: IPUMS census data (samples)
 
-## A note on file formats
+## A note on file formats {.nobreak}
 
 We're used to a few file formats: CSV, Excel, `.dta`. Polars can read
 most of them (`.dta` is not possible for now).
@@ -509,11 +470,59 @@ Cons:
 
 Keeping a clean Python setup is notoriously hard:
 
-![](img/xkcd_1987.png)
+<div style="text-align: center">
+<img src="img/xkcd_1987.png" style="width: 45%; margin-bottom:0">
+
+<p style="margin-top:0"><a style="font-size: 0.8rem" href="https://www.explainxkcd.com/wiki/index.php/1987:_Python_Environment">XKCD 1987</a></p>
+</div>
+
+## Setting up Python
+
+Python relies a lot on *virtual environments*: each project should have its own environment that contains the Python version and the libraries used in the project.
+
+<br>
+
+This is to avoid conflicts between different requirements:
+
+* project A requires `polars <= 1.20.0`
+* project B requires `polars >= 1.22.0`
+
+If we had only a system-wide installation of `polars`, we would constantly have to reinstall one or the other.
+
+<br>
+
+Having one virtual environment per project allows better project reproducibility.
+
+## Setting up Python
+
+For the entire setup, I recommend using [uv](https://docs.astral.sh/uv/):
+
+- deals with installing both Python and the libraries
+- user-friendly error messages
+- very fast
+
+. . . 
+
+Basically 4 commands to remember (once `uv` is installed):
+
+* `uv init my-project` (or `uv init`) creates the basic files required
+* `uv add` to add a library to the environment
+* `uv sync` to restore a project using `uv` to the exact setup that was used 
+* `uv run file.py` to run a script in the project's virtual environment
+
+## Setting up Python
+
+The files `uv.lock` and `.python-version` are the only thing needed to restore a project.
+
+<br>
+
+You do not need to share the `.venv` folder with colleagues, they can just call `uv sync` and the `.venv` with the exact same packages will be created. 
 
 ## Data to use
 
-* IPUMS 1% (or 5% in some cases) sample for 1850-1960
+* IPUMS:
+  - US Census data for 1850-1960 (per decade)
+  - 1% (or 5% in some cases) sample
 
 <br>
 
@@ -523,7 +532,24 @@ Keeping a clean Python setup is notoriously hard:
 
 * See the WeTransfer link I sent you
 
-## Objectives
+
+## Set up in R
+
+`polars` and `tidypolars` are not on CRAN, so `install.packages("polars")` is not enough.
+
+<br>
+
+```r
+Sys.setenv(NOT_CRAN = "true")
+install.packages(
+  c("polars", "tidypolars"), 
+  repos = "https://community.r-multiverse.org"
+)
+```
+
+## Objectives {.nobreak}
+
+<br>
 
 * Python
   - set up the python project and environment
@@ -531,10 +557,15 @@ Keeping a clean Python setup is notoriously hard:
   - scan the data and read a subset
   - perform a simple filter
   - perform an aggregation
-  - chaining expressions
-  - exporting data
+  - chain expressions
+  - export data
+
+<br>
 
 * Same with R (both `polars` and `tidypolars`)
+
+
+# Q&A number 2
 
 
 # Going further
@@ -577,7 +608,13 @@ call `collect(engine = "streaming")`.
 <br>
 
 :::{.callout-warning}
-Some operations might be unavailable in streaming mode but this number should be quite low and become lower.
+Some operations might be unavailable in streaming mode but this number should decrease.
+:::
+
+<br>
+
+:::{.callout-warning}
+The streaming engine isn't very reliable in R for now. It is better to use it in Python.
 :::
 
 ## Larger-than-memory data
@@ -622,46 +659,56 @@ Groundwork for this should start in the coming months so you might expect some m
 
 ## Going further
 
-<br><br>
-
 If you're interested:
 
-* [Polars official documentation](https://docs.pola.rs/)
+* [Polars official documentation (Python)](https://docs.pola.rs/)
 
 * [R-Polars documentation](https://pola-rs.github.io/r-polars/)
-
-* [Python `tidypolars`](https://github.com/markfairbanks/tidypolars)
 
 * [R `tidypolars`](https://github.com/etiennebacher/tidypolars)
 
 * [(Pretty) big data wrangling with DuckDB and Polars](https://grantmcdermott.com/duckdb-polars/slides/slides.html)
 
-
+# Q&A number 3
 
 # Conclusion
 
 ## Conclusion
 
-<br><br>
-
-Getting bigger computers shouldn't necessarily be the first reflex to handle
-large data.
+Polars allows one to handle large data even on a laptop.
 
 <br>
 
-There are several other tools available: `arrow`, `DuckDB`, `Spark`, and others.
+Use *eager evaluation* to explore a sample, build the data processing scripts, etc.
 
 <br>
 
-Do you use any of them? How do you deal with large datasets?
+Use *lazy evaluation* (scan + collect) to perform the data processing on the entire data.
 
-## {.nobreak}
+## Conclusion {.nobreak}
 
-<br><br>
-<br><br>
+Which language to use?
 
-Slides: [https://github.com/etiennebacher/handling-large-data](https://github.com/etiennebacher/handling-large-data)
+* Python:
+  - Polars core developers focus on the Python library.
+  - This is where bug fixes and new features appear first.
+  - Very reactive for bug reports.
 
-<br><br>
+* R:
+  - Voluntary developers.
+  - We implement new features and bug fixes slightly later.
+  - Package is being rewritten right now, hopefully released in the coming weeks.
+  - `tidypolars` is available.
+  
+## Conclusion
 
-Typos, comments: [https://github.com/etiennebacher/handling-large-data/issues](https://github.com/etiennebacher/handling-large-data/issues)
+There exists other tools:
+
+* DuckDB: 
+  - very fast and efficient too, uses SQL syntax
+  - available in R too
+  - accompanying package [`duckplyr`](https://duckplyr.tidyverse.org/) (same goal as `tidypolars` but uses DuckDB in the background)
+  
+* Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.
+
+* Spark: never used but available in R and Python.

@@ -3,35 +3,49 @@ library(polars)
 library(tidyverse)
 library(tidypolars)
 
-# Files obtained from https://www2.census.gov/programs-surveys/popest/datasets/2020/modified-race-data/
+scanned <- pl$scan_csv("large_data_r_and_python/data_ipums/ipums_samples.csv")
 
-# for (i in 1:56) {
-#   i <- sprintf("%02d", i)
-#   tryCatch({
-#     download.file(sprintf("https://www2.census.gov/programs-surveys/popest/datasets/2020/modified-race-data/MARC2020-County-%s.csv", i), destfile = sprintf("large_data_r_and_python/data/MARC2020-County-%s.csv", i))
-#   },
-#   error = function(e) {
-#     message("Couldn't download file ", i)
-#   })
-# }
+### Get number of rows
+scanned |> 
+  select(1) |> 
+  compute() |> 
+  nrow()
 
-# download.file("https://www2.census.gov/programs-surveys/popest/datasets/2020/modified-race-data/MARC2020-County-US.csv", destfile = "large_data_r_and_python/data/MARC2020-County-%s.csv")
+### Get number of columns
+scanned |> 
+  head(1) |> 
+  compute() |> 
+  ncol()
 
-subset <- pl$scan_csv("large_data_r_and_python/data/MARC2020-County-US.parquet")$
-  head(100)$
-  collect()$
-  to_data_frame()
+### Get the schema of the data
+scanned$schema
 
-subset <- pl$scan_parquet("large_data_r_and_python/data3/ipums.parquet")$
-  head(100)$
-  collect()$
-  to_data_frame()
+### Get a sample of the data for exploration purposes
+read <- scanned |> 
+  head(100) |> 
+  collect() |> 
+  as_tibble()
 
-pl$read_csv("large_data_r_and_python/data_ipums/ipums_samples.csv") |> 
-  dim()
+
+# View(read)
+
+### Once you want to use the full data, use the scanned version
+scanned |> 
+  arrange(YEAR) |> 
+  filter(STATEFIP %in% c(1, 3, 5)) |> 
+  compute()
+
+scanned |> 
+  group_by(YEAR, STATEFIP) |> 
+  summarize(
+    x = mean(OCCSCORE, na.rm = TRUE)
+  ) |> 
+  arrange(YEAR, STATEFIP) |>
+  compute()
+
 
 system.time({
-  pl$scan_csv("large_data_r_and_python/data_ipums/ipums_samples.csv") |> 
+  scanned |> 
     # head(100) |> 
     # as_tibble() |>  
     group_by(YEAR, STATEFIP) |> 
@@ -55,15 +69,13 @@ system.time({
 })
 
 system.time({
-  read_csv_duckdb("large_data_r_and_python/data_ipums/ipums_samples.csv") |> 
-    # head(100) |> 
-    # as_tibble() |>  
-    summarize(
-      x = mean(OCCSCORE, na.rm = TRUE),
-      .by = c(YEAR, STATEFIP)
-    ) |> 
-    arrange(YEAR, STATEFIP) |>
-    collect()
+  print(
+    scanned |> 
+      arrange(YEAR) |> 
+      filter(STATEFIP %in% c(1, 3, 5)) |> 
+      compute()
+  )
+  
 })
 
 
@@ -96,5 +108,6 @@ system.time({
 })
     
 
-foo <- data.table::fread("large_data_r_and_python/data3/ipums.csv")
-nanoparquet::write_parquet(foo, "large_data_r_and_python/data3/ipums.parquet")
+foo <- data.table::fread("large_data_r_and_python/data_ipums/ipums_samples.csv")
+nanoparquet::write_parquet(foo, "large_data_r_and_python/data_ipums/ipums_samples.parquet")
+

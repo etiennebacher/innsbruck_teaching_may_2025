@@ -96,7 +96,7 @@
     code span.vs { color: #9ecbff; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-d1279250bf28a95b8cc18432aa08b99a.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-d938a43d4e705b8aaf604823db8ce2b5.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -214,8 +214,9 @@
 <ul>
 <li>Hands-on practice: IPUMS census data (samples)
 <ul>
-<li>Goal: install and load polars, load data, perform easy operations and write it back to another file</li>
+<li>Install and load polars, load data, perform easy operations, export data</li>
 <li>Using expressions</li>
+<li>Writing custom functions</li>
 <li>Q&amp;A number 2</li>
 </ul></li>
 </ul>
@@ -234,38 +235,9 @@
 <h2>What this session will <em>not</em> cover</h2>
 <p>Statistical modelling with big data.</p>
 <p><br></p>
-<p>The objective is more to see how we can start from very fine-grained data (full-count census, mobile phone data at the minute level) to some smaller, aggregated datasets that we can use for regressions.</p>
+<p>I want to show how to go from fine-grained data (full-count census, mobile phone data at the minute level) to some smaller, aggregated datasets for regressions.</p>
 <p><br></p>
 <p>Note that some statistical packages can still perform very well on millions of observations, like <code>fixest</code> in R.</p>
-</section>
-<section id="motivation" class="slide level2">
-<h2>Motivation</h2>
-<p><br><br></p>
-<p>The use of big data in all disciplines is growing:</p>
-<ul>
-<li>full censuses</li>
-<li>genomics data</li>
-<li>mobile phone data</li>
-<li>and more…</li>
-</ul>
-</section>
-<section id="motivation-1" class="slide level2">
-<h2>Motivation</h2>
-<p><br><br></p>
-<p>Usually, we load datasets directly in R (or Stata, or Python, or any other tool).</p>
-<p><br></p>
-<p>This means that <strong>we are limited by the amount of RAM</strong><sup>1</sup> on our computer.</p>
-<p><br></p>
-<p>You want to handle more data? Get more RAM.</p>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>Random Access Memory, where the data can be accessed by the programs.</p></li></ol></aside></section>
-<section id="motivation-2" class="slide level2">
-<h2>Motivation</h2>
-<p><br><br></p>
-<p>But we can’t necessarily have all the RAM we need.</p>
-<div class="fragment">
-<p><br><br></p>
-<p>And we don’t necessarily <em>need</em> all this RAM in the first place.</p>
-</div>
 </section>
 <section>
 <section id="introduction-to-polars" class="title-slide slide level1 center">
@@ -274,7 +246,6 @@
 </section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
-<p><br></p>
 <p><code>polars</code> is a recent DataFrame library that is available for several languages:</p>
 <ul>
 <li>Python</li>
@@ -502,7 +473,7 @@
 <span id="cb13-4"><a href=""></a>      gdp <span class="sc">&gt;</span> <span class="dv">123</span>,</span>
 <span id="cb13-5"><a href=""></a>      country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"United Kingdom"</span>, <span class="st">"Japan"</span>, <span class="st">"Vietnam"</span>)</span>
 <span id="cb13-6"><a href=""></a>   ) <span class="sc">|&gt;</span></span>
-<span id="cb13-7"><a href=""></a>   <span class="fu">mutate</span>(<span class="at">gdp_per_cap =</span>  gdp <span class="sc">/</span> population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-7"><a href=""></a>   <span class="fu">mutate</span>(<span class="at">gdp_per_cap =</span> gdp <span class="sc">/</span> population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -559,10 +530,12 @@
 <p><br></p>
 <p>First, <code>polars</code> scans the code to ensure there are no schema errors, i.e.&nbsp;check that we don’t do “forbidden” operations.</p>
 <p><br></p>
+<div class="fragment">
 <p>For instance, doing <code>pl.col("gdp") &gt; "France"</code> would be an error: we can’t compare a number to a character.</p>
 <p><br></p>
 <p>In this case, that would return:</p>
 <pre><code>polars.exceptions.ComputeError: cannot compare string with numeric data</code></pre>
+</div>
 </section>
 <section id="use-streaming-mode" class="slide level2">
 <h2>3. Use streaming mode</h2>
@@ -578,7 +551,7 @@
 <h1>Hands-on practice: IPUMS census data (samples)</h1>
 
 </section>
-<section id="a-note-on-file-formats" class="slide level2">
+<section id="a-note-on-file-formats" class="slide level2 nobreak">
 <h2>A note on file formats</h2>
 <p>We’re used to a few file formats: CSV, Excel, <code>.dta</code>. Polars can read most of them (<code>.dta</code> is not possible for now).</p>
 <div class="fragment">
@@ -599,12 +572,58 @@
 <section id="setting-up-python" class="slide level2">
 <h2>Setting up Python</h2>
 <p>Keeping a clean Python setup is notoriously hard:</p>
-
-<img data-src="img/xkcd_1987.png" class="r-stretch"></section>
+<div style="text-align: center">
+<p><img src="img/xkcd_1987.png" style="width: 45%; margin-bottom:0"></p>
+<p style="margin-top:0">
+<a style="font-size: 0.8rem" href="https://www.explainxkcd.com/wiki/index.php/1987:_Python_Environment">XKCD 1987</a>
+</p>
+</div>
+</section>
+<section id="setting-up-python-1" class="slide level2">
+<h2>Setting up Python</h2>
+<p>Python relies a lot on <em>virtual environments</em>: each project should have its own environment that contains the Python version and the libraries used in the project.</p>
+<p><br></p>
+<p>This is to avoid conflicts between different requirements:</p>
+<ul>
+<li>project A requires <code>polars &lt;= 1.20.0</code></li>
+<li>project B requires <code>polars &gt;= 1.22.0</code></li>
+</ul>
+<p>If we had only a system-wide installation of <code>polars</code>, we would constantly have to reinstall one or the other.</p>
+<p><br></p>
+<p>Having one virtual environment per project allows better project reproducibility.</p>
+</section>
+<section id="setting-up-python-2" class="slide level2">
+<h2>Setting up Python</h2>
+<p>For the entire setup, I recommend using <a href="https://docs.astral.sh/uv/">uv</a>:</p>
+<ul>
+<li>deals with installing both Python and the libraries</li>
+<li>user-friendly error messages</li>
+<li>very fast</li>
+</ul>
+<div class="fragment">
+<p>Basically 4 commands to remember (once <code>uv</code> is installed):</p>
+<ul>
+<li><code>uv init my-project</code> (or <code>uv init</code>) creates the basic files required</li>
+<li><code>uv add</code> to add a library to the environment</li>
+<li><code>uv sync</code> to restore a project using <code>uv</code> to the exact setup that was used</li>
+<li><code>uv run file.py</code> to run a script in the project’s virtual environment</li>
+</ul>
+</div>
+</section>
+<section id="setting-up-python-3" class="slide level2">
+<h2>Setting up Python</h2>
+<p>The files <code>uv.lock</code> and <code>.python-version</code> are the only thing needed to restore a project.</p>
+<p><br></p>
+<p>You do not need to share the <code>.venv</code> folder with colleagues, they can just call <code>uv sync</code> and the <code>.venv</code> with the exact same packages will be created.</p>
+</section>
 <section id="data-to-use" class="slide level2">
 <h2>Data to use</h2>
 <ul>
-<li>IPUMS 1% (or 5% in some cases) sample for 1850-1960</li>
+<li>IPUMS:
+<ul>
+<li>US Census data for 1850-1960 (per decade)</li>
+<li>1% (or 5% in some cases) sample</li>
+</ul></li>
 </ul>
 <p><br></p>
 <ul>
@@ -615,8 +634,19 @@
 <li>See the WeTransfer link I sent you</li>
 </ul>
 </section>
-<section id="objectives" class="slide level2">
+<section id="set-up-in-r" class="slide level2">
+<h2>Set up in R</h2>
+<p><code>polars</code> and <code>tidypolars</code> are not on CRAN, so <code>install.packages("polars")</code> is not enough.</p>
+<p><br></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">Sys.setenv</span>(<span class="at">NOT_CRAN =</span> <span class="st">"true"</span>)</span>
+<span id="cb18-2"><a href=""></a><span class="fu">install.packages</span>(</span>
+<span id="cb18-3"><a href=""></a>  <span class="fu">c</span>(<span class="st">"polars"</span>, <span class="st">"tidypolars"</span>), </span>
+<span id="cb18-4"><a href=""></a>  <span class="at">repos =</span> <span class="st">"https://community.r-multiverse.org"</span></span>
+<span id="cb18-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="objectives" class="slide level2 nobreak">
 <h2>Objectives</h2>
+<p><br></p>
 <ul>
 <li>Python
 <ul>
@@ -625,12 +655,20 @@
 <li>scan the data and read a subset</li>
 <li>perform a simple filter</li>
 <li>perform an aggregation</li>
-<li>chaining expressions</li>
-<li>exporting data</li>
+<li>chain expressions</li>
+<li>export data</li>
 </ul></li>
+</ul>
+<p><br></p>
+<ul>
 <li>Same with R (both <code>polars</code> and <code>tidypolars</code>)</li>
 </ul>
 </section></section>
+<section id="qa-number-2" class="title-slide slide level1 center">
+<h1>Q&amp;A number 2</h1>
+
+</section>
+
 <section>
 <section id="going-further" class="title-slide slide level1 center">
 <h1>Going further</h1>
@@ -672,7 +710,21 @@
 <p><strong>Warning</strong></p>
 </div>
 <div class="callout-content">
-<p>Some operations might be unavailable in streaming mode but this number should be quite low and become lower.</p>
+<p>Some operations might be unavailable in streaming mode but this number should decrease.</p>
+</div>
+</div>
+</div>
+<p><br></p>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>The streaming engine isn’t very reliable in R for now. It is better to use it in Python.</p>
 </div>
 </div>
 </div>
@@ -698,26 +750,29 @@
 <p><br></p>
 <p>Just like we have <code>.str.split()</code> for instance, we could have <code>.dist.jarowinkler()</code>.</p>
 <p><br></p>
-<p>List of Polars plugins: https://github.com/ddotta/awesome-polars#polars-plugins</p>
+<p>List of Polars plugins: <a href="https://github.com/ddotta/awesome-polars#polars-plugins">https://github.com/ddotta/awesome-polars#polars-plugins</a></p>
 </section>
 <section id="gis-and-polars" class="slide level2">
 <h2>GIS and Polars</h2>
 <p>While there is some demand for a <code>geopolars</code> that would enable GIS operations in Polars DataFrame or LazyFrame, this doesn’t exist for now.</p>
 <p><br></p>
-<p>Groundwork for this should start in the coming months so you might expect some movement in <code>geopolars</code>in 2026.</p>
+<p>Groundwork for this should start in the coming months so you might expect some movement in <code>geopolars</code> in 2026.</p>
 </section>
 <section id="going-further-1" class="slide level2">
 <h2>Going further</h2>
-<p><br><br></p>
 <p>If you’re interested:</p>
 <ul>
-<li><p><a href="https://docs.pola.rs/">Polars official documentation</a></p></li>
+<li><p><a href="https://docs.pola.rs/">Polars official documentation (Python)</a></p></li>
 <li><p><a href="https://pola-rs.github.io/r-polars/">R-Polars documentation</a></p></li>
-<li><p><a href="https://github.com/markfairbanks/tidypolars">Python <code>tidypolars</code></a></p></li>
 <li><p><a href="https://github.com/etiennebacher/tidypolars">R <code>tidypolars</code></a></p></li>
 <li><p><a href="https://grantmcdermott.com/duckdb-polars/slides/slides.html">(Pretty) big data wrangling with DuckDB and Polars</a></p></li>
 </ul>
 </section></section>
+<section id="qa-number-3" class="title-slide slide level1 center">
+<h1>Q&amp;A number 3</h1>
+
+</section>
+
 <section>
 <section id="conclusion" class="title-slide slide level1 center">
 <h1>Conclusion</h1>
@@ -725,22 +780,46 @@
 </section>
 <section id="conclusion-1" class="slide level2">
 <h2>Conclusion</h2>
-<p><br><br></p>
-<p>Getting bigger computers shouldn’t necessarily be the first reflex to handle large data.</p>
+<p>Polars allows one to handle large data even on a laptop.</p>
 <p><br></p>
-<p>There are several other tools available: <code>arrow</code>, <code>DuckDB</code>, <code>Spark</code>, and others.</p>
+<p>Use <em>eager evaluation</em> to explore a sample, build the data processing scripts, etc.</p>
 <p><br></p>
-<p>Do you use any of them? How do you deal with large datasets?</p>
+<p>Use <em>lazy evaluation</em> (scan + collect) to perform the data processing on the entire data.</p>
 </section>
-<section id="section" class="slide level2 nobreak">
-<h2></h2>
-<p><br><br> <br><br></p>
-<p>Slides: <a href="https://github.com/etiennebacher/handling-large-data">https://github.com/etiennebacher/handling-large-data</a></p>
-<p><br><br></p>
-<p>Typos, comments: <a href="https://github.com/etiennebacher/handling-large-data/issues">https://github.com/etiennebacher/handling-large-data/issues</a></p>
+<section id="conclusion-2" class="slide level2 nobreak">
+<h2>Conclusion</h2>
+<p>Which language to use?</p>
+<ul>
+<li>Python:
+<ul>
+<li>Polars core developers focus on the Python library.</li>
+<li>This is where bug fixes and new features appear first.</li>
+<li>Very reactive for bug reports.</li>
+</ul></li>
+<li>R:
+<ul>
+<li>Voluntary developers.</li>
+<li>We implement new features and bug fixes slightly later.</li>
+<li>Package is being rewritten right now, hopefully released in the coming weeks.</li>
+<li><code>tidypolars</code> is available.</li>
+</ul></li>
+</ul>
+</section>
+<section id="conclusion-3" class="slide level2">
+<h2>Conclusion</h2>
+<p>There exists other tools:</p>
+<ul>
+<li><p>DuckDB:</p>
+<ul>
+<li>very fast and efficient too, uses SQL syntax</li>
+<li>available in R too</li>
+<li>accompanying package <a href="https://duckplyr.tidyverse.org/"><code>duckplyr</code></a> (same goal as <code>tidypolars</code> but uses DuckDB in the background)</li>
+</ul></li>
+<li><p>Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.</p></li>
+<li><p>Spark: never used but available in R and Python.</p></li>
+</ul>
 
 </section></section>
-
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
