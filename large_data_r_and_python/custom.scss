@@ -36,8 +36,13 @@ $code-block-font-size: 0.8em;
 	border-bottom: 1px dashed;
 }
 
+.reveal code {
+	font-size: 0.95em;
+}
+
 .reveal a>code {
 	color: $link-color;
+	border-bottom: 1px dashed;
 }
 
 .reveal .cell-output>pre {

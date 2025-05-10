@@ -1,10 +1,6 @@
 ---
 title: "Webscraping -- Part 1"
-subtitle: "Static webscraping <br><br> University of Innsbruck"
-author: "Etienne Bacher"
-date: "13 May 2025"
-date-format: long
-institute: "LISER"
+subtitle: "Static webscraping"
 
 format:
  revealjs:
@@ -35,11 +31,11 @@ This course:
 - No assignments, only check for attendance
 - All slides online at [https://www.etiennebacher.com/software](https://www.etiennebacher.com/software)
 
-About me:
+<!-- About me: -->
 
-- Defended my PhD last November
-- Worked on migration economics (and some economic history), will be around during the week
-- Contact: etienne.bacher@liser.lu
+<!-- - Defended my PhD last November -->
+<!-- - Worked on migration economics (and some economic history), will be around during the week -->
+<!-- - Contact: etienne.bacher@liser.lu -->
 
 ## Introduction
 
@@ -58,8 +54,6 @@ It is the action of collecting data from webpages.
 
 **Why is it useful?**
 
-. . .
-
 <br>
 
 To get original data that isn't available anywhere else.
@@ -72,11 +66,55 @@ To get original data that isn't available anywhere else.
 
 Order of preference:
 
-* online service has an API (we'll see next slide)
+* online service has an API (next slide)
 * ask the online service
 * scrape
   - static pages (today)
   - dynamic pages (tomorrow)
+  
+## Using an API
+
+The objective of some websites is to provide data to people: they *want* us to being able to access this data easily.
+
+<br>
+
+. . .
+
+They usually provide an API (Application Programming Interface) so that we can interact with their services via code.
+
+<br>
+
+This is **better than webscraping**.
+  
+## Using an API
+
+Example: [World Development Indicators API](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation)
+
+<br>
+
+In R, we can use the package `WDI` to access this API:
+
+```{r, eval = FALSE}
+WDI(
+   indicator = 'NY.GDP.PCAP.KD', 
+   country = c('MX','CA','US'), 
+   start = 1960, 
+   end = 2012
+)
+```
+
+## Using an API
+
+Many data services have an API: World Bank, Eurostat, Google Maps, ArcGIS, US Census, etc.
+
+<br>
+
+Sometimes, those services require an API key (might need to pay for this).
+
+<br>
+
+If you want data from a source, try searching "R package API \<name of the service\>" first.
+
 
 ## Objectives
 
@@ -168,7 +206,8 @@ Example:
 
 ```
 p {
-  color: red
+  color: red;
+  border-bottom: 1px dashed;
 }
 ```
 ## CSS
@@ -205,15 +244,405 @@ JavaScript (JS) is a language that takes care of all the interactions with the p
 
 It makes it more difficult to scrape, we'll see why in part 2 tomorrow.
 
-##
+---
 
-Today, we only look at HTML and CSS.
+<br>
+
+Today, we only look at HTML and CSS and focus on static webpages.
+
+<br>
+
+**Static webpage**:
+
+-   all the information is loaded with the page;
+-   changing a parameter modifies the URL
+
+Examples: [Wikipedia](https://en.wikipedia.org/wiki/Web_scraping){.external target="_blank"}, [IMDB](https://www.imdb.com/name/nm0001392/?ref_=nv_sr_srsg_0){.external target="_blank"}.
+
+<br>
+
+**Dynamic webpage**: the website uses JavaScript to fetch data from
+their server and *dynamically* update the page.
+
+Example: [Premier League stats](https://www.premierleague.com/stats/top/players/goal_assist){.external target="_blank"}.
+
+# Hands-on case study: electoral results in Spain
+
+## Hands-on case study: electoral results in Spain
+
+Get results of municipal elections in Spain for 2019 from [El Pais](https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html).
+
+<br>
+
+Turns out that since I've done this webscraping, an R package became available: [`infoelectoral`](https://ropenspain.github.io/infoelectoral/).
+
+<br> 
+
+Let's pretend there isn't any.
+
+## Hands-on case study: electoral results in Spain
+
+My process for webscraping is always the same:
+
+1. focus on a single page
+1. extract data for this page
+1. generalize to other pages
+1. add error handling and logging
+
+. . .
+
+Importantly, *separate webscraping from data processing* (we'll see why later).
 
 
-## Acknowledgements
+## Hands-on case study: electoral results in Spain
 
-Some of those slides were adapted from [Laurent Bergé's slides](https://shimmering-maamoul-4f92fd.netlify.app/docs/2022-2023_m2-data-2_webscraping-1_intro).
+{{< fa arrow-right >}} Let's start with the results in [Bacares in 2019](https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html).
 
+<br>
+
+In R, the main package for webscraping is [`rvest`](https://rvest.tidyverse.org/).
+
+<br>
+
+We can read HTML with `read_html()` and then select specific HTML elements with `html_element()` or `html_elements()` (this is where our CSS knowledge is useful).
+
+
+## Hands-on case study: electoral results in Spain
+
+<br>
+
+*Part 1 in R*
+
+## Hands-on case study: electoral results in Spain
+
+Now we have the table for one municipality: how can we generalize that?
+
+<br> Any idea?
+
+. . .
+
+<br>
+
+The URL is:
+
+```
+https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html
+```
+
+Three components: 
+
+* 01 is the comunidad code (for El Pais)
+* 04 is the province code
+* 19 is the municipality code
+
+## Hands-on case study: electoral results in Spain
+
+To generalize the code, we need to have to loop through all of those combinations:
+
+* for each comunidad:
+   * get the list of departments
+   * for each province:
+      * get the list of municipalities
+      * for each municipality:
+         * get the data
+         
+<br>
+
+. . .
+
+{{< fa arrow-right >}} new objective: gather all those combinations from the website
+
+## Hands-on case study: electoral results in Spain
+
+*Part 2 in R*
+
+## Hands-on case study: electoral results in Spain
+
+<br><br>
+
+Great, let's run everything!
+
+<br>
+
+. . .
+
+{{< fa arrow-right >}} &nbsp; Not so fast
+
+
+
+# Error handling
+
+## Catching errors
+
+The default behavior of errors is to stop the script, which leads to this kind
+of situation:
+
+. . .
+
+* 7pm - "great, I can just run the code during the night and go home"
+
+. . .
+
+* 7:02pm - *error in the code*
+
+. . .
+
+* 8am - "Fu@$?!"
+
+. . .
+
+<br>
+
+{{< fa arrow-right >}} &nbsp; need to handle errors with `tryCatch()`
+
+
+
+## Catching errors
+
+<br> <br> 
+
+<p> <span style="color: #ffaa00">try</span><span style="color: #d24dff">Catch</span> :</p>
+
+* <p><span style="color: #ffaa00">try</span> to run an expression </p>
+* <p> <span style="color: #d24dff">catch</span> the potential warnings/errors </p>
+
+## Catching errors
+
+Example: try to compute `log("a")`.
+
+```{r, eval=TRUE, error=TRUE}
+log("a")
+```
+
+<br>
+
+. . .
+
+What if I want to return `NA` instead of an error?
+
+
+## Catching errors
+
+```{.r}
+tryCatch(
+  # try to evaluate the expression
+  {
+    <EXPRESSION>,
+  },
+
+  # what happens if there's a warning?
+  warning = function(w) {
+    <BEHAVIOR WHEN THERE IS A WARNING>
+  },
+  # what happens if there's an error?
+  error = function(e) {
+    <BEHAVIOR WHEN THERE IS AN ERROR>
+  }
+)
+```
+
+## Catching errors
+
+```{r}
+tryCatch(
+  # try to evaluate the expression
+  {
+    log("a")
+  },
+
+  # what happens if there's a warning?
+  warning = function(w) {
+    print("There was a warning. Here's the message:")
+    print(w)
+  },
+
+  # what happens if there's an error?
+  error = function(e) {
+    print("There was an error. Returning `NA`.")
+    return(NA)
+  }
+)
+```
+
+## Catching errors
+
+```{r, eval=TRUE, error=TRUE}
+tryCatch(
+  # try to evaluate the expression
+  {
+    log("a")
+  },
+
+  # what happens if there's a warning?
+  warning = function(w) {
+    print("There was a warning. Here's the message:")
+    print(w)
+  },
+
+  # what happens if there's an error?
+  error = function(e) {
+    print("There was an error. Returning `NA`.")
+    return(NA)
+  }
+)
+```
+
+
+## Example with a loop
+
+Create a fake loop that goes from `i = 1:10` and creates a list containing `i*2`.
+Let's say that there's an error when `i = 3`:
+
+```{r, eval=FALSE, error=TRUE}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    stop("This is an error.")  # intentional error
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+}
+```
+
+## Example with a loop
+
+Create a fake loop that goes from `i = 1:10` and creates a list containing `i*2`.
+Let's say that there's an error when `i = 3`:
+
+```{r, eval=TRUE, error=TRUE}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    stop("This is an error.")  # intentional error
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+}
+```
+
+
+
+## Example with a loop
+
+<br>
+
+```{r, eval=TRUE, error=TRUE}
+print(x)
+```
+
+<br>
+
+{{< fa arrow-right >}} &nbsp; We don't have values for `i >= 3` because there was
+an error that stopped the loop.
+
+
+## Catching the error
+
+Now, let's catch the error to avoid breaking the loop:
+
+<br>
+
+```{.r code-line-numbers="5-13"}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    tryCatch(
+      {
+        stop("This is an error.") # intentional error
+      },
+      error = function(e) {
+        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
+        x[[i]] <- NULL
+      }
+    )
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+
+}
+```
+
+
+
+## Catching the error
+
+```{r, eval=TRUE, echo=FALSE, error=TRUE}
+x <- list()
+for (i in 1:10) {
+
+  if (i == 3) {
+    tryCatch(
+      {
+        stop("This is an error.")
+      },
+      error = function(e) {
+        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
+        x[[i]] <- NULL
+      }
+    )
+  } else {
+    x[[i]] <- 2*i
+  }
+
+  print(paste0("i = ", i, ". So far so good."))
+
+}
+
+print(x)
+```
+
+## Using `tryCatch` in our loop
+
+
+
+## Processing the data
+
+Note that until now, we have only *gathered* the data, not *processed* it.
+
+<br>
+
+. . .
+
+Maybe we even did too much work!
+
+<br>
+
+We could have simply downloaded each HTML page locally: remember that a webpage is just a text file!
+
+## Processing the data
+
+Advantages of downloading locally:
+
+* we reduce the time where we need an internet connection, therefore reducing several risks of failure
+* we improve the reproducibility of the dataset
+
+Cons:
+
+* depending on the number of pages and their size, it can take some storage space (but only if you really download tens or hundreds of thousands)
+
+
+## Conclusion
+
+Sometimes, scraping static websites is needed (but check for available APIs first!).
+
+<br>
+
+The package `rvest` is the best tool to do that in R. If you prefer Python, use `beautifulsoup`.
+
+## Conclusion
+
+Slides and code: [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025) (not available yet).
+
+Acknowledgements: some of those slides were adapted from [Laurent Bergé's slides](https://shimmering-maamoul-4f92fd.netlify.app/docs/2022-2023_m2-data-2_webscraping-1_intro).
 
 
 ## Appendix
