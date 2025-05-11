@@ -1,5 +1,5 @@
 ---
-title: "Handling large data with polars and tidypolars"
+title: "Handling large data with R and Python"
 
 format:
  revealjs:
@@ -20,14 +20,13 @@ execute:
 ## Plan for today {.nobreak}
 
 * Introduction:
-  - What is Polars and why is it useful?
-  - Broad presentation of the reasons it is fast
+  - What is Polars and how does it work?
   - Q&A number 1
 
 . . .
 
 * Hands-on practice: IPUMS census data (samples)
-  - Install and load polars, load data, perform easy operations, export data
+  - Install and load polars, load data, perform operations, export data
   - Using expressions
   - Writing custom functions
   - Q&A number 2
@@ -36,7 +35,7 @@ execute:
 
 * Going further
   - Using streaming, plugins, and future extensions
-  - Q&A number 3
+  - Alternative tools
 
 ## What this session will *not* cover
 
@@ -669,7 +668,33 @@ If you're interested:
 
 * [(Pretty) big data wrangling with DuckDB and Polars](https://grantmcdermott.com/duckdb-polars/slides/slides.html)
 
-# Q&A number 3
+
+## Alternative tools
+
+<br>
+
+There isn't *one tool to rule them all*.
+
+<br>
+
+Polars is great in many cases but your experience might vary depending on your type of data or operations you perform.
+
+<br>
+
+There are other tools to process large data in R.
+
+## Alternative tools
+
+* DuckDB: 
+  - also lazy evaluation
+  - has geospatial extensions
+  - accompanying package [`duckplyr`](https://duckplyr.tidyverse.org/) (same goal as `tidypolars` but uses DuckDB in the background)
+  - supported by Posit (the company behind RStudio and many packages)
+  
+* Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.
+
+* Spark: never used but available in R and Python.
+
 
 # Conclusion
 
@@ -702,13 +727,11 @@ Which language to use?
   
 ## Conclusion
 
-There exists other tools:
+<br><br>
 
-* DuckDB: 
-  - very fast and efficient too, uses SQL syntax
-  - available in R too
-  - accompanying package [`duckplyr`](https://duckplyr.tidyverse.org/) (same goal as `tidypolars` but uses DuckDB in the background)
-  
-* Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.
+There exists other tools using the same mechanisms, they are worth exploring!
 
-* Spark: never used but available in R and Python.
+<br> 
+
+In R, several packages use the `tidyverse` syntax but use those more powerful tools under the hood: `tidypolars`, `duckplyr`, `arrow`, etc.
+

@@ -11,7 +11,7 @@
 <link href="index_files/libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.29">
 
-  <title>Handling large data with polars and tidypolars</title>
+  <title>Handling large data with R and Python</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -194,7 +194,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Handling large data with polars and tidypolars</h1>
+  <h1 class="title">Handling large data with R and Python</h1>
 
 <div class="quarto-title-authors">
 </div>
@@ -205,8 +205,7 @@
 <ul>
 <li>Introduction:
 <ul>
-<li>What is Polars and why is it useful?</li>
-<li>Broad presentation of the reasons it is fast</li>
+<li>What is Polars and how does it work?</li>
 <li>Q&amp;A number 1</li>
 </ul></li>
 </ul>
@@ -214,7 +213,7 @@
 <ul>
 <li>Hands-on practice: IPUMS census data (samples)
 <ul>
-<li>Install and load polars, load data, perform easy operations, export data</li>
+<li>Install and load polars, load data, perform operations, export data</li>
 <li>Using expressions</li>
 <li>Writing custom functions</li>
 <li>Q&amp;A number 2</li>
@@ -226,7 +225,7 @@
 <li>Going further
 <ul>
 <li>Using streaming, plugins, and future extensions</li>
-<li>Q&amp;A number 3</li>
+<li>Alternative tools</li>
 </ul></li>
 </ul>
 </div>
@@ -767,12 +766,30 @@
 <li><p><a href="https://github.com/etiennebacher/tidypolars">R <code>tidypolars</code></a></p></li>
 <li><p><a href="https://grantmcdermott.com/duckdb-polars/slides/slides.html">(Pretty) big data wrangling with DuckDB and Polars</a></p></li>
 </ul>
-</section></section>
-<section id="qa-number-3" class="title-slide slide level1 center">
-<h1>Q&amp;A number 3</h1>
-
 </section>
-
+<section id="alternative-tools" class="slide level2">
+<h2>Alternative tools</h2>
+<p><br></p>
+<p>There isn’t <em>one tool to rule them all</em>.</p>
+<p><br></p>
+<p>Polars is great in many cases but your experience might vary depending on your type of data or operations you perform.</p>
+<p><br></p>
+<p>There are other tools to process large data in R.</p>
+</section>
+<section id="alternative-tools-1" class="slide level2">
+<h2>Alternative tools</h2>
+<ul>
+<li><p>DuckDB:</p>
+<ul>
+<li>also lazy evaluation</li>
+<li>has geospatial extensions</li>
+<li>accompanying package <a href="https://duckplyr.tidyverse.org/"><code>duckplyr</code></a> (same goal as <code>tidypolars</code> but uses DuckDB in the background)</li>
+<li>supported by Posit (the company behind RStudio and many packages)</li>
+</ul></li>
+<li><p>Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.</p></li>
+<li><p>Spark: never used but available in R and Python.</p></li>
+</ul>
+</section></section>
 <section>
 <section id="conclusion" class="title-slide slide level1 center">
 <h1>Conclusion</h1>
@@ -807,17 +824,10 @@
 </section>
 <section id="conclusion-3" class="slide level2">
 <h2>Conclusion</h2>
-<p>There exists other tools:</p>
-<ul>
-<li><p>DuckDB:</p>
-<ul>
-<li>very fast and efficient too, uses SQL syntax</li>
-<li>available in R too</li>
-<li>accompanying package <a href="https://duckplyr.tidyverse.org/"><code>duckplyr</code></a> (same goal as <code>tidypolars</code> but uses DuckDB in the background)</li>
-</ul></li>
-<li><p>Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.</p></li>
-<li><p>Spark: never used but available in R and Python.</p></li>
-</ul>
+<p><br><br></p>
+<p>There exists other tools using the same mechanisms, they are worth exploring!</p>
+<p><br></p>
+<p>In R, several packages use the <code>tidyverse</code> syntax but use those more powerful tools under the hood: <code>tidypolars</code>, <code>duckplyr</code>, <code>arrow</code>, etc.</p>
 
 </section></section>
     </div>

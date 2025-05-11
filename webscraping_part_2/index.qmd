@@ -1,10 +1,6 @@
 ---
-title: "Webscraping with RSelenium"
-subtitle: "Automate your browser actions"
-author: "Etienne Bacher"
-date: "`r Sys.Date()`"
-date-format: long
-institute: "LISER"
+title: "Webscraping -- Part 2"
+subtitle: "Dynamic webscraping"
 
 format:
  revealjs:
@@ -27,7 +23,7 @@ execute:
 <!-- Use chrome and not firefox -->
 
 
-## Introduction
+## Reminder
 
 <br>
 
@@ -42,14 +38,14 @@ Before scraping: is there an API?
 
     -   if yes, use the package (e.g. [`guardian`](https://guardian.news-r.org/), [`WDI`](https://vincentarelbundock.github.io/WDI/))
 
-    -   if no, build the API queries yourself with [`httr`](https://httr.r-lib.org/)
+    -   if no, build the API queries yourself with [`httr2`](https://httr2.r-lib.org/)
 
 -   if no, scrape (politely)
 :::
 
 <!-- https://talks.andrewheiss.com/2022-seacen/presentation/#/general-principles -->
 
-## Introduction
+## Reminder
 
 <br>
 
@@ -67,7 +63,7 @@ Scraping can be divided in two steps:
 These 2 steps don't necessarily require the same tools, and *shouldn't
 be carried out at the same time*.
 
-## Introduction
+## Reminder
 
 <br>
 
@@ -90,7 +86,7 @@ If this happens and you didn't save your progress, you lose **everything**.
 We don't have plenty of time, but we have plenty of disk storage. Use it!
 
 
-## Introduction
+## Reminder
 
 <br> <br> <br>
 
@@ -103,7 +99,7 @@ need on dynamic pages?**
 
 
 
-# Static and dynamic pages
+# Reminder: static and dynamic pages
 
 ## Static and dynamic pages
 
@@ -610,7 +606,8 @@ access it in another script (and offline) to manipulate it as we want.
 
 
 
-```{r}
+```{r, eval=FALSE}
+print(x)
 write(x, file = "contributors.html")
 # Later and in another script
 rvest::read_html("contributors.html")
