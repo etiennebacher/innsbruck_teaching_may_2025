@@ -37,6 +37,21 @@ This course:
 <!-- - Worked on migration economics (and some economic history), will be around during the week -->
 <!-- - Contact: etienne.bacher@liser.lu -->
 
+
+## Plan for today 
+
+* Introduction:
+  - Using APIs and webscraping
+  - How is a webpage built?
+  - Q&A number 1
+
+. . .
+
+* Hands-on practice: scraping El Pais for electoral results
+  - Scraping one page
+  - Scraping hundreds of pages
+  - Q&A number 2
+
 ## Introduction
 
 **What is webscraping?**
@@ -131,22 +146,17 @@ For this morning, the objectives are to:
 
 The web works with 3 languages:
 
-::: incremental
 1.   HTML: content and structure of the page
 1.   CSS: style of the page
 1.   JavaScript: interactions with the page
-:::
+
 
 ## HTML
 
 HTML tells us the content of the page and how it is structured using **tags**.
 
-. . .
-
 <br>
 Example: `<p>Hello my name is <b>Etienne</b></p>`
-
-. . .
 
 <br>
 
@@ -158,7 +168,6 @@ Popular tags:
 
 - `h1`-`h4`: headers
 - `p`: paragraph
-- `b`: bold
 - `a`: link
 - `div`: generic container
 
@@ -168,9 +177,7 @@ A tag can have *attributes*, e.g. `class` or `style`:
 
 <br>
 
-```
-<p class = "my_class">Hello my name is <b>Etienne</b></p>
-```
+`<p class = "my_class">Hello my name is <b>Etienne</b></p>`
 
 <br>
 This is used either for custom styling with CSS or for interactions with JavaScript.
@@ -242,7 +249,7 @@ JavaScript (JS) is a language that takes care of all the interactions with the p
 
 <br>
 
-It makes it more difficult to scrape, we'll see why in part 2 tomorrow.
+It makes it more difficult to scrape, we'll handle that in part 2 tomorrow.
 
 ---
 
@@ -266,9 +273,13 @@ their server and *dynamically* update the page.
 
 Example: [Premier League stats](https://www.premierleague.com/stats/top/players/goal_assist){.external target="_blank"}.
 
+# Q&A number 1
+
 # Hands-on case study: electoral results in Spain
 
 ## Hands-on case study: electoral results in Spain
+
+<br>
 
 Get results of municipal elections in Spain for 2019 from [El Pais](https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html).
 
@@ -441,7 +452,7 @@ tryCatch(
 )
 ```
 
-## Catching errors
+## Catching errors {.nobreak}
 
 ```{r}
 tryCatch(
