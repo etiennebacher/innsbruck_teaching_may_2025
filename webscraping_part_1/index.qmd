@@ -49,6 +49,7 @@ This course:
 
 * Hands-on practice: scraping El Pais for electoral results
   - Scraping one page
+  - Being polite
   - Scraping hundreds of pages
   - Q&A number 2
 
@@ -304,12 +305,13 @@ My process for webscraping is always the same:
 
 Importantly, *separate webscraping from data processing* (we'll see why later).
 
-
-## Hands-on case study: electoral results in Spain
+<br>
 
 {{< fa arrow-right >}} Let's start with the results in [Bacares in 2019](https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html).
 
-<br>
+
+
+## Hands-on case study: electoral results in Spain
 
 In R, the main package for webscraping is [`rvest`](https://rvest.tidyverse.org/).
 
@@ -324,11 +326,48 @@ We can read HTML with `read_html()` and then select specific HTML elements with 
 
 *Part 1 in R*
 
+## Being polite
+
+Three rules to follow for polite webscraping:
+
+- seeking permission
+- taking slowly
+- never asking twice
+
+. . .
+
+<br>
+
+There's an R package for that<sup>TM</sup>: [`polite`](https://dmi3kno.github.io/polite/).
+
+## Being polite
+
+Instead of:
+
+```{r}
+url <- "https://www.something.html"
+read_html(url)
+```
+
+we do:
+
+```{r}
+library(polite)
+url <- bow("https://www.something.html")
+scrape(url)
+```
+
+## Being polite
+
+By default we use a 5-second delay or what the website recommends.
+
+<br>
+
+If we want to lower this, we need to specify our own "User-Agent", which is sort of our ID card on the web.
+
 ## Hands-on case study: electoral results in Spain
 
-Now we have the table for one municipality: how can we generalize that?
-
-<br> Any idea?
+Now we have the table for one municipality: how can we generalize that (politely)?
 
 . . .
 
@@ -348,7 +387,7 @@ Three components:
 
 ## Hands-on case study: electoral results in Spain
 
-To generalize the code, we need to have to loop through all of those combinations:
+To generalize the code, we need to loop through all of those combinations:
 
 * for each comunidad:
    * get the list of departments

@@ -6,7 +6,6 @@
 
 library(tidyverse)
 library(rvest)
-library(xml2)
 library(janitor)
 
 
@@ -27,6 +26,31 @@ html |>
 
 
 
+### Part 1 bis: being polite
+
+url <- bow("https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html")
+
+html <- scrape(url)
+
+html |> 
+  html_element("h1") |> 
+  html_text()
+
+html |> 
+  html_element("#tablaVotosPartidos") |> 
+  html_table() |> 
+  clean_names()
+
+
+# Reduce the delay between scraping but also change the user agent so that
+# the package is not wrongly accused
+
+# To be used in bow()
+user_agent <- "Teaching webscraping -- Etienne Bacher"
+set_scrape_delay(2)
+
+
+
 ### Part 2: generalize this to all provinces + departments + municipalities
 
 # URL: first number is comunidad, second one is province, third one is
@@ -41,9 +65,13 @@ html |>
 
 com_id <- c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
             "12", "13", "14", "15", "16", "17", "18", "19")
-address <- "https://resultados.elpais.com/elecciones/2019/municipales/"
+address <- bow(
+  "https://resultados.elpais.com/elecciones/2019/municipales/",
+  user_agent = user_agent
+)
 
-com_info <- read_html(address) |>
+com_info <- address |> 
+  scrape() |>
   html_element("#comboCA") |>
   html_children()
 
@@ -73,7 +101,8 @@ for (i in com_id) {
   message("Getting provinces for comunidad ", i)
   
   # Get names
-  choices <- read_html(paste0(address, i)) |>
+  url_i <- nod(address, paste0("elecciones/2019/municipales/", i))
+  choices <- scrape(url_i) |>
     html_element("#comboCIR") |>
     html_children()
   
@@ -83,8 +112,8 @@ for (i in com_id) {
   
   # Remove placeholder
   names_prov <- names_prov[names_prov != "Provincia"]
-  if (length(names_prov2) == 0) {
-    names_prov2 <- "Single provincia"
+  if (length(names_prov) == 0) {
+    names_prov <- "Single provincia"
     id_prov <- NA
   } 
 
@@ -105,12 +134,18 @@ com_prov_name <- left_join(
   prov_name,
   by = c("com_index" = "comunidad")
 ) |>
-  mutate(provincia = ifelse(comunidad %in% c("Melilla", "Ceuta"),
-                            "Not provincia",
-                            provincia),
-         prov_index = ifelse(nchar(prov_index) == 1,
-                             paste0("0", prov_index),
-                             prov_index))
+  mutate(
+    provincia = ifelse(
+      comunidad %in% c("Melilla", "Ceuta"),
+      "Not provincia",
+      provincia
+    ),
+    prov_index = ifelse(
+      nchar(prov_index) == 1,
+      paste0("0", prov_index),
+      prov_index
+    )
+  )
 
 # Note : 50 comunidad (7 of which are made of a single province), 2 are not comunidad (Melilla and Ceuta)
 
@@ -124,11 +159,9 @@ for (row in 1:nrow(com_prov_name)) {
   prov_id <- com_prov_name[row, "prov_index"]
   message("Getting municipalities for comunidad ", com_id, " and province ", prov_id)
   
-  prov_url <- paste0(
-    "https://resultados.elpais.com/elecciones/2019/municipales/", 
-    com_id, "/", prov_id, ".html"
-  )
-  municip_selector <- read_html(prov_url) |> 
+  prov_url <- paste0("elecciones/2019/municipales/", com_id, "/", prov_id, ".html") |> 
+    nod()
+  municip_selector <- scrape(prov_url) |> 
     html_element("#comboMUN") |>
     html_children() 
   
