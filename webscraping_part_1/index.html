@@ -435,19 +435,17 @@
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
 <p><strong>What is webscraping?</strong></p>
-<div class="fragment">
 <p><br></p>
 <p>It is the action of collecting data from webpages.</p>
 <p><em>Anything that is visible on a webpage can be webscraped.</em></p>
-</div>
-</section>
-<section id="introduction-1" class="slide level2">
-<h2>Introduction</h2>
+<div class="fragment">
+<p><br></p>
 <p><strong>Why is it useful?</strong></p>
 <p><br></p>
 <p>To get original data that isn’t available anywhere else.</p>
+</div>
 </section>
-<section id="introduction-2" class="slide level2">
+<section id="introduction-1" class="slide level2">
 <h2>Introduction</h2>
 <p><strong>But</strong> webscraping can be time-consuming and isn’t always possible.</p>
 <p><br></p>
@@ -500,8 +498,8 @@
 <ul>
 <li>understand the content of a webpage</li>
 <li>scrape a webpage</li>
-<li>process the scraped content</li>
 <li>be able to apply this to thousands of pages</li>
+<li>process the scraped content</li>
 </ul>
 </section>
 <section>
@@ -565,7 +563,7 @@
 <p>There is no content at all, e.g.&nbsp;it’s only here to say “bold text should be in red and underlined”.</p>
 <p><br></p>
 <p>Example:</p>
-<pre><code>p {
+<pre><code>b {
   color: red;
   border-bottom: 1px dashed;
 }</code></pre>
@@ -588,6 +586,78 @@ h1 ~ p        : all "p" that follow an "h1" (siblings placed after)
 [class^=my]   : all elements whose class starts with "my"
 p[class*=low] : all "p" elements whose class contains the string low</code></pre>
 </div>
+</section>
+<section id="example" class="slide level2">
+<h2>Example</h2>
+<p><br></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource html number-lines code-with-copy"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">&lt;h2&gt;</span>Who am I?<span class="kw">&lt;/h2&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"intro"</span><span class="kw">&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="kw">&lt;p&gt;</span>I'm <span class="kw">&lt;span</span> <span class="er">class</span><span class="ot">=</span><span class="st">"age"</span><span class="kw">&gt;</span>34<span class="kw">&lt;/span&gt;</span> and </span>
+<span id="cb4-4"><a href="#cb4-4"></a>    measure <span class="kw">&lt;span</span> <span class="er">class</span><span class="ot">=</span><span class="st">"unit"</span><span class="kw">&gt;</span>1.70m<span class="kw">&lt;/span&gt;</span>.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="kw">&lt;/div&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"info"</span><span class="kw">&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>  <span class="kw">&lt;div&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="kw">&lt;p</span> <span class="er">id</span><span class="ot">=</span><span class="st">"like"</span><span class="kw">&gt;</span>What I like:<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>    <span class="kw">&lt;ul&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>      <span class="kw">&lt;li&gt;</span>Barcelona<span class="kw">&lt;/li&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>      <span class="kw">&lt;li&gt;</span>winning the Ballon d'Or every odd year<span class="kw">&lt;/li&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>    <span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>    <span class="kw">&lt;p</span> <span class="er">class</span><span class="ot">=</span><span class="st">"extra"</span><span class="kw">&gt;</span>I forgot to say that I like scoring over 100 </span>
+<span id="cb4-14"><a href="#cb4-14"></a>       goals per season.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>  <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="kw">&lt;/div&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="example-1" class="slide level2">
+<h2>Example</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>CSS selector for this paragraph?</p>
+</div><div class="column fragment fade-in" style="width:40%;">
+<p><code>p.extra</code></p>
+</div>
+</div>
+<div class="sourceCode" id="cb5" data-code-line-numbers="13-14"><pre class="sourceCode numberSource html number-lines code-with-copy"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">&lt;h2&gt;</span>Who am I?<span class="kw">&lt;/h2&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"intro"</span><span class="kw">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="kw">&lt;p&gt;</span>I'm <span class="kw">&lt;span</span> <span class="er">class</span><span class="ot">=</span><span class="st">"age"</span><span class="kw">&gt;</span>34<span class="kw">&lt;/span&gt;</span> and </span>
+<span id="cb5-4"><a href="#cb5-4"></a>    measure <span class="kw">&lt;span</span> <span class="er">class</span><span class="ot">=</span><span class="st">"unit"</span><span class="kw">&gt;</span>1.70m<span class="kw">&lt;/span&gt;</span>.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="kw">&lt;/div&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"info"</span><span class="kw">&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="kw">&lt;div&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="kw">&lt;p</span> <span class="er">id</span><span class="ot">=</span><span class="st">"like"</span><span class="kw">&gt;</span>What I like:<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>    <span class="kw">&lt;ul&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>      <span class="kw">&lt;li&gt;</span>Barcelona<span class="kw">&lt;/li&gt;</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a>      <span class="kw">&lt;li&gt;</span>winning the Ballon d'Or every odd year<span class="kw">&lt;/li&gt;</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a>    <span class="kw">&lt;p</span> <span class="er">class</span><span class="ot">=</span><span class="st">"extra"</span><span class="kw">&gt;</span>I forgot to say that I like scoring over 100 </span>
+<span id="cb5-14"><a href="#cb5-14"></a>       goals per season.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>  <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="kw">&lt;/div&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="example-2" class="slide level2">
+<h2>Example</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>CSS selector for this <code>div</code>?</p>
+</div><div class="column fragment fade-in" style="width:40%;">
+<p><code>div.info &gt; div</code></p>
+</div>
+</div>
+<div class="sourceCode" id="cb6" data-code-line-numbers="7-15"><pre class="sourceCode numberSource html number-lines code-with-copy"><code class="sourceCode html"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">&lt;h2&gt;</span>Who am I?<span class="kw">&lt;/h2&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"intro"</span><span class="kw">&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="kw">&lt;p&gt;</span>I'm <span class="kw">&lt;span</span> <span class="er">class</span><span class="ot">=</span><span class="st">"age"</span><span class="kw">&gt;</span>34<span class="kw">&lt;/span&gt;</span> and </span>
+<span id="cb6-4"><a href="#cb6-4"></a>    measure <span class="kw">&lt;span</span> <span class="er">class</span><span class="ot">=</span><span class="st">"unit"</span><span class="kw">&gt;</span>1.70m<span class="kw">&lt;/span&gt;</span>.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="kw">&lt;/div&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"info"</span><span class="kw">&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="kw">&lt;div&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>    <span class="kw">&lt;p</span> <span class="er">id</span><span class="ot">=</span><span class="st">"like"</span><span class="kw">&gt;</span>What I like:<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="kw">&lt;ul&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a>      <span class="kw">&lt;li&gt;</span>Barcelona<span class="kw">&lt;/li&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>      <span class="kw">&lt;li&gt;</span>winning the Ballon d'Or every odd year<span class="kw">&lt;/li&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>    <span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a>    <span class="kw">&lt;p</span> <span class="er">class</span><span class="ot">=</span><span class="st">"extra"</span><span class="kw">&gt;</span>I forgot to say that I like scoring over 100 </span>
+<span id="cb6-14"><a href="#cb6-14"></a>       goals per season.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a>  <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="kw">&lt;/div&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="javascript" class="slide level2">
 <h2>JavaScript</h2>
@@ -621,12 +691,12 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 </section>
 
 <section>
-<section id="hands-on-case-study-electoral-results-in-spain" class="title-slide slide level1 center">
-<h1>Hands-on case study: electoral results in Spain</h1>
+<section id="case-study-electoral-results-in-spain" class="title-slide slide level1 center">
+<h1>Case study: electoral results in Spain</h1>
 
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-1" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-1" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p><br></p>
 <p>Get results of municipal elections in Spain for 2019 from <a href="https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html">El Pais</a>.</p>
 <p><br></p>
@@ -634,8 +704,8 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <p><br></p>
 <p>Let’s pretend there isn’t any.</p>
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-2" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-2" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p>My process for webscraping is always the same:</p>
 <ol type="1">
 <li>focus on a single page</li>
@@ -649,14 +719,14 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <p><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> Let’s start with the results in <a href="https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html">Bacares in 2019</a>.</p>
 </div>
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-3" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-3" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p>In R, the main package for webscraping is <a href="https://rvest.tidyverse.org/"><code>rvest</code></a>.</p>
 <p><br></p>
 <p>We can read HTML with <code>read_html()</code> and then select specific HTML elements with <code>html_element()</code> or <code>html_elements()</code> (this is where our CSS knowledge is useful).</p>
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-4" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-4" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p><br></p>
 <p><em>Part 1 in R</em></p>
 </section>
@@ -677,14 +747,14 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <h2>Being polite</h2>
 <p>Instead of:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://www.something.html"</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">read_html</span>(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://www.something.html"</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">read_html</span>(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>we do:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(polite)</span>
-<span id="cb5-2"><a href="#cb5-2"></a>url <span class="ot">&lt;-</span> <span class="fu">bow</span>(<span class="st">"https://www.something.html"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">scrape</span>(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">library</span>(polite)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>url <span class="ot">&lt;-</span> <span class="fu">bow</span>(<span class="st">"https://www.something.html"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="fu">scrape</span>(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="being-polite-2" class="slide level2">
@@ -693,13 +763,15 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <p><br></p>
 <p>If we want to lower this, we need to specify our own “User-Agent”, which is sort of our ID card on the web.</p>
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-5" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-5" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p>Now we have the table for one municipality: how can we generalize that (politely)?</p>
 <div class="fragment">
 <p><br></p>
 <p>The URL is:</p>
 <pre><code>https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html</code></pre>
+</div>
+<div class="fragment">
 <p>Three components:</p>
 <ul>
 <li>01 is the comunidad code (for El Pais)</li>
@@ -708,13 +780,13 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 </ul>
 </div>
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-6" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-6" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p>To generalize the code, we need to loop through all of those combinations:</p>
 <ul>
 <li>for each comunidad:
 <ul>
-<li>get the list of departments</li>
+<li>get the list of provinces</li>
 <li>for each province:
 <ul>
 <li>get the list of municipalities</li>
@@ -730,12 +802,12 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <p><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> new objective: gather all those combinations from the website</p>
 </div>
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-7" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-7" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p><em>Part 2 in R</em></p>
 </section>
-<section id="hands-on-case-study-electoral-results-in-spain-8" class="slide level2">
-<h2>Hands-on case study: electoral results in Spain</h2>
+<section id="case-study-electoral-results-in-spain-8" class="slide level2">
+<h2>Case study: electoral results in Spain</h2>
 <p><br><br></p>
 <p>Great, let’s run everything!</p>
 <p><br></p>
@@ -790,7 +862,7 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <h2>Catching errors</h2>
 <p>Example: try to compute <code>log("a")</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">log</span>(<span class="st">"a"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">log</span>(<span class="st">"a"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in log("a"): non-numeric argument to mathematical function</code></pre>
 </div>
@@ -802,66 +874,66 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 </section>
 <section id="catching-errors-3" class="slide level2">
 <h2>Catching errors</h2>
-<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">tryCatch</span>(</span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="co"># try to evaluate the expression</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>  {</span>
-<span id="cb9-4"><a href="#cb9-4"></a>    <span class="sc">&lt;</span>EXPRESSION<span class="sc">&gt;</span>,</span>
-<span id="cb9-5"><a href="#cb9-5"></a>  },</span>
-<span id="cb9-6"><a href="#cb9-6"></a></span>
-<span id="cb9-7"><a href="#cb9-7"></a>  <span class="co"># what happens if there's a warning?</span></span>
-<span id="cb9-8"><a href="#cb9-8"></a>  <span class="at">warning =</span> <span class="cf">function</span>(w) {</span>
-<span id="cb9-9"><a href="#cb9-9"></a>    <span class="sc">&lt;</span>BEHAVIOR WHEN THERE IS A WARNING<span class="sc">&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a>  },</span>
-<span id="cb9-11"><a href="#cb9-11"></a>  <span class="co"># what happens if there's an error?</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb9-13"><a href="#cb9-13"></a>    <span class="sc">&lt;</span>BEHAVIOR WHEN THERE IS AN ERROR<span class="sc">&gt;</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a>  }</span>
-<span id="cb9-15"><a href="#cb9-15"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="co"># try to evaluate the expression</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  {</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    <span class="sc">&lt;</span>EXPRESSION<span class="sc">&gt;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5"></a>  },</span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a>  <span class="co"># what happens if there's a warning?</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a>  <span class="at">warning =</span> <span class="cf">function</span>(w) {</span>
+<span id="cb12-9"><a href="#cb12-9"></a>    <span class="sc">&lt;</span>BEHAVIOR WHEN THERE IS A WARNING<span class="sc">&gt;</span></span>
+<span id="cb12-10"><a href="#cb12-10"></a>  },</span>
+<span id="cb12-11"><a href="#cb12-11"></a>  <span class="co"># what happens if there's an error?</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb12-13"><a href="#cb12-13"></a>    <span class="sc">&lt;</span>BEHAVIOR WHEN THERE IS AN ERROR<span class="sc">&gt;</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a>  }</span>
+<span id="cb12-15"><a href="#cb12-15"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="catching-errors-4" class="slide level2 nobreak">
+<section id="catching-errors-4" class="slide level2">
 <h2>Catching errors</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">tryCatch</span>(</span>
-<span id="cb10-2"><a href="#cb10-2"></a>  <span class="co"># try to evaluate the expression</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a>  {</span>
-<span id="cb10-4"><a href="#cb10-4"></a>    <span class="fu">log</span>(<span class="st">"a"</span>)</span>
-<span id="cb10-5"><a href="#cb10-5"></a>  },</span>
-<span id="cb10-6"><a href="#cb10-6"></a></span>
-<span id="cb10-7"><a href="#cb10-7"></a>  <span class="co"># what happens if there's a warning?</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a>  <span class="at">warning =</span> <span class="cf">function</span>(w) {</span>
-<span id="cb10-9"><a href="#cb10-9"></a>    <span class="fu">print</span>(<span class="st">"There was a warning. Here's the message:"</span>)</span>
-<span id="cb10-10"><a href="#cb10-10"></a>    <span class="fu">print</span>(w)</span>
-<span id="cb10-11"><a href="#cb10-11"></a>  },</span>
-<span id="cb10-12"><a href="#cb10-12"></a></span>
-<span id="cb10-13"><a href="#cb10-13"></a>  <span class="co"># what happens if there's an error?</span></span>
-<span id="cb10-14"><a href="#cb10-14"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb10-15"><a href="#cb10-15"></a>    <span class="fu">print</span>(<span class="st">"There was an error. Returning `NA`."</span>)</span>
-<span id="cb10-16"><a href="#cb10-16"></a>    <span class="fu">return</span>(<span class="cn">NA</span>)</span>
-<span id="cb10-17"><a href="#cb10-17"></a>  }</span>
-<span id="cb10-18"><a href="#cb10-18"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="co"># try to evaluate the expression</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>  {</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    <span class="fu">log</span>(<span class="st">"a"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5"></a>  },</span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>  <span class="co"># what happens if there's a warning?</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a>  <span class="at">warning =</span> <span class="cf">function</span>(w) {</span>
+<span id="cb13-9"><a href="#cb13-9"></a>    <span class="fu">print</span>(<span class="st">"There was a warning. Here's the message:"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10"></a>    <span class="fu">print</span>(w)</span>
+<span id="cb13-11"><a href="#cb13-11"></a>  },</span>
+<span id="cb13-12"><a href="#cb13-12"></a></span>
+<span id="cb13-13"><a href="#cb13-13"></a>  <span class="co"># what happens if there's an error?</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb13-15"><a href="#cb13-15"></a>    <span class="fu">print</span>(<span class="st">"There was an error. Returning `NA`."</span>)</span>
+<span id="cb13-16"><a href="#cb13-16"></a>    <span class="fu">return</span>(<span class="cn">NA</span>)</span>
+<span id="cb13-17"><a href="#cb13-17"></a>  }</span>
+<span id="cb13-18"><a href="#cb13-18"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="catching-errors-5" class="slide level2">
+<section id="catching-errors-5" class="slide level2 nobreak">
 <h2>Catching errors</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">tryCatch</span>(</span>
-<span id="cb11-2"><a href="#cb11-2"></a>  <span class="co"># try to evaluate the expression</span></span>
-<span id="cb11-3"><a href="#cb11-3"></a>  {</span>
-<span id="cb11-4"><a href="#cb11-4"></a>    <span class="fu">log</span>(<span class="st">"a"</span>)</span>
-<span id="cb11-5"><a href="#cb11-5"></a>  },</span>
-<span id="cb11-6"><a href="#cb11-6"></a></span>
-<span id="cb11-7"><a href="#cb11-7"></a>  <span class="co"># what happens if there's a warning?</span></span>
-<span id="cb11-8"><a href="#cb11-8"></a>  <span class="at">warning =</span> <span class="cf">function</span>(w) {</span>
-<span id="cb11-9"><a href="#cb11-9"></a>    <span class="fu">print</span>(<span class="st">"There was a warning. Here's the message:"</span>)</span>
-<span id="cb11-10"><a href="#cb11-10"></a>    <span class="fu">print</span>(w)</span>
-<span id="cb11-11"><a href="#cb11-11"></a>  },</span>
-<span id="cb11-12"><a href="#cb11-12"></a></span>
-<span id="cb11-13"><a href="#cb11-13"></a>  <span class="co"># what happens if there's an error?</span></span>
-<span id="cb11-14"><a href="#cb11-14"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb11-15"><a href="#cb11-15"></a>    <span class="fu">print</span>(<span class="st">"There was an error. Returning `NA`."</span>)</span>
-<span id="cb11-16"><a href="#cb11-16"></a>    <span class="fu">return</span>(<span class="cn">NA</span>)</span>
-<span id="cb11-17"><a href="#cb11-17"></a>  }</span>
-<span id="cb11-18"><a href="#cb11-18"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb14-2"><a href="#cb14-2"></a>  <span class="co"># try to evaluate the expression</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a>  {</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="fu">log</span>(<span class="st">"a"</span>)</span>
+<span id="cb14-5"><a href="#cb14-5"></a>  },</span>
+<span id="cb14-6"><a href="#cb14-6"></a></span>
+<span id="cb14-7"><a href="#cb14-7"></a>  <span class="co"># what happens if there's a warning?</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>  <span class="at">warning =</span> <span class="cf">function</span>(w) {</span>
+<span id="cb14-9"><a href="#cb14-9"></a>    <span class="fu">print</span>(<span class="st">"There was a warning. Here's the message:"</span>)</span>
+<span id="cb14-10"><a href="#cb14-10"></a>    <span class="fu">print</span>(w)</span>
+<span id="cb14-11"><a href="#cb14-11"></a>  },</span>
+<span id="cb14-12"><a href="#cb14-12"></a></span>
+<span id="cb14-13"><a href="#cb14-13"></a>  <span class="co"># what happens if there's an error?</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb14-15"><a href="#cb14-15"></a>    <span class="fu">print</span>(<span class="st">"There was an error. Returning `NA`."</span>)</span>
+<span id="cb14-16"><a href="#cb14-16"></a>    <span class="fu">return</span>(<span class="cn">NA</span>)</span>
+<span id="cb14-17"><a href="#cb14-17"></a>  }</span>
+<span id="cb14-18"><a href="#cb14-18"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "There was an error. Returning `NA`."</code></pre>
 </div>
@@ -874,34 +946,34 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <h2>Example with a loop</h2>
 <p>Create a fake loop that goes from <code>i = 1:10</code> and creates a list containing <code>i*2</code>. Let’s say that there’s an error when <code>i = 3</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
-<span id="cb14-3"><a href="#cb14-3"></a></span>
-<span id="cb14-4"><a href="#cb14-4"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">3</span>) {</span>
-<span id="cb14-5"><a href="#cb14-5"></a>    <span class="fu">stop</span>(<span class="st">"This is an error."</span>)  <span class="co"># intentional error</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a>  } <span class="cf">else</span> {</span>
-<span id="cb14-7"><a href="#cb14-7"></a>    x[[i]] <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>i</span>
-<span id="cb14-8"><a href="#cb14-8"></a>  }</span>
-<span id="cb14-9"><a href="#cb14-9"></a></span>
-<span id="cb14-10"><a href="#cb14-10"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"i = "</span>, i, <span class="st">". So far so good."</span>))</span>
-<span id="cb14-11"><a href="#cb14-11"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb17-5"><a href="#cb17-5"></a>    <span class="fu">stop</span>(<span class="st">"This is an error."</span>)  <span class="co"># intentional error</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>  } <span class="cf">else</span> {</span>
+<span id="cb17-7"><a href="#cb17-7"></a>    x[[i]] <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>i</span>
+<span id="cb17-8"><a href="#cb17-8"></a>  }</span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"i = "</span>, i, <span class="st">". So far so good."</span>))</span>
+<span id="cb17-11"><a href="#cb17-11"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="example-with-a-loop-1" class="slide level2">
 <h2>Example with a loop</h2>
 <p>Create a fake loop that goes from <code>i = 1:10</code> and creates a list containing <code>i*2</code>. Let’s say that there’s an error when <code>i = 3</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
-<span id="cb15-3"><a href="#cb15-3"></a></span>
-<span id="cb15-4"><a href="#cb15-4"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">3</span>) {</span>
-<span id="cb15-5"><a href="#cb15-5"></a>    <span class="fu">stop</span>(<span class="st">"This is an error."</span>)  <span class="co"># intentional error</span></span>
-<span id="cb15-6"><a href="#cb15-6"></a>  } <span class="cf">else</span> {</span>
-<span id="cb15-7"><a href="#cb15-7"></a>    x[[i]] <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>i</span>
-<span id="cb15-8"><a href="#cb15-8"></a>  }</span>
-<span id="cb15-9"><a href="#cb15-9"></a></span>
-<span id="cb15-10"><a href="#cb15-10"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"i = "</span>, i, <span class="st">". So far so good."</span>))</span>
-<span id="cb15-11"><a href="#cb15-11"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb18-3"><a href="#cb18-3"></a></span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb18-5"><a href="#cb18-5"></a>    <span class="fu">stop</span>(<span class="st">"This is an error."</span>)  <span class="co"># intentional error</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>  } <span class="cf">else</span> {</span>
+<span id="cb18-7"><a href="#cb18-7"></a>    x[[i]] <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>i</span>
+<span id="cb18-8"><a href="#cb18-8"></a>  }</span>
+<span id="cb18-9"><a href="#cb18-9"></a></span>
+<span id="cb18-10"><a href="#cb18-10"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"i = "</span>, i, <span class="st">". So far so good."</span>))</span>
+<span id="cb18-11"><a href="#cb18-11"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "i = 1. So far so good."
 [1] "i = 2. So far so good."</code></pre>
@@ -915,7 +987,7 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <h2>Example with a loop</h2>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">print</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">print</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [1] 2
@@ -930,27 +1002,25 @@ p[class*=low] : all "p" elements whose class contains the string low</code></pre
 <section id="catching-the-error" class="slide level2">
 <h2>Catching the error</h2>
 <p>Now, let’s catch the error to avoid breaking the loop:</p>
-<p><br></p>
-<div class="sourceCode" id="cb20" data-code-line-numbers="5-13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb20-2"><a href="#cb20-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
-<span id="cb20-3"><a href="#cb20-3"></a></span>
-<span id="cb20-4"><a href="#cb20-4"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">3</span>) {</span>
-<span id="cb20-5"><a href="#cb20-5"></a>    <span class="fu">tryCatch</span>(</span>
-<span id="cb20-6"><a href="#cb20-6"></a>      {</span>
-<span id="cb20-7"><a href="#cb20-7"></a>        <span class="fu">stop</span>(<span class="st">"This is an error."</span>) <span class="co"># intentional error</span></span>
-<span id="cb20-8"><a href="#cb20-8"></a>      },</span>
-<span id="cb20-9"><a href="#cb20-9"></a>      <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb20-10"><a href="#cb20-10"></a>        <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Error for i = "</span>, i, <span class="st">". `x[["</span>, i, <span class="st">"]]` will be NULL."</span>))</span>
-<span id="cb20-11"><a href="#cb20-11"></a>        x[[i]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb20-12"><a href="#cb20-12"></a>      }</span>
-<span id="cb20-13"><a href="#cb20-13"></a>    )</span>
-<span id="cb20-14"><a href="#cb20-14"></a>  } <span class="cf">else</span> {</span>
-<span id="cb20-15"><a href="#cb20-15"></a>    x[[i]] <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>i</span>
-<span id="cb20-16"><a href="#cb20-16"></a>  }</span>
-<span id="cb20-17"><a href="#cb20-17"></a></span>
-<span id="cb20-18"><a href="#cb20-18"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"i = "</span>, i, <span class="st">". So far so good."</span>))</span>
-<span id="cb20-19"><a href="#cb20-19"></a></span>
-<span id="cb20-20"><a href="#cb20-20"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23" data-code-line-numbers="4-16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb23-3"><a href="#cb23-3"></a>  </span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb23-5"><a href="#cb23-5"></a>    {</span>
+<span id="cb23-6"><a href="#cb23-6"></a>      <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb23-7"><a href="#cb23-7"></a>        <span class="fu">stop</span>(<span class="st">"This is an error."</span>)  <span class="co"># intentional error</span></span>
+<span id="cb23-8"><a href="#cb23-8"></a>      } <span class="cf">else</span> {</span>
+<span id="cb23-9"><a href="#cb23-9"></a>        x[[i]] <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>i</span>
+<span id="cb23-10"><a href="#cb23-10"></a>      }</span>
+<span id="cb23-11"><a href="#cb23-11"></a>    },</span>
+<span id="cb23-12"><a href="#cb23-12"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb23-13"><a href="#cb23-13"></a>      <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Error for i = "</span>, i, <span class="st">". `x[["</span>, i, <span class="st">"]]` will be NULL."</span>))</span>
+<span id="cb23-14"><a href="#cb23-14"></a>      x[[i]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb23-15"><a href="#cb23-15"></a>    }</span>
+<span id="cb23-16"><a href="#cb23-16"></a>  )</span>
+<span id="cb23-17"><a href="#cb23-17"></a>  </span>
+<span id="cb23-18"><a href="#cb23-18"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"i = "</span>, i, <span class="st">". So far so good."</span>))</span>
+<span id="cb23-19"><a href="#cb23-19"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="catching-the-error-1" class="slide level2">
 <h2>Catching the error</h2>
@@ -1027,8 +1097,27 @@ NULL
 <li>depending on the number of pages and their size, it can take some storage space (but only if you really download tens or hundreds of thousands)</li>
 </ul>
 </section>
+<section id="ethics" class="slide level2">
+<h2>Ethics</h2>
+<p>Pay attention to a website’s Terms of Use/Service.</p>
+<p><br></p>
+<p>Some websites explicitly say that you are not allowed to programmatically access their resources.</p>
+<p><br></p>
+
+<img data-src="img/terms-of-use.png" class="r-stretch"></section>
+<section id="legality" class="slide level2">
+<h2>Legality</h2>
+<p><strong>I’m not a lawyer.</strong></p>
+<p><br></p>
+<p>For me, scraping politely (slowly, identifying yourself) on websites where data is publicly available is fine.</p>
+<p><br></p>
+<p>Scraping data behind a paywall or needing an account is not, because the data is not publicly available.</p>
+<p><br></p>
+<p>Can get banned temporarily or permanently from some websites.</p>
+</section>
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
+<p><br></p>
 <p>Sometimes, scraping static websites is needed (but check for available APIs first!).</p>
 <p><br></p>
 <p>The package <code>rvest</code> is the best tool to do that in R. If you prefer Python, use <code>beautifulsoup</code>.</p>
@@ -1036,12 +1125,9 @@ NULL
 <section id="conclusion-1" class="slide level2">
 <h2>Conclusion</h2>
 <p><br></p>
-<p>Code on GitHub (not available yet): <a href="https://github.com/etiennebacher/innsbruck_teaching_may_2025">https://github.com/etiennebacher/innsbruck_teaching_may_2025</a>.</p>
+<p>Code on GitHub (not available yet): <a href="https://github.com/etiennebacher/innsbruck_teaching_may_2025">https://github.com/etiennebacher/innsbruck_teaching_may_2025</a></p>
 <p><br></p>
 <p>Acknowledgements: some of those slides were adapted from <a href="https://shimmering-maamoul-4f92fd.netlify.app/docs/2022-2023_m2-data-2_webscraping-1_intro">Laurent Bergé’s slides</a>.</p>
-</section>
-<section id="appendix" class="slide level2">
-<h2>Appendix</h2>
 </section>
 <section id="session-information" class="slide level2">
 <h2>Session information</h2>

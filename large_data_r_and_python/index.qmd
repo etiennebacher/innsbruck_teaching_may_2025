@@ -25,7 +25,7 @@ execute:
 
 . . .
 
-* Hands-on practice: IPUMS census data (samples)
+* Case study: IPUMS census data (samples)
   - Install and load polars, load data, perform operations, export data
   - Using expressions
   - Writing custom functions
@@ -440,7 +440,7 @@ See in the last part.
 # Q&A number 1
 
 
-# Hands-on practice: IPUMS census data (samples)
+# Case study: IPUMS census data (samples)
 
 ## A note on file formats {.nobreak}
 

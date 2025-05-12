@@ -60,16 +60,15 @@ This course:
 
 **What is webscraping?**
 
-. . .
-
 <br>
 
 It is the action of collecting data from webpages.
 
 *Anything that is visible on a webpage can be webscraped.*
 
+. . .
 
-## Introduction
+<br>
 
 **Why is it useful?**
 
@@ -141,8 +140,8 @@ For this morning, the objectives are to:
 
 * understand the content of a webpage
 * scrape a webpage
-* process the scraped content
 * be able to apply this to thousands of pages
+* process the scraped content
 
 # What does a webpage contain?
 
@@ -216,7 +215,7 @@ There is no content at all, e.g. it's only here to say "bold text should be in r
 Example:
 
 ```
-p {
+b {
   color: red;
   border-bottom: 1px dashed;
 }
@@ -241,6 +240,89 @@ h1 ~ p        : all "p" that follow an "h1" (siblings placed after)
 [id]          : all elements with an existing "id" attribute
 [class^=my]   : all elements whose class starts with "my"
 p[class*=low] : all "p" elements whose class contains the string low
+```
+
+## Example
+
+<br>
+
+```{.html}
+<h2>Who am I?</h2>
+<div class="intro">
+  <p>I'm <span class="age">34</span> and 
+    measure <span class="unit">1.70m</span>.</p>
+</div>
+<div class="info">
+  <div>
+    <p id="like">What I like:</p>
+    <ul>
+      <li>Barcelona</li>
+      <li>winning the Ballon d'Or every odd year</li>
+    </ul>
+    <p class="extra">I forgot to say that I like scoring over 100 
+       goals per season.</p>
+  </div>
+</div>
+```
+
+## Example
+
+:::: {.columns}
+::: {.column width="60%"}
+CSS selector for this paragraph?
+:::
+::: {.column width="40%" .fragment .fade-in}
+`p.extra`
+:::
+::::
+
+```{.html code-line-numbers="13-14"}
+<h2>Who am I?</h2>
+<div class="intro">
+  <p>I'm <span class="age">34</span> and 
+    measure <span class="unit">1.70m</span>.</p>
+</div>
+<div class="info">
+  <div>
+    <p id="like">What I like:</p>
+    <ul>
+      <li>Barcelona</li>
+      <li>winning the Ballon d'Or every odd year</li>
+    </ul>
+    <p class="extra">I forgot to say that I like scoring over 100 
+       goals per season.</p>
+  </div>
+</div>
+```
+
+## Example
+
+:::: {.columns}
+::: {.column width="60%"}
+CSS selector for this `div`?
+:::
+::: {.column width="40%" .fragment .fade-in}
+`div.info > div`
+:::
+::::
+
+```{.html code-line-numbers="7-15"}
+<h2>Who am I?</h2>
+<div class="intro">
+  <p>I'm <span class="age">34</span> and 
+    measure <span class="unit">1.70m</span>.</p>
+</div>
+<div class="info">
+  <div>
+    <p id="like">What I like:</p>
+    <ul>
+      <li>Barcelona</li>
+      <li>winning the Ballon d'Or every odd year</li>
+    </ul>
+    <p class="extra">I forgot to say that I like scoring over 100 
+       goals per season.</p>
+  </div>
+</div>
 ```
 
 ## JavaScript
@@ -279,9 +361,9 @@ Example: [Premier League stats](https://www.premierleague.com/stats/top/players/
 
 # Q&A number 1
 
-# Hands-on case study: electoral results in Spain
+# Case study: electoral results in Spain
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 <br>
 
@@ -295,7 +377,7 @@ Turns out that since I've done this webscraping, an R package became available: 
 
 Let's pretend there isn't any.
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 My process for webscraping is always the same:
 
@@ -314,7 +396,7 @@ Importantly, *separate webscraping from data processing* (we'll see why later).
 
 
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 In R, the main package for webscraping is [`rvest`](https://rvest.tidyverse.org/).
 
@@ -323,7 +405,7 @@ In R, the main package for webscraping is [`rvest`](https://rvest.tidyverse.org/
 We can read HTML with `read_html()` and then select specific HTML elements with `html_element()` or `html_elements()` (this is where our CSS knowledge is useful).
 
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 <br>
 
@@ -368,7 +450,7 @@ By default we use a 5-second delay or what the website recommends.
 
 If we want to lower this, we need to specify our own "User-Agent", which is sort of our ID card on the web.
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 Now we have the table for one municipality: how can we generalize that (politely)?
 
@@ -382,18 +464,20 @@ The URL is:
 https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html
 ```
 
+. . .
+
 Three components: 
 
 * 01 is the comunidad code (for El Pais)
 * 04 is the province code
 * 19 is the municipality code
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 To generalize the code, we need to loop through all of those combinations:
 
 * for each comunidad:
-   * get the list of departments
+   * get the list of provinces
    * for each province:
       * get the list of municipalities
       * for each municipality:
@@ -405,11 +489,11 @@ To generalize the code, we need to loop through all of those combinations:
 
 {{< fa arrow-right >}} new objective: gather all those combinations from the website
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 *Part 2 in R*
 
-## Hands-on case study: electoral results in Spain
+## Case study: electoral results in Spain
 
 <br><br>
 
@@ -494,7 +578,7 @@ tryCatch(
 )
 ```
 
-## Catching errors {.nobreak}
+## Catching errors
 
 ```{r}
 tryCatch(
@@ -517,7 +601,7 @@ tryCatch(
 )
 ```
 
-## Catching errors
+## Catching errors {.nobreak}
 
 ```{r, eval=TRUE, error=TRUE}
 tryCatch(
@@ -599,28 +683,25 @@ an error that stopped the loop.
 
 Now, let's catch the error to avoid breaking the loop:
 
-<br>
-
-```{.r code-line-numbers="5-13"}
+```{.r code-line-numbers="4-16"}
 x <- list()
 for (i in 1:10) {
-
-  if (i == 3) {
-    tryCatch(
-      {
-        stop("This is an error.") # intentional error
-      },
-      error = function(e) {
-        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
-        x[[i]] <- NULL
+  
+  tryCatch(
+    {
+      if (i == 3) {
+        stop("This is an error.")  # intentional error
+      } else {
+        x[[i]] <- 2*i
       }
-    )
-  } else {
-    x[[i]] <- 2*i
-  }
-
+    },
+    error = function(e) {
+      print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
+      x[[i]] <- NULL
+    }
+  )
+  
   print(paste0("i = ", i, ". So far so good."))
-
 }
 ```
 
@@ -631,23 +712,22 @@ for (i in 1:10) {
 ```{r, eval=TRUE, echo=FALSE, error=TRUE}
 x <- list()
 for (i in 1:10) {
-
-  if (i == 3) {
-    tryCatch(
-      {
-        stop("This is an error.")
-      },
-      error = function(e) {
-        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
-        x[[i]] <- NULL
+  
+  tryCatch(
+    {
+      if (i == 3) {
+        stop("This is an error.")  # intentional error
+      } else {
+        x[[i]] <- 2*i
       }
-    )
-  } else {
-    x[[i]] <- 2*i
-  }
-
+    },
+    error = function(e) {
+      print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
+      x[[i]] <- NULL
+    }
+  )
+  
   print(paste0("i = ", i, ". So far so good."))
-
 }
 
 print(x)
@@ -683,7 +763,42 @@ Cons:
 * depending on the number of pages and their size, it can take some storage space (but only if you really download tens or hundreds of thousands)
 
 
+## Ethics
+
+
+Pay attention to a website's Terms of Use/Service.
+
+<br>
+
+Some websites explicitly say that you are not allowed to programmatically access
+their resources.
+
+<br>
+
+![](img/terms-of-use.png)
+
+
+## Legality
+
+
+**I'm not a lawyer.**
+
+<br>
+
+For me, scraping politely (slowly, identifying yourself) on websites where data is publicly available is fine.
+
+<br>
+
+Scraping data behind a paywall or needing an account is not, because the data is not publicly available. 
+
+<br>
+
+Can get banned temporarily or permanently from some websites.
+
+
 ## Conclusion
+
+<br>
 
 Sometimes, scraping static websites is needed (but check for available APIs first!).
 
@@ -691,18 +806,17 @@ Sometimes, scraping static websites is needed (but check for available APIs firs
 
 The package `rvest` is the best tool to do that in R. If you prefer Python, use `beautifulsoup`.
 
+
 ## Conclusion
 
 <br>
 
-Code on GitHub (not available yet): [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025).
+Code on GitHub (not available yet): [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025)
 
 <br>
 
 Acknowledgements: some of those slides were adapted from [Laurent Bergé's slides](https://shimmering-maamoul-4f92fd.netlify.app/docs/2022-2023_m2-data-2_webscraping-1_intro).
 
-
-## Appendix
 
 
 ## Session information
