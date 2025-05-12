@@ -300,11 +300,13 @@ If everything works fine, this will print a bunch of messages and open a "marion
 
 <br>
 
-If you have a message saying that "Java is not found" (or similar), you need to
-install Java:
+<!-- If you have a message saying that "Java is not found" (or similar), you need to -->
+<!-- install Java: -->
 
-* Windows search bar -> "Software Center"
-* Install Java
+<!-- * Windows search bar -> "Software Center" -->
+<!-- * Install Java -->
+
+Install the package [`rJavaEnv`](https://www.ekotov.pro/rJavaEnv/), and then run `rJavaEnv::java_quick_install(version = 21)`.
 
 
 ## Installation issues
@@ -382,10 +384,6 @@ following error:
 <br>
 
 To get rid of this error, you also need to run `driver$server$stop()`.
-
-
-
-
 
 
 # Exercise 1
@@ -2125,7 +2123,7 @@ Article from Ivan Millanes:
 
 For reference, here's the code to extract the list of contributors:
 
-```{r appendix, echo=TRUE}
+```{r appendix, echo=TRUE, eval=FALSE}
 library(rvest)
 
 html <- read_html("contributors.html")
@@ -2156,10 +2154,10 @@ all_contributors <- c(bullet_points, blockquote, others)
 
 ## Appendix
 
-```{r appendix, eval=TRUE, echo = FALSE}
+```{r appendix, eval=FALSE, echo = FALSE}
 ```
 
-```{r eval=TRUE, echo = FALSE}
+```{r eval=FALSE, echo = FALSE}
 all_contributors[1:136]
 ```
 
