@@ -29,7 +29,10 @@ This course:
 
 - 3 parts: webscraping (parts 1 and 2), and handling large data with R and Python
 - No assignments, only check for attendance
-- All slides online at [https://www.etiennebacher.com/software](https://www.etiennebacher.com/software)
+- All slides:
+  - [https://innsbruck-webscraping-part-1.etiennebacher.com](https://innsbruck-webscraping-part-1.etiennebacher.com)
+  - [https://innsbruck-webscraping-part-2.etiennebacher.com](https://innsbruck-webscraping-part-2.etiennebacher.com)
+  - [https://innsbruck-large-data-r-python.etiennebacher.com](https://innsbruck-large-data-r-python.etiennebacher.com)
 
 <!-- About me: -->
 
@@ -652,7 +655,7 @@ print(x)
 
 ## Using `tryCatch` in our loop
 
-
+*Part 3 in R*
 
 ## Processing the data
 
@@ -690,7 +693,11 @@ The package `rvest` is the best tool to do that in R. If you prefer Python, use 
 
 ## Conclusion
 
-Slides and code: [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025) (not available yet).
+<br>
+
+Code on GitHub (not available yet): [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025).
+
+<br>
 
 Acknowledgements: some of those slides were adapted from [Laurent Bergé's slides](https://shimmering-maamoul-4f92fd.netlify.app/docs/2022-2023_m2-data-2_webscraping-1_intro).
 
