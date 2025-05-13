@@ -5,17 +5,20 @@ library(RSelenium)
 library(logger)
 
 # Create folder where HTML files will be stored if it doesn't already exist
-if (!dir.exists("data")) {
-  dir.create("data")
+if (!dir.exists("webscraping_part_2/data")) {
+  dir.create("webscraping_part_2/data")
 }
-if (!dir.exists("data/modals")) {
-  dir.create("data/modals")
+if (!dir.exists("webscraping_part_2/data/modals")) {
+  dir.create("webscraping_part_2/data/modals")
 }
-
 
 # Initiate RSelenium
-link <- "http://www.inci.org.br/acervodigital/livros.php"
-driver <- rsDriver(browser = c("firefox"))
+link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
+driver <- rsDriver(
+  browser = "firefox", 
+  chromever = NULL,
+  extraCapabilities = list(acceptInsecureCerts = TRUE)
+) 
 remote_driver <- driver[["client"]]
 
 # Go the website
@@ -33,6 +36,34 @@ remote_driver$
 remote_driver$
   findElement(using = 'name', value = "Reset2")$
   clickElement()
+
+
+# Make the list of elements
+buttons <- remote_driver$findElements(using = 'id', value = "link_ver_detalhe")
+
+# Highlight each button one by one
+for (i in seq_along(buttons)) {
+  buttons[[i]]$highlightElement()
+  Sys.sleep(1)
+}
+
+for (i in seq_along(buttons)) {
+  # open the modal
+  buttons[[i]]$clickElement()
+  Sys.sleep(1)
+  
+  # get the HTML and save it
+  tmp <- remote_driver$getPageSource()[[1]]
+  write(tmp, file = paste0("webscraping_part_2/data/modals/modal-", i, ".html"))
+  
+  # quit the modal (by pressing "Escape")
+  remote_driver$findElement(
+    using = "xpath",
+    value = "/html/body"
+  )$sendKeysToElement(list(key = "escape"))
+}
+
+
 
 
 # Wait for the first page to load

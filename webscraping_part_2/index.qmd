@@ -670,7 +670,7 @@ Use Selenium if:
 
 <br>
 
-[Open website](http://www.inci.org.br/acervodigital/livros.php){.external target="_blank"}
+[Open website](https://www.acervodigital.museudaimigracao.org.br/livros.php){.external target="_blank"}
 
 <br>
 
@@ -1164,295 +1164,7 @@ Great, let's run everything!
 
 ## Catching errors
 
-<br>
-
-The default behavior of errors is to stop the script, which leads to this kind
-of situation:
-
-. . .
-
-* 7pm - "great, I can just run the code during the night and go home"
-
-. . .
-
-* 7:02pm - *error in the code*
-
-. . .
-
-* 8am - "Fu@?!"
-
-. . .
-
-<br>
-
-{{< fa arrow-right >}} &nbsp; need to handle errors with `tryCatch()`
-
-
-
-## Catching errors
-
-<br> <br> <br> <br>
-
-:::{style="text-align: center; font-size: 2.3rem"}
-<p> <span style="color: #ffaa00">try</span><span style="color: #d24dff">Catch</span> </p>
-:::
-
-<i id="myicon1" class="fas fa-turn-down" aria-hidden="true"></i>
-
-<i id="myicon2" class="fas fa-turn-down fa-flip-horizontal" aria-hidden="true"></i>
-
-
-:::: {.columns}
-
-::: {.column width="20%"}
-:::
-
-::: {.column width="28%"}
-<p style="text-align: center"><span style="color: #ffaa00">try</span> to run an expression </p>
-:::
-
-::: {.column width="4%"}
-:::
-
-::: {.column width="34%"}
-<p style="text-align: center"> <span style="color: #d24dff">catch</span> the potential warnings/errors </p>
-:::
-
-::: {.column width="20%"}
-:::
-
-::::
-
-
-
-
-## Catching errors
-
-<br>
-
-Example: try to compute `log("a")`.
-
-```{r, eval=TRUE, error=TRUE}
-log("a")
-```
-
-<br>
-
-. . .
-
-What if I want to return `NA` instead of an error?
-
-
-## Catching errors
-
-```{.r}
-tryCatch(
-  # try to evaluate the expression
-  {
-    <EXPRESSION>,
-  },
-
-  # what happens if there's a warning?
-  warning = function(w) {
-    <BEHAVIOR WHEN THERE IS A WARNING>
-  },
-  # what happens if there's an error?
-  error = function(e) {
-    <BEHAVIOR WHEN THERE IS AN ERROR>
-  }
-)
-```
-
-## Catching errors
-
-```{r}
-tryCatch(
-  # try to evaluate the expression
-  {
-    log("a")
-  },
-
-  # what happens if there's a warning?
-  warning = function(w) {
-    print("There was a warning. Here's the message:")
-    print(w)
-  },
-
-  # what happens if there's an error?
-  error = function(e) {
-    print("There was an error. Returning `NA`.")
-    return(NA)
-  }
-)
-```
-
-## Catching errors
-
-```{r, eval=TRUE, error=TRUE}
-tryCatch(
-  # try to evaluate the expression
-  {
-    log("a")
-  },
-
-  # what happens if there's a warning?
-  warning = function(w) {
-    print("There was a warning. Here's the message:")
-    print(w)
-  },
-
-  # what happens if there's an error?
-  error = function(e) {
-    print("There was an error. Returning `NA`.")
-    return(NA)
-  }
-)
-```
-
-
-## Example with a loop
-
-Create a fake loop that goes from `i = 1:10` and creates a list containing `i*2`.
-Let's say that there's an error when `i = 3`:
-
-```{r, eval=FALSE, error=TRUE}
-x <- list()
-for (i in 1:10) {
-
-  if (i == 3) {
-    stop("This is an error.")  # intentional error
-  } else {
-    x[[i]] <- 2*i
-  }
-
-  print(paste0("i = ", i, ". So far so good."))
-}
-```
-
-## Example with a loop
-
-Create a fake loop that goes from `i = 1:10` and creates a list containing `i*2`.
-Let's say that there's an error when `i = 3`:
-
-```{r, eval=TRUE, error=TRUE}
-x <- list()
-for (i in 1:10) {
-
-  if (i == 3) {
-    stop("This is an error.")  # intentional error
-  } else {
-    x[[i]] <- 2*i
-  }
-
-  print(paste0("i = ", i, ". So far so good."))
-}
-```
-
-
-
-## Example with a loop
-
-<br>
-
-```{r, eval=TRUE, error=TRUE}
-print(x)
-```
-
-<br>
-
-{{< fa arrow-right >}} &nbsp; We don't have values for `i >= 3` because there was
-an error that stopped the loop.
-
-
-## Catching the error
-
-<br>
-
-Now, let's catch the error to avoid breaking the loop:
-
-
-```{.r code-line-numbers="5-13"}
-x <- list()
-for (i in 1:10) {
-
-  if (i == 3) {
-    tryCatch(
-      {
-        stop("This is an error.") # intentional error
-      },
-      error = function(e) {
-        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
-        x[[i]] <- NULL
-      }
-    )
-  } else {
-    x[[i]] <- 2*i
-  }
-
-  print(paste0("i = ", i, ". So far so good."))
-
-}
-```
-
-
-
-## Catching the error
-
-```{r, eval=TRUE, echo=FALSE, error=TRUE}
-x <- list()
-for (i in 1:10) {
-
-  if (i == 3) {
-    tryCatch(
-      {
-        stop("This is an error.")
-      },
-      error = function(e) {
-        print(paste0("Error for i = ", i, ". `x[[", i, "]]` will be NULL."))
-        x[[i]] <- NULL
-      }
-    )
-  } else {
-    x[[i]] <- 2*i
-  }
-
-  print(paste0("i = ", i, ". So far so good."))
-
-}
-
-print(x)
-```
-
-## Using `tryCatch` in our loop
-
-We can now catch errors when we try to get the content of each modal:
-
-```{r}
-tryCatch(
-  {
-    # open modal
-    buttons[[modal_index]]$clickElement()
-
-    Sys.sleep(1.5)
-
-    # Get the HTML and save it
-    tmp <- remote_driver$getPageSource()[[1]]
-    write(tmp, file = paste0("data/modals/page-", page_index, "-modal-", modal_index, ".html"))
-
-    # Leave the modal
-    body <- remote_driver$findElement(using = "xpath", value = "/html/body")
-    body$sendKeysToElement(list(key = "escape"))
-
-    message(paste("  Scraped modal", modal_index))
-  },
-  error = function(e) {
-    message(paste("  Failed to scrape modal", modal_index))
-    message(paste("  The error was ", e))
-    next
-  }
-)
-```
-
+See the `tryCatch()` slides from yesterday
 
 
 # 2. Loading times
@@ -2013,7 +1725,7 @@ relations <- data.table::rbindlist(purrr::map(list_out, 2)) |>
 
   * APIs, packages
   * static webscraping
-  * custom `POST` requests
+  * custom `POST` requests (link in conclusion)
 
 . . .
 
@@ -2115,6 +1827,9 @@ Article from Ivan Millanes:
 
 [https://ivanmillanes.netlify.app/post/2020-06-30-webscraping-with-rselenium-and-rvest/](https://ivanmillanes.netlify.app/post/2020-06-30-webscraping-with-rselenium-and-rvest/){.external target="_blank"}
 
+<br>
+
+Using POST requests instead of `RSelenium`: [https://www.etiennebacher.com/posts/2023-05-09-making-post-requests-with-r/](https://www.etiennebacher.com/posts/2023-05-09-making-post-requests-with-r/)
 
 
 # Appendix
