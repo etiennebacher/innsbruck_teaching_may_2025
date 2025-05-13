@@ -884,12 +884,7 @@
 
 <aside><div>
 <p>Although, in this case, it would be ok to treat it directly in the same script because it’s a single page.</p>
-</div></aside></section></section>
-<section>
-<section id="exercise-2-a-harder-real-life-example" class="title-slide slide level1 center">
-<h1>Exercise 2: a harder &amp; real-life example</h1>
-
-</section>
+</div></aside></section>
 <section class="slide level2">
 
 <p><br><br></p>
@@ -902,6 +897,11 @@
 <p><br></p>
 <p>Let’s now dive into a more complex example, where RSelenium is the only way to obtain the data.</p>
 </div>
+</section></section>
+<section>
+<section id="exercise-2-a-harder-real-life-example" class="title-slide slide level1 center">
+<h1>Exercise 2: a harder &amp; real-life example</h1>
+
 </section>
 <section id="before-using-rselenium" class="slide level2">
 <h2>Before using RSelenium</h2>
@@ -964,7 +964,7 @@
 </ol>
 <div class="fragment fade-in" data-fragment-index="3">
 <div class="fragment highlight-current-blue" data-fragment-index="3">
-<p>Yes but we still need RSelenium to change pages (and this is just training anyway).</p>
+<p>Not really and we still need RSelenium to change pages (and this is just training anyway).</p>
 </div>
 </div>
 </section>
@@ -977,9 +977,13 @@
 <span id="cb13-3" class="hljs-ln-code"><a href="#cb13-3"></a>link <span class="ot">&lt;-</span> <span class="st">"http://www.inci.org.br/acervodigital/livros.php"</span></span>
 <span id="cb13-4" class="hljs-ln-code"><a href="#cb13-4"></a></span>
 <span id="cb13-5" class="hljs-ln-code"><a href="#cb13-5"></a><span class="co"># Automatically go the website</span></span>
-<span id="cb13-6" class="hljs-ln-code"><a href="#cb13-6"></a>driver <span class="ot">&lt;-</span> <span class="fu">rsDriver</span>(<span class="at">browser =</span> <span class="fu">c</span>(<span class="st">"firefox"</span>))</span>
-<span id="cb13-7" class="hljs-ln-code"><a href="#cb13-7"></a>remote_driver <span class="ot">&lt;-</span> driver[[<span class="st">"client"</span>]]</span>
-<span id="cb13-8" class="hljs-ln-code"><a href="#cb13-8"></a>remote_driver<span class="sc">$</span><span class="fu">navigate</span>(link)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-6" class="hljs-ln-code"><a href="#cb13-6"></a>driver <span class="ot">&lt;-</span> <span class="fu">rsDriver</span>(</span>
+<span id="cb13-7" class="hljs-ln-code"><a href="#cb13-7"></a>  <span class="at">browser =</span> <span class="st">"firefox"</span>, </span>
+<span id="cb13-8" class="hljs-ln-code"><a href="#cb13-8"></a>  <span class="co"># Needed since the certificate expired</span></span>
+<span id="cb13-9" class="hljs-ln-code"><a href="#cb13-9"></a>  <span class="at">extraCapabilities =</span> <span class="fu">list</span>(<span class="at">acceptInsecureCerts =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb13-10" class="hljs-ln-code"><a href="#cb13-10"></a>) </span>
+<span id="cb13-11" class="hljs-ln-code"><a href="#cb13-11"></a>remote_driver <span class="ot">&lt;-</span> driver[[<span class="st">"client"</span>]]</span>
+<span id="cb13-12" class="hljs-ln-code"><a href="#cb13-12"></a>remote_driver<span class="sc">$</span><span class="fu">navigate</span>(link)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="make-an-example-1" class="slide level2" data-auto-animate="true">
@@ -1872,17 +1876,12 @@
 </div>
 </div>
 </div>
-</section></section>
-<section id="thanks" class="title-slide slide level1 center">
-<h1>Thanks!</h1>
-<p><br></p>
-<p>Source code for slides and exercises:</p>
-<p><a href="https://github.com/etiennebacher/webscraping-teaching" class="external" target="_blank">https://github.com/etiennebacher/webscraping-teaching</a></p>
-<p><br></p>
-<p>Comments, typos, etc.:</p>
-<p><a href="https://github.com/etiennebacher/webscraping-teaching/issues" class="external" target="_blank">https://github.com/etiennebacher/webscraping-teaching/issues</a></p>
 </section>
-
+<section id="conclusion" class="slide level2">
+<h2>Conclusion</h2>
+<p><br></p>
+<p>Code on GitHub (not available yet): <a href="https://github.com/etiennebacher/innsbruck_teaching_may_2025">https://github.com/etiennebacher/innsbruck_teaching_may_2025</a></p>
+</section></section>
 <section id="good-resources" class="title-slide slide level1 center">
 <h1>Good resources</h1>
 <p><br></p>

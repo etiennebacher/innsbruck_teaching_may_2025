@@ -620,8 +620,6 @@ Although, in this case, it would be ok to treat it directly in the same script
 because it's a single page.
 :::
 
-# Exercise 2: a harder & real-life example
-
 ---
 
 <br><br>
@@ -642,6 +640,9 @@ rvest::read_html("https://www.r-project.org/contributors.html")
 
 Let's now dive into a more complex example, where RSelenium is the only
 way to obtain the data.
+
+
+# Exercise 2: a harder & real-life example
 
 
 ## Before using RSelenium
@@ -718,7 +719,7 @@ No.
 
 ::: {.fragment .fade-in fragment-index=3}
 ::: {.fragment .highlight-current-blue fragment-index=3}
-Yes but we still need RSelenium to change pages (and this is just training
+Not really and we still need RSelenium to change pages (and this is just training
 anyway).
 :::
 :::
@@ -735,7 +736,11 @@ library(RSelenium)
 link <- "http://www.inci.org.br/acervodigital/livros.php"
 
 # Automatically go the website
-driver <- rsDriver(browser = c("firefox"))
+driver <- rsDriver(
+  browser = "firefox", 
+  # Needed since the certificate expired
+  extraCapabilities = list(acceptInsecureCerts = TRUE) 
+) 
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 ```
@@ -1798,19 +1803,11 @@ For static webscraping, check out the package [`polite`](https://dmi3kno.github.
 
 
 
-# Thanks!
+## Conclusion
 
 <br>
 
-Source code for slides and exercises:
-
-[https://github.com/etiennebacher/webscraping-teaching](https://github.com/etiennebacher/webscraping-teaching){.external target="_blank"}
-
-<br>
-
-Comments, typos, etc.:
-
-[https://github.com/etiennebacher/webscraping-teaching/issues](https://github.com/etiennebacher/webscraping-teaching/issues){.external target="_blank"}
+Code on GitHub (not available yet): [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025)
 
 
 # Good resources
