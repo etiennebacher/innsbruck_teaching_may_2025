@@ -1212,10 +1212,7 @@
 <p>Find the button to go to the next page:</p>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>remote_driver<span class="sc">$</span><span class="fu">findElement</span>(</span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="st">"css"</span>,</span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="st">"#paginacao &gt; div.btn:nth-child(4)"</span></span>
-<span id="cb22-4"><a href="#cb22-4"></a>)<span class="sc">$</span><span class="fu">highlightElement</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>remote_driver<span class="sc">$</span><span class="fu">findElement</span>(<span class="st">"id"</span>, <span class="st">"2"</span>)<span class="sc">$</span><span class="fu">highlightElement</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="nested-loops" class="slide level2">
@@ -1336,12 +1333,14 @@
 <span id="cb26-23" class="hljs-ln-code"><a href="#cb26-23"></a>  <span class="co"># When we got all modals of one page, go to the next page (except if</span></span>
 <span id="cb26-24" class="hljs-ln-code"><a href="#cb26-24"></a>  <span class="co"># we're on the last one)</span></span>
 <span id="cb26-25" class="hljs-ln-code"><a href="#cb26-25"></a>  <span class="cf">if</span> (page_index <span class="sc">!=</span> <span class="dv">2348</span>) {</span>
-<span id="cb26-26" class="hljs-ln-code"><a href="#cb26-26"></a>    remote_driver<span class="sc">$</span></span>
-<span id="cb26-27" class="hljs-ln-code"><a href="#cb26-27"></a>      <span class="fu">findElement</span>(<span class="st">"css"</span>, <span class="st">"#paginacao &gt; div.btn:nth-child(4)"</span>)<span class="sc">$</span></span>
-<span id="cb26-28" class="hljs-ln-code"><a href="#cb26-28"></a>      <span class="fu">clickElement</span>()</span>
-<span id="cb26-29" class="hljs-ln-code"><a href="#cb26-29"></a>  }</span>
-<span id="cb26-30" class="hljs-ln-code"><a href="#cb26-30"></a></span>
-<span id="cb26-31" class="hljs-ln-code"><a href="#cb26-31"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-26" class="hljs-ln-code"><a href="#cb26-26"></a>    <span class="co"># Give selenium a bit of time to actually find the</span></span>
+<span id="cb26-27" class="hljs-ln-code"><a href="#cb26-27"></a>    <span class="co"># element before clicking it</span></span>
+<span id="cb26-28" class="hljs-ln-code"><a href="#cb26-28"></a>    elem <span class="ot">&lt;-</span> remote_driver<span class="sc">$</span><span class="fu">findElement</span>(<span class="st">"id"</span>, <span class="fu">as.character</span>(page_index <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb26-29" class="hljs-ln-code"><a href="#cb26-29"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">1</span>)</span>
+<span id="cb26-30" class="hljs-ln-code"><a href="#cb26-30"></a>    elem<span class="sc">$</span><span class="fu">clickElement</span>()</span>
+<span id="cb26-31" class="hljs-ln-code"><a href="#cb26-31"></a>  }</span>
+<span id="cb26-32" class="hljs-ln-code"><a href="#cb26-32"></a></span>
+<span id="cb26-33" class="hljs-ln-code"><a href="#cb26-33"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section class="slide level2">
 
@@ -1391,7 +1390,7 @@
 </section>
 <section id="loading-times-2" class="slide level2">
 <h2>Loading times</h2>
-<div class="sourceCode" id="cb27" data-code-line-numbers="11,23,33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="cf">for</span> (page_index <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2348</span>) {</span>
+<div class="sourceCode" id="cb27" data-code-line-numbers="11,23,35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="cf">for</span> (page_index <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2348</span>) {</span>
 <span id="cb27-2"><a href="#cb27-2"></a></span>
 <span id="cb27-3"><a href="#cb27-3"></a>  <span class="co"># Find all buttons "Ver Mais" on the page</span></span>
 <span id="cb27-4"><a href="#cb27-4"></a>  buttons <span class="ot">&lt;-</span> remote_driver<span class="sc">$</span></span>
@@ -1419,14 +1418,16 @@
 <span id="cb27-26"><a href="#cb27-26"></a>  <span class="co"># When we got all modals of one page, go to the next page (except if</span></span>
 <span id="cb27-27"><a href="#cb27-27"></a>  <span class="co"># we're on the last one)</span></span>
 <span id="cb27-28"><a href="#cb27-28"></a>  <span class="cf">if</span> (page_index <span class="sc">!=</span> <span class="dv">2348</span>) {</span>
-<span id="cb27-29"><a href="#cb27-29"></a>    remote_driver<span class="sc">$</span></span>
-<span id="cb27-30"><a href="#cb27-30"></a>      <span class="fu">findElement</span>(<span class="st">"css"</span>, <span class="st">"#paginacao &gt; div.btn:nth-child(4)"</span>)<span class="sc">$</span></span>
-<span id="cb27-31"><a href="#cb27-31"></a>      <span class="fu">clickElement</span>()</span>
-<span id="cb27-32"><a href="#cb27-32"></a></span>
-<span id="cb27-33"><a href="#cb27-33"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">3</span>)</span>
-<span id="cb27-34"><a href="#cb27-34"></a>  }</span>
-<span id="cb27-35"><a href="#cb27-35"></a></span>
-<span id="cb27-36"><a href="#cb27-36"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-29"><a href="#cb27-29"></a>    <span class="co"># Give selenium a bit of time to actually find the</span></span>
+<span id="cb27-30"><a href="#cb27-30"></a>    <span class="co"># element before clicking it</span></span>
+<span id="cb27-31"><a href="#cb27-31"></a>    elem <span class="ot">&lt;-</span> remote_driver<span class="sc">$</span><span class="fu">findElement</span>(<span class="st">"id"</span>, <span class="fu">as.character</span>(page_index <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb27-32"><a href="#cb27-32"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">1</span>)</span>
+<span id="cb27-33"><a href="#cb27-33"></a>    elem<span class="sc">$</span><span class="fu">clickElement</span>()</span>
+<span id="cb27-34"><a href="#cb27-34"></a></span>
+<span id="cb27-35"><a href="#cb27-35"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">3</span>)</span>
+<span id="cb27-36"><a href="#cb27-36"></a>  }</span>
+<span id="cb27-37"><a href="#cb27-37"></a></span>
+<span id="cb27-38"><a href="#cb27-38"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="loading-times-3" class="slide level2">
 <h2>Loading times</h2>
@@ -1473,7 +1474,6 @@
 </section>
 <section id="loading-times-6" class="slide level2">
 <h2>Loading times</h2>
-<p><br> <br></p>
 <p>In our case, we want to check whether we can find the buttons “Ver Mais”.</p>
 <p><br></p>
 <p>Are the buttons loaded?</p>
@@ -1481,8 +1481,21 @@
 <li>if no, wait 0.5 seconds (or whatever duration you want), and try again;</li>
 <li>if yes, go to the next step</li>
 </ul>
-<p><br></p>
 <p><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> &nbsp; Do this 20 times max</p>
+<div class="callout callout-important callout-captioned callout-style-default">
+<div class="callout-body">
+<div class="callout-caption">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>This section didn’t work during live demo. The problem is that when we press the button to go to the next page and wait for loading, all the old “Ver mais” buttons are still here and therefore get detected.</p>
+<p>The <code>while</code> loop is therefore flawed.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="loading-times-7" class="slide level2">
 <h2>Loading times</h2>
@@ -1563,12 +1576,14 @@
 <span id="cb32-50"><a href="#cb32-50"></a>  <span class="co"># When we got all modals of one page, go to the next page (except if</span></span>
 <span id="cb32-51"><a href="#cb32-51"></a>  <span class="co"># we're on the last one)</span></span>
 <span id="cb32-52"><a href="#cb32-52"></a>  <span class="cf">if</span> (page_index <span class="sc">!=</span> <span class="dv">2348</span>) {</span>
-<span id="cb32-53"><a href="#cb32-53"></a>    remote_driver<span class="sc">$</span></span>
-<span id="cb32-54"><a href="#cb32-54"></a>      <span class="fu">findElement</span>(<span class="st">"css"</span>, <span class="st">"#paginacao &gt; div.btn:nth-child(4)"</span>)<span class="sc">$</span></span>
-<span id="cb32-55"><a href="#cb32-55"></a>      <span class="fu">clickElement</span>()</span>
-<span id="cb32-56"><a href="#cb32-56"></a>  }</span>
-<span id="cb32-57"><a href="#cb32-57"></a></span>
-<span id="cb32-58"><a href="#cb32-58"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-53"><a href="#cb32-53"></a>    <span class="co"># Give selenium a bit of time to actually find the</span></span>
+<span id="cb32-54"><a href="#cb32-54"></a>    <span class="co"># element before clicking it</span></span>
+<span id="cb32-55"><a href="#cb32-55"></a>    elem <span class="ot">&lt;-</span> remote_driver<span class="sc">$</span><span class="fu">findElement</span>(<span class="st">"id"</span>, <span class="fu">as.character</span>(page_index <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb32-56"><a href="#cb32-56"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">1</span>)</span>
+<span id="cb32-57"><a href="#cb32-57"></a>    elem<span class="sc">$</span><span class="fu">clickElement</span>()</span>
+<span id="cb32-58"><a href="#cb32-58"></a>  }</span>
+<span id="cb32-59"><a href="#cb32-59"></a></span>
+<span id="cb32-60"><a href="#cb32-60"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section>
 <section>
@@ -1722,16 +1737,18 @@
 <span id="cb35-63"><a href="#cb35-63"></a>  <span class="co"># When we got all modals of one page, go to the next page (except if</span></span>
 <span id="cb35-64"><a href="#cb35-64"></a>  <span class="co"># we're on the last one)</span></span>
 <span id="cb35-65"><a href="#cb35-65"></a>  <span class="cf">if</span> (page_index <span class="sc">!=</span> <span class="dv">2348</span>) {</span>
-<span id="cb35-66"><a href="#cb35-66"></a>    remote_driver<span class="sc">$</span></span>
-<span id="cb35-67"><a href="#cb35-67"></a>      <span class="fu">findElement</span>(<span class="st">"css"</span>, <span class="st">"#paginacao &gt; div.btn:nth-child(4)"</span>)<span class="sc">$</span></span>
-<span id="cb35-68"><a href="#cb35-68"></a>      <span class="fu">clickElement</span>()</span>
-<span id="cb35-69"><a href="#cb35-69"></a>  }</span>
-<span id="cb35-70"><a href="#cb35-70"></a></span>
-<span id="cb35-71"><a href="#cb35-71"></a>  <span class="fu">message</span>(<span class="fu">paste</span>(<span class="st">"Finished scraping of page"</span>, page_index))</span>
+<span id="cb35-66"><a href="#cb35-66"></a>    <span class="co"># Give selenium a bit of time to actually find the</span></span>
+<span id="cb35-67"><a href="#cb35-67"></a>    <span class="co"># element before clicking it</span></span>
+<span id="cb35-68"><a href="#cb35-68"></a>    elem <span class="ot">&lt;-</span> remote_driver<span class="sc">$</span><span class="fu">findElement</span>(<span class="st">"id"</span>, <span class="fu">as.character</span>(page_index <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb35-69"><a href="#cb35-69"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">1</span>)</span>
+<span id="cb35-70"><a href="#cb35-70"></a>    elem<span class="sc">$</span><span class="fu">clickElement</span>()</span>
+<span id="cb35-71"><a href="#cb35-71"></a>  }</span>
 <span id="cb35-72"><a href="#cb35-72"></a></span>
-<span id="cb35-73"><a href="#cb35-73"></a>  <span class="co"># Wait a bit for page loading</span></span>
-<span id="cb35-74"><a href="#cb35-74"></a>  <span class="fu">Sys.sleep</span>(<span class="dv">3</span>)</span>
-<span id="cb35-75"><a href="#cb35-75"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-73"><a href="#cb35-73"></a>  <span class="fu">message</span>(<span class="fu">paste</span>(<span class="st">"Finished scraping of page"</span>, page_index))</span>
+<span id="cb35-74"><a href="#cb35-74"></a></span>
+<span id="cb35-75"><a href="#cb35-75"></a>  <span class="co"># Wait a bit for page loading</span></span>
+<span id="cb35-76"><a href="#cb35-76"></a>  <span class="fu">Sys.sleep</span>(<span class="dv">3</span>)</span>
+<span id="cb35-77"><a href="#cb35-77"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section>
 <section>

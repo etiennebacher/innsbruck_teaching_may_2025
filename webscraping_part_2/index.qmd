@@ -1016,10 +1016,7 @@ Find the button to go to the next page:
 <br>
 
 ```{r}
-remote_driver$findElement(
-  "css",
-  "#paginacao > div.btn:nth-child(4)"
-)$highlightElement()
+remote_driver$findElement("id", "2")$highlightElement()
 ```
 
 
@@ -1165,9 +1162,11 @@ for (page_index in 1:3) {
   # When we got all modals of one page, go to the next page (except if
   # we're on the last one)
   if (page_index != 2348) {
-    remote_driver$
-      findElement("css", "#paginacao > div.btn:nth-child(4)")$
-      clickElement()
+    # Give selenium a bit of time to actually find the
+    # element before clicking it
+    elem <- remote_driver$findElement("id", as.character(page_index + 1))
+    Sys.sleep(1)
+    elem$clickElement()
   }
 
 }
@@ -1228,7 +1227,7 @@ e.g. if we try to click on a button that isn't loaded on the page yet.
 
 ## Loading times
 
-```{.r code-line-numbers="11,23,33"}
+```{.r code-line-numbers="11,23,35"}
 for (page_index in 1:2348) {
 
   # Find all buttons "Ver Mais" on the page
@@ -1257,9 +1256,11 @@ for (page_index in 1:2348) {
   # When we got all modals of one page, go to the next page (except if
   # we're on the last one)
   if (page_index != 2348) {
-    remote_driver$
-      findElement("css", "#paginacao > div.btn:nth-child(4)")$
-      clickElement()
+    # Give selenium a bit of time to actually find the
+    # element before clicking it
+    elem <- remote_driver$findElement("id", as.character(page_index + 1))
+    Sys.sleep(1)
+    elem$clickElement()
 
     Sys.sleep(3)
   }
@@ -1335,8 +1336,6 @@ while (x > 2) {
 
 ## Loading times
 
-<br> <br>
-
 In our case, we want to check whether we can find the buttons "Ver Mais".
 
 <br>
@@ -1346,9 +1345,15 @@ Are the buttons loaded?
 * if no, wait 0.5 seconds (or whatever duration you want), and try again;
 * if yes, go to the next step
 
-<br>
 
 {{< fa arrow-right >}} &nbsp; Do this 20 times max
+
+::: {.callout-important}
+This section didn't work during live demo. The problem is that when we press the button to go to the next page and wait for loading, all the old "Ver mais" buttons are still here and therefore get detected.
+
+The `while` loop is therefore flawed.
+:::
+
 
 
 ## Loading times
@@ -1433,9 +1438,11 @@ for (page_index in 1:2348) {
   # When we got all modals of one page, go to the next page (except if
   # we're on the last one)
   if (page_index != 2348) {
-    remote_driver$
-      findElement("css", "#paginacao > div.btn:nth-child(4)")$
-      clickElement()
+    # Give selenium a bit of time to actually find the
+    # element before clicking it
+    elem <- remote_driver$findElement("id", as.character(page_index + 1))
+    Sys.sleep(1)
+    elem$clickElement()
   }
 
 }
@@ -1622,9 +1629,11 @@ for (page_index in 1:3) {
   # When we got all modals of one page, go to the next page (except if
   # we're on the last one)
   if (page_index != 2348) {
-    remote_driver$
-      findElement("css", "#paginacao > div.btn:nth-child(4)")$
-      clickElement()
+    # Give selenium a bit of time to actually find the
+    # element before clicking it
+    elem <- remote_driver$findElement("id", as.character(page_index + 1))
+    Sys.sleep(1)
+    elem$clickElement()
   }
 
   message(paste("Finished scraping of page", page_index))
