@@ -1,15 +1,18 @@
 library(dplyr)
 library(rvest)
-library(xml2)
 library(RSelenium)
 library(logger)
 
+# Save messages in a log file
+log_appender(appender_file("data/modals/00_logfile"))
+log_messages()
+
 # Create folder where HTML files will be stored if it doesn't already exist
-if (!dir.exists("webscraping_part_2/data")) {
-  dir.create("webscraping_part_2/data")
+if (!dir.exists("data")) {
+  dir.create("data")
 }
-if (!dir.exists("webscraping_part_2/data/modals")) {
-  dir.create("webscraping_part_2/data/modals")
+if (!dir.exists("data/modals")) {
+  dir.create("data/modals")
 }
 
 # Initiate RSelenium
@@ -47,6 +50,8 @@ for (i in seq_along(buttons)) {
   Sys.sleep(1)
 }
 
+# Download all the modals on the page (you don't have to run this since
+# we also scrape the first page in the other loop below).
 for (i in seq_along(buttons)) {
   # open the modal
   buttons[[i]]$clickElement()
@@ -64,47 +69,12 @@ for (i in seq_along(buttons)) {
 }
 
 
-
-
-# Wait for the first page to load
-Sys.sleep(5)
-
-# Save messages in a log file
-log_appender(appender_file("data/modals/00_logfile"))
-log_messages()
-
-
 # Two loops: for all individuals on a page, and for all pages, open the modal
 # and get the page source
 
 for (page_index in 1:3) {
 
-  message(paste("Start scraping of page", page_index))
-
-  # Try to find the buttons "Ver Mais"
-  all_buttons_loaded <- FALSE
-  iterations <- 0
-  while(!all_buttons_loaded & iterations < 20) {
-    tryCatch(
-      {
-        test <- remote_driver$
-          findElements(using = 'id', value = "link_ver_detalhe")
-
-        if (inherits(test, "list") && length(test) > 0)  {
-          all_buttons_loaded <<- TRUE
-        }
-      },
-      error = function(e) {
-        iterations <<- iterations + 1
-        Sys.sleep(0.5)
-      }
-    )
-  }
-
-  if (!all_buttons_loaded & iterations == 20) {
-    message(paste0("Couldn't find buttons on page ", page_index, ". Skipping."))
-    next
-  }
+  message("Start scraping of page ", page_index)
 
   buttons <- remote_driver$
     findElements(using = 'id', value = "link_ver_detalhe")
@@ -126,11 +96,11 @@ for (page_index in 1:3) {
         body <- remote_driver$findElement(using = "xpath", value = "/html/body")
         body$sendKeysToElement(list(key = "escape"))
 
-        message(paste("  Scraped modal", modal_index))
+        message("  Scraped modal ", modal_index)
       },
       error = function(e) {
-        message(paste("  Failed to scrape modal", modal_index))
-        message(paste("  The error was ", e))
+        message("  Failed to scrape modal ", modal_index)
+        message("  The error was ", e)
         next
       }
     )
@@ -142,87 +112,63 @@ for (page_index in 1:3) {
   # When we got all modals of one page, go to the next page (except if
   # we're on the last one)
   if (page_index != 2348) {
-    remote_driver$
-      findElement("css", "#paginacao > div.btn:nth-child(4)")$
-      clickElement()
+    # Give selenium a bit of time to actually find the
+    # element before clicking it
+    elem <- remote_driver$findElement("id", as.character(page_index + 1))
+    Sys.sleep(1)
+    elem$clickElement()
   }
 
-  message(paste("Finished scraping of page", page_index))
+  message("Finished scraping of page ", page_index)
 
   # Wait a bit for page loading
-  Sys.sleep(3)
-
+  Sys.sleep(5)
 }
 
 
+
+### Clean the HTML
+
+# Explore for one or two pages
+raw_html <- read_html("data/modals/page-1-modal-1.html")
+tables <- raw_html |> 
+  html_element("#detalhe_conteudo") |> 
+  html_table()
+
+tables[1:14, ]
+tables[16:20, ]
+
+raw_html <- read_html("data/modals/page-1-modal-20.html")
+tables <- raw_html |> 
+  html_element("#detalhe_conteudo") |> 
+  html_table()
+
+tables[1:14, ]
+tables[16:20, ]
 
 # Function to clean the HTML for each individual
-
-extract_information <- function(raw_html) {
-
-  # Extract the table "Registros relacionados"
-
-  content <- raw_html %>%
-    html_nodes("#detalhe_conteudo") %>%
-    html_table() %>%
-    purrr::pluck(1)
-
-  relacionados <- content[16:nrow(content),] %>%
-    mutate(
-      across(
-        .cols = everything(),
-        .fns = ~ {ifelse(.x == "", NA, .x)}
-      )
-    )
-
-  colnames(relacionados) <- c("Livro", "Pagina", "Familia", "Chegada",
-                              "Sobrenome", "Nome", "Idade", "Sexo",
-                              "Parentesco", "Nacionalidade",
-                              "Vapor", "Est.Civil", "Religiao")
-
-
-  # Extract text information from "registro de matricula" and create a
-  # dataframe from it
-  name_items <- raw_html %>%
-    html_elements(xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/strong') %>%
-    html_text2() %>%
-    gsub("\\n", "", .) %>%
-    strsplit(split = "\\t") %>%
-    unlist()
-
-  value_items <- raw_html %>%
-    html_elements(xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/div') %>%
-    html_text2()
-
-  registro <- data.frame() %>%
-    rbind(value_items) %>%
-    as_tibble()
-
-  colnames(registro) <- name_items
-
-  return(
-    list(
-      main = registro,
-      related = relacionados
-    )
+clean_modal <- function(path_modal) {
+  raw_html <- read_html(path_modal)
+  
+  tables <- raw_html |> 
+    html_element("#detalhe_conteudo") |> 
+    html_table()
+  
+  basic_info <- tables[1:14, ]
+  relations <- tables[16:20, ]
+  
+  list(
+    basic_info = basic_info,
+    relations = relations
   )
-
 }
 
+# List all HTML files we saved
+all_modals <- list.files(
+  "data/modals",
+  pattern = "html",
+  full.names = TRUE
+)
 
-# Get the list of all HTML files
-list_html <- list.files("data/modals", pattern = "page", full.names = TRUE)
-
-# Apply the cleaning function to all files
-list_out <- lapply(list_html, function(x) {
-  read_html(x) |>
-    extract_information()
-})
-
-
-# Merge all individuals
-main <- data.table::rbindlist(purrr::map(list_out, 1)) |>
-  as_tibble()
-
-relations <- data.table::rbindlist(purrr::map(list_out, 2)) |>
-  as_tibble()
+# Clean the first 10
+lapply(all_modals[1:10], clean_modal)
