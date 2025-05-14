@@ -1828,6 +1828,18 @@ For static webscraping, check out the package [`polite`](https://dmi3kno.github.
 :::
 
 
+## Other tools
+
+<br>
+
+- `Selenium` is also available in Python.
+
+<br>
+
+- Python also has a library called [`playwright`](https://playwright.dev/python/) (never used myself).
+
+
+
 
 ## Conclusion
 
