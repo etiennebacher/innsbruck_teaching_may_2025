@@ -318,7 +318,7 @@ Install the package [`rJavaEnv`](https://www.ekotov.pro/rJavaEnv/), and then run
 
 If you have a message saying "Could not open firefox browser", two possible explanations:
 
-* if Firefox is not installed, install it the same way as Java on the previous slide.
+* if Firefox is not installed, install it.
 
 * if Firefox is installed but not found, it probably means that it wasn't installed
 with admin rights, so you need to manually specify the location of the file:
