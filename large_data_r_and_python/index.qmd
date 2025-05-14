@@ -706,15 +706,23 @@ Polars allows one to handle large data even on a laptop.
 
 <br>
 
-Use *eager evaluation* to explore a sample, build the data processing scripts, etc.
+Use *eager evaluation* to explore a sample, build the data processing scripts, etc. **but** do it like this:
+
+```python
+my_data = pl.scan_parquet("my_parquet_file.parquet").head(100).collect()
+
+# then use eager evaluation
+```
+
+. . .
 
 <br>
 
-Use *lazy evaluation* (scan + collect) to perform the data processing on the entire data.
+Use *lazy evaluation* to perform the data processing on the entire data.
 
 ## Conclusion {.nobreak}
 
-Which language to use?
+Which language to use (for Polars)?
 
 * Python:
   - Polars core developers focus on the Python library.

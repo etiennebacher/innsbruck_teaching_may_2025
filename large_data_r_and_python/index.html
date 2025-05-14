@@ -1000,13 +1000,18 @@
 <h2>Conclusion</h2>
 <p>Polars allows one to handle large data even on a laptop.</p>
 <p><br></p>
-<p>Use <em>eager evaluation</em> to explore a sample, build the data processing scripts, etc.</p>
+<p>Use <em>eager evaluation</em> to explore a sample, build the data processing scripts, etc. <strong>but</strong> do it like this:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a>my_data <span class="op">=</span> pl.scan_parquet(<span class="st">"my_parquet_file.parquet"</span>).head(<span class="dv">100</span>).collect()</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="co"># then use eager evaluation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="fragment">
 <p><br></p>
-<p>Use <em>lazy evaluation</em> (scan + collect) to perform the data processing on the entire data.</p>
+<p>Use <em>lazy evaluation</em> to perform the data processing on the entire data.</p>
+</div>
 </section>
 <section id="conclusion-2" class="slide level2 nobreak">
 <h2>Conclusion</h2>
-<p>Which language to use?</p>
+<p>Which language to use (for Polars)?</p>
 <ul>
 <li>Python:
 <ul>
