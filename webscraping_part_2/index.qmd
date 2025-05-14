@@ -733,11 +733,12 @@ Initiate the remote driver and go to the website:
 ```{r}
 library(RSelenium)
 
-link <- "http://www.inci.org.br/acervodigital/livros.php"
+link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
 driver <- rsDriver(
   browser = "firefox", 
+  chromever = NULL,
   # Needed since the certificate expired
   extraCapabilities = list(acceptInsecureCerts = TRUE) 
 ) 
@@ -750,13 +751,18 @@ remote_driver$navigate(link)
 
 Fill the field "NACIONALIDADE":
 
-```{.r code-line-numbers="10-13"}
+```{.r code-line-numbers="15-18"}
 library(RSelenium)
 
-link <- "http://www.inci.org.br/acervodigital/livros.php"
+link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
-driver <- rsDriver(browser = c("firefox"))
+driver <- rsDriver(
+  browser = "firefox", 
+  chromever = NULL,
+  # Needed since the certificate expired
+  extraCapabilities = list(acceptInsecureCerts = TRUE) 
+) 
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -770,13 +776,18 @@ remote_driver$
 
 Find the button "Pesquisar" and click it:
 
-```{.r code-line-numbers="15-18"}
+```{.r code-line-numbers="20-23"}
 library(RSelenium)
 
-link <- "http://www.inci.org.br/acervodigital/livros.php"
+link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
-driver <- rsDriver(browser = c("firefox"))
+driver <- rsDriver(
+  browser = "firefox", 
+  chromever = NULL,
+  # Needed since the certificate expired
+  extraCapabilities = list(acceptInsecureCerts = TRUE) 
+) 
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -796,13 +807,18 @@ remote_driver$
 
 Find the button "Ver Mais" and click it:
 
-```{.r code-line-numbers="20-23"}
+```{.r code-line-numbers="25-28"}
 library(RSelenium)
 
-link <- "http://www.inci.org.br/acervodigital/livros.php"
+link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
-driver <- rsDriver(browser = c("firefox"))
+driver <- rsDriver(
+  browser = "firefox", 
+  chromever = NULL,
+  # Needed since the certificate expired
+  extraCapabilities = list(acceptInsecureCerts = TRUE) 
+) 
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -827,13 +843,18 @@ remote_driver$
 
 Get the HTML that is displayed:
 
-```{.r code-line-numbers="25-26"}
+```{.r code-line-numbers="30-31"}
 library(RSelenium)
 
 link <- "http://www.inci.org.br/acervodigital/livros.php"
 
 # Automatically go the website
-driver <- rsDriver(browser = c("firefox"))
+driver <- rsDriver(
+  browser = "firefox", 
+  chromever = NULL,
+  # Needed since the certificate expired
+  extraCapabilities = list(acceptInsecureCerts = TRUE) 
+) 
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -861,13 +882,18 @@ x <- remote_driver$getPageSource()
 
 Exit the modal by pressing "Escape":
 
-```{.r code-line-numbers="28-31"}
+```{.r code-line-numbers="33-36"}
 library(RSelenium)
 
 link <- "http://www.inci.org.br/acervodigital/livros.php"
 
 # Automatically go the website
-driver <- rsDriver(browser = c("firefox"))
+driver <- rsDriver(
+  browser = "firefox", 
+  chromever = NULL,
+  # Needed since the certificate expired
+  extraCapabilities = list(acceptInsecureCerts = TRUE) 
+) 
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
