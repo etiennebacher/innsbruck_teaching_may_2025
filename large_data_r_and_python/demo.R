@@ -3,7 +3,17 @@ library(polars)
 library(tidyverse)
 library(tidypolars)
 
-scanned <- pl$scan_csv("large_data_r_and_python/data_ipums/ipums_samples.csv")
+ipums_data <- pl$scan_csv("large_data_r_and_python/data_ipums/ipums_samples.csv")
+
+system.time({
+  print(
+    ipums_data$
+      group_by("YEAR", "STATEFIP")$
+      agg(mean_occscore=pl$col("OCCSCORE")$mean())$
+      collect()
+  )
+})
+
 
 ### Get number of rows
 scanned |> 

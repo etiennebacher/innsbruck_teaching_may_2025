@@ -504,9 +504,10 @@ For the entire setup, I recommend using [uv](https://docs.astral.sh/uv/):
 
 . . . 
 
-Basically 4 commands to remember (once `uv` is installed):
+Basically 5 commands to remember (once `uv` is installed):
 
 * `uv init my-project` (or `uv init`) creates the basic files required
+* `uv venv` to create a virtual environment
 * `uv add` to add a library to the environment
 * `uv sync` to restore a project using `uv` to the exact setup that was used 
 * `uv run file.py` to run a script in the project's virtual environment
@@ -518,6 +519,35 @@ The files `uv.lock` and `.python-version` are the only thing needed to restore a
 <br>
 
 You do not need to share the `.venv` folder with colleagues, they can just call `uv sync` and the `.venv` with the exact same packages will be created. 
+
+## Setting up Python
+
+For more exploratory analysis (i.e. before writing scripts meant to be run on the whole data), we can use Jupyter notebooks.
+
+<br>
+
+. . .
+
+- create a new file called for instance "demo.ipynb" and save it in the project folder
+- run `uv add ipykernel` in the terminal
+- in the top right corner of the editor, you should see a "Select kernel" button
+- click on it and select the first option (the path should be ".venv\Scripts\python.exe")
+
+## Setting up Python
+
+Automatically formatting the code when we save the file is a nice feature (not essential for today however).
+
+<br>
+
+If you want this:
+
+- in the left sidebar, go to the "Extensions" tab (the four squares icon)
+- search for "Ruff" and install it
+- open the "Settings" (File > Preferences > Settings)
+- search for "Format on save" and tick the box
+- search for "Default formatter" and select "Ruff"
+
+and you should be good to go!
 
 ## Data to use
 
@@ -559,9 +589,8 @@ install.packages(
   - perform a simple filter
   - perform an aggregation
   - chain expressions
+  - write a custom function to standardize data
   - export data
-
-<br>
 
 * Same with R (both `polars` and `tidypolars`)
 
@@ -648,7 +677,7 @@ Just like we have `.str.split()` for instance, we could have `.dist.jarowinkler(
 
 <br>
 
-List of Polars plugins: [https://github.com/ddotta/awesome-polars#polars-plugins](https://github.com/ddotta/awesome-polars#polars-plugins)
+List of Polars plugins (not made by the Polars developers): [https://github.com/ddotta/awesome-polars#polars-plugins](https://github.com/ddotta/awesome-polars#polars-plugins)
 
 ## GIS and Polars
 
@@ -662,11 +691,11 @@ Groundwork for this should start in the coming months so you might expect some m
 
 If you're interested:
 
-* [Polars official documentation (Python)](https://docs.pola.rs/)
+* [Python Polars documentation(https://docs.pola.rs/)
 
 * [R-Polars documentation](https://pola-rs.github.io/r-polars/)
 
-* [R `tidypolars`](https://github.com/etiennebacher/tidypolars)
+* [R `tidypolars`](https://tidypolars.etiennebacher.com/)
 
 * [(Pretty) big data wrangling with DuckDB and Polars](https://grantmcdermott.com/duckdb-polars/slides/slides.html)
 

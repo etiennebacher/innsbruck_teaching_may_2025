@@ -801,9 +801,10 @@
 <li>very fast</li>
 </ul>
 <div class="fragment">
-<p>Basically 4 commands to remember (once <code>uv</code> is installed):</p>
+<p>Basically 5 commands to remember (once <code>uv</code> is installed):</p>
 <ul>
 <li><code>uv init my-project</code> (or <code>uv init</code>) creates the basic files required</li>
+<li><code>uv venv</code> to create a virtual environment</li>
 <li><code>uv add</code> to add a library to the environment</li>
 <li><code>uv sync</code> to restore a project using <code>uv</code> to the exact setup that was used</li>
 <li><code>uv run file.py</code> to run a script in the project’s virtual environment</li>
@@ -815,6 +816,33 @@
 <p>The files <code>uv.lock</code> and <code>.python-version</code> are the only thing needed to restore a project.</p>
 <p><br></p>
 <p>You do not need to share the <code>.venv</code> folder with colleagues, they can just call <code>uv sync</code> and the <code>.venv</code> with the exact same packages will be created.</p>
+</section>
+<section id="setting-up-python-4" class="slide level2">
+<h2>Setting up Python</h2>
+<p>For more exploratory analysis (i.e.&nbsp;before writing scripts meant to be run on the whole data), we can use Jupyter notebooks.</p>
+<p><br></p>
+<div class="fragment">
+<ul>
+<li>create a new file called for instance “demo.ipynb” and save it in the project folder</li>
+<li>run <code>uv add ipykernel</code> in the terminal</li>
+<li>in the top right corner of the editor, you should see a “Select kernel” button</li>
+<li>click on it and select the first option (the path should be “.venv.exe”)</li>
+</ul>
+</div>
+</section>
+<section id="setting-up-python-5" class="slide level2">
+<h2>Setting up Python</h2>
+<p>Automatically formatting the code when we save the file is a nice feature (not essential for today however).</p>
+<p><br></p>
+<p>If you want this:</p>
+<ul>
+<li>in the left sidebar, go to the “Extensions” tab (the four squares icon)</li>
+<li>search for “Ruff” and install it</li>
+<li>open the “Settings” (File &gt; Preferences &gt; Settings)</li>
+<li>search for “Format on save” and tick the box</li>
+<li>search for “Default formatter” and select “Ruff”</li>
+</ul>
+<p>and you should be good to go!</p>
 </section>
 <section id="data-to-use" class="slide level2">
 <h2>Data to use</h2>
@@ -856,11 +884,9 @@
 <li>perform a simple filter</li>
 <li>perform an aggregation</li>
 <li>chain expressions</li>
+<li>write a custom function to standardize data</li>
 <li>export data</li>
 </ul></li>
-</ul>
-<p><br></p>
-<ul>
 <li>Same with R (both <code>polars</code> and <code>tidypolars</code>)</li>
 </ul>
 </section></section>
@@ -950,7 +976,7 @@
 <p><br></p>
 <p>Just like we have <code>.str.split()</code> for instance, we could have <code>.dist.jarowinkler()</code>.</p>
 <p><br></p>
-<p>List of Polars plugins: <a href="https://github.com/ddotta/awesome-polars#polars-plugins">https://github.com/ddotta/awesome-polars#polars-plugins</a></p>
+<p>List of Polars plugins (not made by the Polars developers): <a href="https://github.com/ddotta/awesome-polars#polars-plugins">https://github.com/ddotta/awesome-polars#polars-plugins</a></p>
 </section>
 <section id="gis-and-polars" class="slide level2">
 <h2>GIS and Polars</h2>
@@ -962,9 +988,9 @@
 <h2>Going further</h2>
 <p>If you’re interested:</p>
 <ul>
-<li><p><a href="https://docs.pola.rs/">Polars official documentation (Python)</a></p></li>
+<li><p>[Python Polars documentation(https://docs.pola.rs/)</p></li>
 <li><p><a href="https://pola-rs.github.io/r-polars/">R-Polars documentation</a></p></li>
-<li><p><a href="https://github.com/etiennebacher/tidypolars">R <code>tidypolars</code></a></p></li>
+<li><p><a href="https://tidypolars.etiennebacher.com/">R <code>tidypolars</code></a></p></li>
 <li><p><a href="https://grantmcdermott.com/duckdb-polars/slides/slides.html">(Pretty) big data wrangling with DuckDB and Polars</a></p></li>
 </ul>
 </section>
