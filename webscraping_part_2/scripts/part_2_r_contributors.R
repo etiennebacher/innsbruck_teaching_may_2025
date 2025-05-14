@@ -4,7 +4,7 @@ library(RSelenium)
 library(rvest)
 
 # Initiate the remote driver
-driver <- rsDriver(browser = "firefox", chromever = NULL) # can also be chrome
+driver <- rsDriver(browser = "firefox", chromever = NULL) 
 remote_driver <- driver[["client"]]
 
 # Go to a specific page

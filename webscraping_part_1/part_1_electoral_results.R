@@ -31,7 +31,11 @@ html |>
 
 # Use the argument "delay" to reduce the delay (default is 5 sec) but don't 
 # forget to also specify the "user_agent" argument in this case.
-url2 <- bow(url, user_agent = "teaching-webscraping", delay = 2)
+url2 <- bow(
+  "https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html",
+  user_agent = "teaching-webscraping", 
+  delay = 2
+)
 
 
 ### Part 2: generalize this to all communities + provinces + municipalities
@@ -78,7 +82,7 @@ com_names <- com_names[com_names != "Comunidad"]
 com_names
 
 # Store the results for later
-com <- data.frame(id = ids, name = com_names)
+com <- data.frame(com_id = com_ids, com_name = com_names)
 
 
 # ----------------------------------------
@@ -140,8 +144,15 @@ provinces <- bind_rows(provinces)
 # MISSING PART FROM THE LIVE DEMO
 # 
 # We have seen that some comunidad have no (or only one provincia), hence the
-# second selector was empty. We discarded those cases but we still to include
-# them manually in the list of combinations otherwise they won't be scraped.
+# second selector was empty. We discarded those cases but we still need to
+# include them manually in the list of combinations otherwise they won't be
+# scraped.
+# 
+# The values can be found when doing a search for a municipality. For
+# instance, select "Madrid" in the community selector and "Ajalvir" in the
+# municipality selector (3rd one) and you'll see that the URL ends with
+# 12/28/02, so 12 is the com_id and 28 is the prov_id, and this doesn't
+# change for all municipalities in Madrid. 
 # 
 # I create this dataframe manually and bind it to the one we generated 
 # automatically.
