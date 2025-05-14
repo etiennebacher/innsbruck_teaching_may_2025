@@ -780,6 +780,7 @@
 <section id="setting-up-python-1" class="slide level2">
 <h2>Setting up Python</h2>
 <p>Python relies a lot on <em>virtual environments</em>: each project should have its own environment that contains the Python version and the libraries used in the project.</p>
+<div class="fragment">
 <p><br></p>
 <p>This is to avoid conflicts between different requirements:</p>
 <ul>
@@ -789,6 +790,7 @@
 <p>If we had only a system-wide installation of <code>polars</code>, we would constantly have to reinstall one or the other.</p>
 <p><br></p>
 <p>Having one virtual environment per project allows better project reproducibility.</p>
+</div>
 </section>
 <section id="setting-up-python-2" class="slide level2">
 <h2>Setting up Python</h2>
@@ -829,7 +831,7 @@
 </ul>
 <p><br></p>
 <ul>
-<li>See the WeTransfer link I sent you</li>
+<li>See the SwissTransfer link I sent you</li>
 </ul>
 </section>
 <section id="set-up-in-r" class="slide level2">
@@ -978,15 +980,15 @@
 <section id="alternative-tools-1" class="slide level2">
 <h2>Alternative tools</h2>
 <ul>
-<li><p>DuckDB:</p>
+<li><p><a href="https://duckdb.org/">DuckDB</a>:</p>
 <ul>
 <li>also lazy evaluation</li>
 <li>has geospatial extensions</li>
 <li>accompanying package <a href="https://duckplyr.tidyverse.org/"><code>duckplyr</code></a> (same goal as <code>tidypolars</code> but uses DuckDB in the background)</li>
 <li>supported by Posit (the company behind RStudio and many packages)</li>
 </ul></li>
-<li><p>Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.</p></li>
-<li><p>Spark: never used but available in R and Python.</p></li>
+<li><p><a href="https://arrow.apache.org/docs/r/"><code>arrow</code></a>: also has lazy evaluation but less optimizations than Polars and DuckDB.</p></li>
+<li><p><a href="https://spark.posit.co/">Spark</a>: never used but available in R and Python.</p></li>
 </ul>
 </section></section>
 <section>

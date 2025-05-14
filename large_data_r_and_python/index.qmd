@@ -479,6 +479,8 @@ Keeping a clean Python setup is notoriously hard:
 
 Python relies a lot on *virtual environments*: each project should have its own environment that contains the Python version and the libraries used in the project.
 
+. . .
+
 <br>
 
 This is to avoid conflicts between different requirements:
@@ -529,7 +531,7 @@ You do not need to share the `.venv` folder with colleagues, they can just call 
 
 <br>
 
-* See the WeTransfer link I sent you
+* See the SwissTransfer link I sent you
 
 
 ## Set up in R
@@ -685,15 +687,15 @@ There are other tools to process large data in R.
 
 ## Alternative tools
 
-* DuckDB: 
+* [DuckDB](https://duckdb.org/): 
   - also lazy evaluation
   - has geospatial extensions
   - accompanying package [`duckplyr`](https://duckplyr.tidyverse.org/) (same goal as `tidypolars` but uses DuckDB in the background)
   - supported by Posit (the company behind RStudio and many packages)
   
-* Arrow: also has lazy evaluation but less optimizations that Polars and DuckDB.
+* [`arrow`](https://arrow.apache.org/docs/r/): also has lazy evaluation but less optimizations than Polars and DuckDB.
 
-* Spark: never used but available in R and Python.
+* [Spark](https://spark.posit.co/): never used but available in R and Python.
 
 
 # Conclusion
