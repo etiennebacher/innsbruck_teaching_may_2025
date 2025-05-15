@@ -520,7 +520,7 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>data</span>
 <span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">.sort</span>(<span class="fu">pl.col</span>(<span class="st">"country"</span>))</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">.filter</span>(<span class="fu">pl.col</span>(<span class="st">"country"</span>)<span class="fu">.is_in</span>([<span class="st">"United Kingdom"</span>, <span class="st">"Japan"</span>, <span class="st">"Vietnam"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">.filter</span>(<span class="fu">pl.col</span>(<span class="st">"year"</span>)<span class="fu">.is_in</span>([<span class="dv">1950</span>, <span class="dv">1960</span>, <span class="dv">1970</span>, <span class="dv">1980</span>, <span class="dv">1990</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <p>Do you see what could be improved here?</p>
@@ -540,18 +540,18 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>data</span>
 <span id="cb4-2"><a href="#cb4-2"></a>  .sort(pl.col(<span class="st">"country"</span>))</span>
-<span id="cb4-3"><a href="#cb4-3"></a>  .<span class="bu">filter</span>(pl.col(<span class="st">"country"</span>).is_in([<span class="st">"United Kingdom"</span>, <span class="st">"Japan"</span>, <span class="st">"Vietnam"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3"></a>  .<span class="bu">filter</span>(pl.col(<span class="st">"year"</span>).is_in([<span class="dv">1950</span>, <span class="dv">1960</span>, <span class="dv">1970</span>, <span class="dv">1980</span>, <span class="dv">1990</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="index_cache/revealjs/timing1_3943b5cd8c0592a1c3542acddcbf6116">
+<div class="cell" data-hash="index_cache/revealjs/timing1_9b3b62832281920e5ab6398832cb9bcd">
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   4.22    1.05    5.27 </code></pre>
+   3.72    1.41    5.12 </code></pre>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>data</span>
-<span id="cb6-2"><a href="#cb6-2"></a>  .<span class="bu">filter</span>(pl.col(<span class="st">"country"</span>).is_in([<span class="st">"United Kingdom"</span>, <span class="st">"Japan"</span>, <span class="st">"Vietnam"</span>]))</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  .<span class="bu">filter</span>(pl.col(<span class="st">"year"</span>).is_in([<span class="dv">1950</span>, <span class="dv">1960</span>, <span class="dv">1970</span>, <span class="dv">1980</span>, <span class="dv">1990</span>]))</span>
 <span id="cb6-3"><a href="#cb6-3"></a>  .sort(pl.col(<span class="st">"country"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="index_cache/revealjs/timing2_ea81aa99fbb23de84d0c25c063b8b882">
@@ -583,7 +583,7 @@
 <p>When we call <code>collect()</code>, <code>polars</code> doesn’t directly execute the code. Before that, it does a lot of optimizations to be sure that we don’t do inefficient operations.</p>
 <div class="fragment">
 <p><br></p>
-<p>Examples of optimizations:</p>
+<p>Examples of optimizations (see the <a href="https://docs.pola.rs/user-guide/lazy/optimizations/">entire list</a>):</p>
 <ul>
 <li>do not load rows that are filtered out in the query;</li>
 <li>do not load variables (columns) that are never used;</li>
@@ -874,7 +874,6 @@
 </section>
 <section id="objectives" class="slide level2 nobreak">
 <h2>Objectives</h2>
-<p><br></p>
 <ul>
 <li>Python
 <ul>
@@ -883,8 +882,8 @@
 <li>scan the data and read a subset</li>
 <li>perform a simple filter</li>
 <li>perform an aggregation</li>
+<li>explore expression namespaces</li>
 <li>chain expressions</li>
-<li>write a custom function to standardize data</li>
 <li>export data</li>
 </ul></li>
 <li>Same with R (both <code>polars</code> and <code>tidypolars</code>)</li>
@@ -899,6 +898,38 @@
 <section id="going-further" class="title-slide slide level1 center">
 <h1>Going further</h1>
 
+</section>
+<section id="custom-functions" class="slide level2">
+<h2>Custom functions</h2>
+<p>Maybe you need to use a function that doesn’t exist as-is in Polars.</p>
+<p><br></p>
+<p>You have mainly two options:</p>
+<ol type="1">
+<li>write the function using Polars syntax</li>
+<li>use a <code>map_</code> function (e.g.&nbsp;<code>map_elements()</code> or <code>.map_batches()</code>), but this is <strong>slower</strong>.</li>
+</ol>
+<p><br></p>
+<div class="fragment">
+<p>Let’s write a custom function for standardizing numeric variables.</p>
+</div>
+</section>
+<section id="custom-functions-1" class="slide level2">
+<h2>Custom functions</h2>
+<p><br></p>
+<div class="callout callout-warning callout-captioned callout-style-default">
+<div class="callout-body">
+<div class="callout-caption">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p><code>map_elements()</code> and <code>map_batches()</code> work fine in Python, but sometimes they might get a bit buggy in R.</p>
+<p>In the new version of Polars in R, it will be recommended to convert the data to R, apply the function needed, and convert it back to Polars.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="larger-than-memory-data" class="slide level2">
 <h2>Larger-than-memory data</h2>
@@ -980,15 +1011,16 @@
 </section>
 <section id="gis-and-polars" class="slide level2">
 <h2>GIS and Polars</h2>
+<p><br></p>
 <p>While there is some demand for a <code>geopolars</code> that would enable GIS operations in Polars DataFrame or LazyFrame, this doesn’t exist for now.</p>
 <p><br></p>
 <p>Groundwork for this should start in the coming months so you might expect some movement in <code>geopolars</code> in 2026.</p>
 </section>
 <section id="going-further-1" class="slide level2">
 <h2>Going further</h2>
-<p>If you’re interested:</p>
+<p>To get more details:</p>
 <ul>
-<li><p>[Python Polars documentation(https://docs.pola.rs/)</p></li>
+<li><p><a href="https://docs.pola.rs/">Python Polars documentation</a></p></li>
 <li><p><a href="https://pola-rs.github.io/r-polars/">R-Polars documentation</a></p></li>
 <li><p><a href="https://tidypolars.etiennebacher.com/">R <code>tidypolars</code></a></p></li>
 <li><p><a href="https://grantmcdermott.com/duckdb-polars/slides/slides.html">(Pretty) big data wrangling with DuckDB and Polars</a></p></li>

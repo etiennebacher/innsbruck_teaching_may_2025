@@ -144,7 +144,7 @@ filters it based on a condition:
 ```{r, eval=FALSE}
 data
   .sort(pl.col("country"))
-  .filter(pl.col("country").is_in(["United Kingdom", "Japan", "Vietnam"]))
+  .filter(pl.col("year").is_in([1950, 1960, 1970, 1980, 1990]))
 ```
 
 <br>
@@ -191,13 +191,13 @@ data <- data.frame(
 ```{python, eval=FALSE}
 data
   .sort(pl.col("country"))
-  .filter(pl.col("country").is_in(["United Kingdom", "Japan", "Vietnam"]))
+  .filter(pl.col("year").is_in([1950, 1960, 1970, 1980, 1990]))
 ```
 ```{r timing1, echo=FALSE, eval=TRUE, cache=TRUE}
 system.time({
   data |>
     arrange(country) |>
-    filter(country %in% c("United Kingdom", "Japan", "Vietnam"))
+    filter(year %in% c(1950, 1960, 1970, 1980, 1990))
 })
 ```
 
@@ -206,7 +206,7 @@ system.time({
 ::: {.column width="50%"}
 ```{python, eval=FALSE}
 data
-  .filter(pl.col("country").is_in(["United Kingdom", "Japan", "Vietnam"]))
+  .filter(pl.col("year").is_in([1950, 1960, 1970, 1980, 1990]))
   .sort(pl.col("country"))
 ```
 ```{r timing2, echo=FALSE, eval=TRUE, cache=TRUE}
@@ -254,7 +254,7 @@ When we call `collect()`, `polars` doesn't directly execute the code. Before tha
 
 <br>
 
-Examples of optimizations:
+Examples of optimizations (see the [entire list](https://docs.pola.rs/user-guide/lazy/optimizations/)):
 
 * do not load rows that are filtered out in the query;
 * do not load variables (columns) that are never used;
@@ -580,16 +580,14 @@ install.packages(
 
 ## Objectives {.nobreak}
 
-<br>
-
 * Python
   - set up the python project and environment
   - install and load polars
   - scan the data and read a subset
   - perform a simple filter
   - perform an aggregation
+  - explore expression namespaces
   - chain expressions
-  - write a custom function to standardize data
   - export data
 
 * Same with R (both `polars` and `tidypolars`)
@@ -599,6 +597,34 @@ install.packages(
 
 
 # Going further
+
+## Custom functions
+
+Maybe you need to use a function that doesn't exist as-is in Polars.
+
+<br>
+
+You have mainly two options:
+
+1. write the function using Polars syntax
+1. use a `map_` function (e.g. `map_elements()` or `.map_batches()`), but this is **slower**.
+
+<br>
+
+. . .
+
+Let's write a custom function for standardizing numeric variables.
+
+
+## Custom functions
+
+<br>
+
+:::{.callout-warning}
+`map_elements()` and `map_batches()` work fine in Python, but sometimes they might get a bit buggy in R.
+
+In the new version of Polars in R, it will be recommended to convert the data to R, apply the function needed, and convert it back to Polars.
+:::
 
 ## Larger-than-memory data
 
@@ -681,6 +707,8 @@ List of Polars plugins (not made by the Polars developers): [https://github.com/
 
 ## GIS and Polars
 
+<br>
+
 While there is some demand for a `geopolars` that would enable GIS operations in Polars DataFrame or LazyFrame, this doesn't exist for now.
 
 <br>
@@ -689,9 +717,9 @@ Groundwork for this should start in the coming months so you might expect some m
 
 ## Going further
 
-If you're interested:
+To get more details:
 
-* [Python Polars documentation(https://docs.pola.rs/)
+* [Python Polars documentation](https://docs.pola.rs/)
 
 * [R-Polars documentation](https://pola-rs.github.io/r-polars/)
 
