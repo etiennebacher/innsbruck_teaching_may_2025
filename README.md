@@ -1,4 +1,4 @@
-Three teaching sessions for webscraping (part 1 on static webscraping and part 2 on dynamic webscraping).
+Three teaching sessions: two on webscraping with R (part 1 on static webscraping and part 2 on dynamic webscraping) and one on handling large data with R and Python.
 
 Each folder contains the code for the slides deployed online and the code for the demos.
 
