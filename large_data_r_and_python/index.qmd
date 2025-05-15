@@ -531,6 +531,7 @@ For more exploratory analysis (i.e. before writing scripts meant to be run on th
 - create a new file called for instance "demo.ipynb" and save it in the project folder
 - run `uv add ipykernel` in the terminal
 - in the top right corner of the editor, you should see a "Select kernel" button
+- if you don't have the "Jupyter" extension installed, the "Select kernel" button will suggest you install it (and do it)
 - click on it and select the first option (the path should be ".venv\Scripts\python.exe")
 
 ## Setting up Python
