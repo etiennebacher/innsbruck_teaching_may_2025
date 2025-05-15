@@ -1,4 +1,5 @@
-Three teaching sessions given at Innsbruck University in May 2025: two on webscraping with R (part 1 on static webscraping and part 2 on dynamic webscraping) and one on handling large data with R and Python.
+Three teaching sessions given at the University of Innsbruck in May 2025: two on webscraping with R (part 1 on static webscraping and part 2 on dynamic webscraping) and one on handling large data with R and Python.
+
 
 
 Each folder contains the code for the slides deployed online and the code for the demos.
