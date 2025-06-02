@@ -737,11 +737,11 @@ link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
 driver <- rsDriver(
-  browser = "firefox", 
+  browser = "firefox",
   chromever = NULL,
   # Needed since the certificate expired
-  extraCapabilities = list(acceptInsecureCerts = TRUE) 
-) 
+  extraCapabilities = list(acceptInsecureCerts = TRUE)
+)
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 ```
@@ -758,11 +758,11 @@ link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
 driver <- rsDriver(
-  browser = "firefox", 
+  browser = "firefox",
   chromever = NULL,
   # Needed since the certificate expired
-  extraCapabilities = list(acceptInsecureCerts = TRUE) 
-) 
+  extraCapabilities = list(acceptInsecureCerts = TRUE)
+)
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -783,11 +783,11 @@ link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
 driver <- rsDriver(
-  browser = "firefox", 
+  browser = "firefox",
   chromever = NULL,
   # Needed since the certificate expired
-  extraCapabilities = list(acceptInsecureCerts = TRUE) 
-) 
+  extraCapabilities = list(acceptInsecureCerts = TRUE)
+)
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -814,11 +814,11 @@ link <- "https://www.acervodigital.museudaimigracao.org.br/livros.php"
 
 # Automatically go the website
 driver <- rsDriver(
-  browser = "firefox", 
+  browser = "firefox",
   chromever = NULL,
   # Needed since the certificate expired
-  extraCapabilities = list(acceptInsecureCerts = TRUE) 
-) 
+  extraCapabilities = list(acceptInsecureCerts = TRUE)
+)
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -850,11 +850,11 @@ link <- "http://www.inci.org.br/acervodigital/livros.php"
 
 # Automatically go the website
 driver <- rsDriver(
-  browser = "firefox", 
+  browser = "firefox",
   chromever = NULL,
   # Needed since the certificate expired
-  extraCapabilities = list(acceptInsecureCerts = TRUE) 
-) 
+  extraCapabilities = list(acceptInsecureCerts = TRUE)
+)
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -889,11 +889,11 @@ link <- "http://www.inci.org.br/acervodigital/livros.php"
 
 # Automatically go the website
 driver <- rsDriver(
-  browser = "firefox", 
+  browser = "firefox",
   chromever = NULL,
   # Needed since the certificate expired
-  extraCapabilities = list(acceptInsecureCerts = TRUE) 
-) 
+  extraCapabilities = list(acceptInsecureCerts = TRUE)
+)
 remote_driver <- driver[["client"]]
 remote_driver$navigate(link)
 
@@ -1387,17 +1387,18 @@ This loop will run until the buttons can be found or until we reach 20 iteration
 
 ```{r}
 for (page_index in 1:2348) {
-
   # Try to find the buttons "Ver Mais"
   all_buttons_loaded <- FALSE
   iterations <- 0
-  while(!all_buttons_loaded & iterations < 20) {
+  while (!all_buttons_loaded & iterations < 20) {
     tryCatch(
       {
-        test <- remote_driver$
-          findElements(using = 'id', value = "link_ver_detalhe")
+        test <- remote_driver$findElements(
+          using = 'id',
+          value = "link_ver_detalhe"
+        )
 
-        if (inherits(test, "list") && length(test) > 0)  {
+        if (inherits(test, "list") && length(test) > 0) {
           all_buttons_loaded <<- TRUE
         }
       },
@@ -1412,11 +1413,12 @@ for (page_index in 1:2348) {
     next
   }
 
-  buttons <- remote_driver$
-    findElements(using = 'id', value = "link_ver_detalhe")
+  buttons <- remote_driver$findElements(
+    using = 'id',
+    value = "link_ver_detalhe"
+  )
 
   for (modal_index in seq_along(buttons)) {
-
     # open modal
     buttons[[modal_index]]$clickElement()
 
@@ -1424,15 +1426,24 @@ for (page_index in 1:2348) {
 
     # Get the HTML and save it
     tmp <- remote_driver$getPageSource()[[1]]
-    write(tmp, file = paste0("data/modals/page-", page_index, "-modal-", modal_index, ".html"))
+    write(
+      tmp,
+      file = paste0(
+        "data/modals/page-",
+        page_index,
+        "-modal-",
+        modal_index,
+        ".html"
+      )
+    )
 
     # Leave the modal
-    remote_driver$
-      findElement(using = "xpath", value = "/html/body")$
-      sendKeysToElement(list(key = "escape"))
+    remote_driver$findElement(
+      using = "xpath",
+      value = "/html/body"
+    )$sendKeysToElement(list(key = "escape"))
 
     Sys.sleep(1.5)
-
   }
 
   # When we got all modals of one page, go to the next page (except if
@@ -1444,7 +1455,6 @@ for (page_index in 1:2348) {
     Sys.sleep(1)
     elem$clickElement()
   }
-
 }
 ```
 
@@ -1565,19 +1575,20 @@ What does the output look like?
 
 ```{r}
 for (page_index in 1:3) {
-
   message(paste("Start scraping of page", page_index))
 
   # Try to find the buttons "Ver Mais"
   all_buttons_loaded <- FALSE
   iterations <- 0
-  while(!all_buttons_loaded & iterations < 20) {
+  while (!all_buttons_loaded & iterations < 20) {
     tryCatch(
       {
-        test <- remote_driver$
-          findElements(using = 'id', value = "link_ver_detalhe")
+        test <- remote_driver$findElements(
+          using = 'id',
+          value = "link_ver_detalhe"
+        )
 
-        if (inherits(test, "list") && length(test) > 0)  {
+        if (inherits(test, "list") && length(test) > 0) {
           all_buttons_loaded <<- TRUE
         }
       },
@@ -1593,11 +1604,12 @@ for (page_index in 1:3) {
     next
   }
 
-  buttons <- remote_driver$
-    findElements(using = 'id', value = "link_ver_detalhe")
+  buttons <- remote_driver$findElements(
+    using = 'id',
+    value = "link_ver_detalhe"
+  )
 
   for (modal_index in seq_along(buttons)) {
-
     tryCatch(
       {
         # open modal
@@ -1607,7 +1619,16 @@ for (page_index in 1:3) {
 
         # Get the HTML and save it
         tmp <- remote_driver$getPageSource()[[1]]
-        write(tmp, file = paste0("data/modals/page-", page_index, "-modal-", modal_index, ".html"))
+        write(
+          tmp,
+          file = paste0(
+            "data/modals/page-",
+            page_index,
+            "-modal-",
+            modal_index,
+            ".html"
+          )
+        )
 
         # Leave the modal
         body <- remote_driver$findElement(using = "xpath", value = "/html/body")
@@ -1623,7 +1644,6 @@ for (page_index in 1:3) {
     )
 
     Sys.sleep(1.5)
-
   }
 
   # When we got all modals of one page, go to the next page (except if
@@ -1673,7 +1693,6 @@ the personal info, and a dataframe with the "network" of the individual.
 
 ```{r}
 extract_information <- function(raw_html) {
-
   # Extract the table "Registros relacionados"
 
   content <- raw_html %>%
@@ -1681,31 +1700,47 @@ extract_information <- function(raw_html) {
     html_table() %>%
     purrr::pluck(1)
 
-  relacionados <- content[16:nrow(content),] %>%
+  relacionados <- content[16:nrow(content), ] %>%
     mutate(
       across(
         .cols = everything(),
-        .fns = ~ {ifelse(.x == "", NA, .x)}
+        .fns = ~ {
+          ifelse(.x == "", NA, .x)
+        }
       )
     )
 
-  colnames(relacionados) <- c("Livro", "Pagina", "Familia", "Chegada",
-                              "Sobrenome", "Nome", "Idade", "Sexo",
-                              "Parentesco", "Nacionalidade",
-                              "Vapor", "Est.Civil", "Religiao")
-
+  colnames(relacionados) <- c(
+    "Livro",
+    "Pagina",
+    "Familia",
+    "Chegada",
+    "Sobrenome",
+    "Nome",
+    "Idade",
+    "Sexo",
+    "Parentesco",
+    "Nacionalidade",
+    "Vapor",
+    "Est.Civil",
+    "Religiao"
+  )
 
   # Extract text information from "registro de matricula" and create a
   # dataframe from it
   name_items <- raw_html %>%
-    html_elements(xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/strong') %>%
+    html_elements(
+      xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/strong'
+    ) %>%
     html_text2() %>%
     gsub("\\n", "", .) %>%
     strsplit(split = "\\t") %>%
     unlist()
 
   value_items <- raw_html %>%
-    html_elements(xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/div') %>%
+    html_elements(
+      xpath = '//*[@id="detalhe_conteudo"]/table[1]/tbody/tr/td/div'
+    ) %>%
     html_text2()
 
   registro <- data.frame() %>%
@@ -1720,7 +1755,6 @@ extract_information <- function(raw_html) {
       related = relacionados
     )
   )
-
 }
 ```
 
@@ -1735,8 +1769,11 @@ library(tidyverse)
 library(rvest)
 
 # Get all paths to the html files
-list_html_files <- list.files("data/modals", pattern = "page",
-                              full.names = TRUE)
+list_html_files <- list.files(
+  "data/modals",
+  pattern = "page",
+  full.names = TRUE
+)
 
 # Apply the previous function to each of those file
 list_out <- lapply(list_html_files, function(x) {
@@ -1854,7 +1891,7 @@ For static webscraping, check out the package [`polite`](https://dmi3kno.github.
 
 <br>
 
-Code on GitHub (not available yet): [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025)
+Code on GitHub: [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025)
 
 
 # Good resources

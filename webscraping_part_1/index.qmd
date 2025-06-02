@@ -41,7 +41,7 @@ This course:
 <!-- - Contact: etienne.bacher@liser.lu -->
 
 
-## Plan for today 
+## Plan for today
 
 * Introduction:
   - Using APIs and webscraping
@@ -89,7 +89,7 @@ Order of preference:
 * scrape
   - static pages (today)
   - dynamic pages (tomorrow)
-  
+
 ## Using an API
 
 The objective of some websites is to provide data to people: they *want* us to being able to access this data easily.
@@ -103,7 +103,7 @@ They usually provide an API (Application Programming Interface) so that we can i
 <br>
 
 This is **better than webscraping**.
-  
+
 ## Using an API
 
 Example: [World Development Indicators API](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation)
@@ -114,10 +114,10 @@ In R, we can use the package `WDI` to access this API:
 
 ```{r, eval = FALSE}
 WDI(
-   indicator = 'NY.GDP.PCAP.KD', 
-   country = c('MX','CA','US'), 
-   start = 1960, 
-   end = 2012
+  indicator = 'NY.GDP.PCAP.KD',
+  country = c('MX', 'CA', 'US'),
+  start = 1960,
+  end = 2012
 )
 ```
 
@@ -249,7 +249,7 @@ p[class*=low] : all "p" elements whose class contains the string low
 ```{.html}
 <h2>Who am I?</h2>
 <div class="intro">
-  <p>I'm <span class="age">34</span> and 
+  <p>I'm <span class="age">34</span> and
     measure <span class="unit">1.70m</span>.</p>
 </div>
 <div class="info">
@@ -259,7 +259,7 @@ p[class*=low] : all "p" elements whose class contains the string low
       <li>Barcelona</li>
       <li>winning the Ballon d'Or every odd year</li>
     </ul>
-    <p class="extra">I forgot to say that I like scoring over 100 
+    <p class="extra">I forgot to say that I like scoring over 100
        goals per season.</p>
   </div>
 </div>
@@ -279,7 +279,7 @@ CSS selector for this paragraph?
 ```{.html code-line-numbers="13-14"}
 <h2>Who am I?</h2>
 <div class="intro">
-  <p>I'm <span class="age">34</span> and 
+  <p>I'm <span class="age">34</span> and
     measure <span class="unit">1.70m</span>.</p>
 </div>
 <div class="info">
@@ -289,7 +289,7 @@ CSS selector for this paragraph?
       <li>Barcelona</li>
       <li>winning the Ballon d'Or every odd year</li>
     </ul>
-    <p class="extra">I forgot to say that I like scoring over 100 
+    <p class="extra">I forgot to say that I like scoring over 100
        goals per season.</p>
   </div>
 </div>
@@ -309,7 +309,7 @@ CSS selector for this `div`?
 ```{.html code-line-numbers="7-15"}
 <h2>Who am I?</h2>
 <div class="intro">
-  <p>I'm <span class="age">34</span> and 
+  <p>I'm <span class="age">34</span> and
     measure <span class="unit">1.70m</span>.</p>
 </div>
 <div class="info">
@@ -319,7 +319,7 @@ CSS selector for this `div`?
       <li>Barcelona</li>
       <li>winning the Ballon d'Or every odd year</li>
     </ul>
-    <p class="extra">I forgot to say that I like scoring over 100 
+    <p class="extra">I forgot to say that I like scoring over 100
        goals per season.</p>
   </div>
 </div>
@@ -373,7 +373,7 @@ Get results of municipal elections in Spain for 2019 from [El Pais](https://resu
 
 Turns out that since I've done this webscraping, an R package became available: [`infoelectoral`](https://ropenspain.github.io/infoelectoral/).
 
-<br> 
+<br>
 
 Let's pretend there isn't any.
 
@@ -468,7 +468,7 @@ https://resultados.elpais.com/elecciones/2019/municipales/01/04/19.html
 
 . . .
 
-Three components: 
+Three components:
 
 * 01 is the comunidad code (for El Pais)
 * 04 is the province code
@@ -484,7 +484,7 @@ To generalize the code, we need to loop through all of those combinations:
       * get the list of municipalities
       * for each municipality:
          * get the data
-         
+
 <br>
 
 . . .
@@ -538,7 +538,7 @@ of situation:
 
 ## Catching errors
 
-<br> <br> 
+<br> <br>
 
 <p> <span style="color: #ffaa00">try</span><span style="color: #d24dff">Catch</span> :</p>
 
@@ -635,11 +635,10 @@ Let's say that there's an error when `i = 3`:
 ```{r, eval=FALSE, error=TRUE}
 x <- list()
 for (i in 1:10) {
-
   if (i == 3) {
-    stop("This is an error.")  # intentional error
+    stop("This is an error.") # intentional error
   } else {
-    x[[i]] <- 2*i
+    x[[i]] <- 2 * i
   }
 
   print(paste0("i = ", i, ". So far so good."))
@@ -654,11 +653,10 @@ Let's say that there's an error when `i = 3`:
 ```{r, eval=TRUE, error=TRUE}
 x <- list()
 for (i in 1:10) {
-
   if (i == 3) {
-    stop("This is an error.")  # intentional error
+    stop("This is an error.") # intentional error
   } else {
-    x[[i]] <- 2*i
+    x[[i]] <- 2 * i
   }
 
   print(paste0("i = ", i, ". So far so good."))
@@ -688,7 +686,7 @@ Now, let's catch the error to avoid breaking the loop:
 ```{.r code-line-numbers="4-16"}
 x <- list()
 for (i in 1:10) {
-  
+
   tryCatch(
     {
       if (i == 3) {
@@ -702,7 +700,7 @@ for (i in 1:10) {
       x[[i]] <- NULL
     }
   )
-  
+
   print(paste0("i = ", i, ". So far so good."))
 }
 ```
@@ -714,13 +712,12 @@ for (i in 1:10) {
 ```{r, eval=TRUE, echo=FALSE, error=TRUE}
 x <- list()
 for (i in 1:10) {
-  
   tryCatch(
     {
       if (i == 3) {
-        stop("This is an error.")  # intentional error
+        stop("This is an error.") # intentional error
       } else {
-        x[[i]] <- 2*i
+        x[[i]] <- 2 * i
       }
     },
     error = function(e) {
@@ -728,7 +725,7 @@ for (i in 1:10) {
       x[[i]] <- NULL
     }
   )
-  
+
   print(paste0("i = ", i, ". So far so good."))
 }
 
@@ -791,7 +788,7 @@ For me, scraping politely (slowly, identifying yourself) on websites where data 
 
 <br>
 
-Scraping data behind a paywall or needing an account is not, because the data is not publicly available. 
+Scraping data behind a paywall or needing an account is not, because the data is not publicly available.
 
 <br>
 
@@ -813,7 +810,7 @@ The package `rvest` is the best tool to do that in R. If you prefer Python, use 
 
 <br>
 
-Code on GitHub (not available yet): [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025)
+Code on GitHub: [https://github.com/etiennebacher/innsbruck_teaching_may_2025](https://github.com/etiennebacher/innsbruck_teaching_may_2025)
 
 <br>
 
